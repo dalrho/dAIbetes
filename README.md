@@ -1,7 +1,7 @@
 # dAIbetes: Retinal Image Diagnostic Support System for Diabetic Retinopathy and Glaucoma
 
 ## Group Members
-- Angela Jahziel Encabo - Team Lead
+- Angela Jahziel Encabo - Developer
 - Harold Shichiya I. Amistad - Developer
 - Gerald Ares - Developer
 - Ycia Debby Magnanao - Developer
