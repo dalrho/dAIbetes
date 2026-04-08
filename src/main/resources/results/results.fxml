@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane prefWidth="900.0" prefHeight="600.0"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="results.resultController">
+
+    <!-- TOP -->
+    <top>
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 15;">
+            <Label text="Scan Results and Report"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <!-- LEFT: DETECTION SUMMARY -->
+    <left>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <Label text="Detection Summary"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+            <Separator/>
+
+            <Label text="Disease Detected:"/>
+            <Label text="Diabetic Retinopathy"/>
+
+            <Label text="Confidence Level:"/>
+            <ProgressBar progress="0.75"/>
+
+            <Label text="Abnormalities:"/>
+            <ListView prefHeight="150">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Microaneurysms"/>
+                        <String fx:value="Exudates"/>
+                        <String fx:value="Hemorrhages"/>
+                    </FXCollections>
+                </items>
+            </ListView>
+        </VBox>
+    </left>
+
+    <!-- CENTER: NOTES + REPORT -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <Label text="Doctor's Notes"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+            <TextArea fx:id="notesArea"
+                      promptText="Enter diagnostic notes here..."
+                      prefHeight="200"/>
+
+            <Button text="Generate Report"
+                    onAction="#handleGenerateReport"/>
+
+            <Label fx:id="reportStatus"
+                   text="Report not generated yet"/>
+        </VBox>
+    </center>
+
+    <!-- BOTTOM: ACTION BUTTONS -->
+    <bottom>
+        <HBox spacing="15" alignment="CENTER_RIGHT"
+              style="-fx-padding: 15;">
+
+            <Button text="Finalize"
+                    onAction="#handleFinalize"
+                    style="-fx-background-color: orange;"/>
+
+            <Button text="Publish"
+                    onAction="#handlePublish"
+                    style="-fx-background-color: green; -fx-text-fill: white;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
