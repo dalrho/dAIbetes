@@ -9,8 +9,6 @@
             xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="doctorDashboard.doctorDashboardController">
-
-    <!-- TOP: Header with Navigation Title and Logout -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="10"
               style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-width: 0 0 1 0;">
@@ -21,7 +19,6 @@
             <Label text="Welcome back, Dr. Serato!"
                    style="-fx-font-style: italic; -fx-text-fill: #666;" />
 
-            <!-- Spacer to push Logout to the right -->
             <Region HBox.hgrow="ALWAYS" />
 
             <Button text="Logout"
@@ -30,7 +27,6 @@
         </HBox>
     </top>
 
-    <!-- LEFT: Quick Access Buttons -->
     <left>
         <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: #f1f3f5; -fx-min-width: 200;">
             <Label text="Quick Access"
@@ -54,14 +50,11 @@
                     style="-fx-padding: 10;"/>
         </VBox>
     </left>
-
-    <!-- CENTER: Overview of System & Summary Stats -->
     <center>
         <VBox spacing="20" style="-fx-padding: 20;">
             <Label text="System Overview"
                    style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-            <!-- Summary Stats Cards -->
             <HBox spacing="20">
                 <VBox alignment="CENTER" prefWidth="200"
                       style="-fx-background-color: #e7f5ff; -fx-border-color: #a5d8ff; -fx-padding: 20; -fx-background-radius: 5; -fx-border-radius: 5;">
@@ -69,12 +62,8 @@
                     <Label text="1,284" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
                 </VBox>
 
-                <!-- You can add more stat cards here later -->
             </HBox>
-
             <Separator/>
-
-            <!-- Recent Activity List -->
             <VBox spacing="10" VBox.vgrow="ALWAYS">
                 <Label text="My Recent Activity"
                        style="-fx-font-size: 16px; -fx-font-weight: bold;" />
@@ -91,8 +80,6 @@
             </VBox>
         </VBox>
     </center>
-
-    <!-- BOTTOM: Optional Status Bar -->
     <bottom>
         <HBox style="-fx-padding: 5; -fx-background-color: #eee;">
             <Label text="System Status: Online" style="-fx-font-size: 10px;"/>
