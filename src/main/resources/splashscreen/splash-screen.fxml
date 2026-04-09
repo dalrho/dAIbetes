@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="splashscreen.splashController">
+
+   <children>
+      <VBox fx:id="logo" maxHeight="200.0" minHeight="200.0" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox alignment="CENTER" minHeight="120.0" prefHeight="120.0" prefWidth="900.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="176.0" prefWidth="64.0" style="-fx-text-fill: white;" text="d" textAlignment="RIGHT">
+                     <font>
+                        <Font size="120.0" />
+                     </font>
+                  </Label>
+                   <Label alignment="CENTER" prefHeight="176.0" prefWidth="124.0" style="-fx-text-fill: white; -fx-font-weight: bold;" text="AI">
+                       <font>
+                           <Font size="120.0" />
+                       </font>
+                   </Label>
+                  <Label alignment="CENTER" prefHeight="144.0" prefWidth="289.0" style="-fx-text-fill: white;" text="betes">
+                     <font>
+                        <Font size="120.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="919.0" style="-fx-text-fill: white;" text="DIABETES EARLY DETECTION SYSTEM" textAlignment="CENTER">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</VBox>
