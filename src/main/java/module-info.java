@@ -12,8 +12,12 @@ module org.example.daibetes {
     opens results to javafx.fxml;
     exports results;
 
+    opens records to javafx.fxml;
+    exports records;
+
     opens doctorDashboard to javafx.fxml;
     exports doctorDashboard;
+
     opens splashscreen to javafx.fxml;
     exports splashscreen;
 
