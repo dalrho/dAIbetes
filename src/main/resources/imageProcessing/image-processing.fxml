@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.detection.ui.ImageProcessingController">
+
+    <!-- Left: Raw -->
+    <VBox spacing="10">
+        <Label text="Raw Image" style="-fx-font-weight: bold;"/>
+        <ImageView fx:id="rawImageView" fitWidth="350" preserveRatio="true" style="-fx-border-color: black;"/>
+    </VBox>
+
+    <!-- Right: Enhanced + Controls -->
+    <VBox spacing="15">
+        <Label text="Enhanced Image" style="-fx-font-weight: bold;"/>
+        <ImageView fx:id="enhancedImageView" fitWidth="350" preserveRatio="true" style="-fx-border-color: black;"/>
+
+        <Separator/>
+
+        <HBox spacing="10">
+            <ToggleButton fx:id="grayscaleToggle" text="GRAYSCALE" onAction="#updatePreview"/>
+        </HBox>
+
+        <Label text="Brightness"/>
+        <Slider fx:id="brightnessSlider" min="-0.5" max="0.5" value="0" onMouseReleased="#updatePreview"/>
+    </VBox>
+</HBox>
