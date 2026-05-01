@@ -2,7 +2,9 @@ module org.example.daibetes {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
+
     requires java.sql;
+    requires java.desktop;
 
 //requires org.controlsfx.controls;
 //requires org.kordamp.bootstrapfx.core;
@@ -27,4 +29,7 @@ module org.example.daibetes {
 
     opens patientsdashboard to javafx.fxml;
     exports patientsdashboard;
+
+    opens org.example.daibetes.modules.detection.ui to javafx.fxml;
+    exports org.example.daibetes.modules.detection.ui;
 }
