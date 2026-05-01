@@ -27,7 +27,6 @@ public class  DoctorFactory implements UserFactory{
         this.doctorId = doctorId;
     }
 
-    // Creates Doctor object
     @Override
     public User createUser() {
         return new Doctor(

@@ -47,7 +47,7 @@ public class CreateData {
     }
 
     public boolean createPatient(Patient patient) {
-        int userId = createUser(patient); // Patient is also a User
+        int userId = createUser(patient);
 
         if (userId == -1) {
             return false;
@@ -70,13 +70,13 @@ public class CreateData {
     }
 
     public boolean createDoctor(Doctor doctor) {
-        int userId = createUser(doctor); // Doctor is also a User
+        int userId = createUser(doctor);
 
         if (userId == -1) {
             return false;
         }
 
-        // 2 = doctor ID card
+        // 2 = doctor ID card (refer to the database structure tab in the docs file)
         ImageDAO imageDAO = new ImageDAO();
 
         int doctorIdCardId = imageDAO.createImage(

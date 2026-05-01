@@ -19,7 +19,6 @@ public class PatientFactory implements UserFactory{
             this.age = age;
         }
 
-        // Creates Patient object
         @Override
         public User createUser() {
             return new Patient(
