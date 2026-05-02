@@ -40,8 +40,6 @@ public class ValidationUtils {
             showAlert("Error", "Email is required.");
             return false;
         }
-
-        // Typical email format
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
         if (!email.matches(regex)) {
