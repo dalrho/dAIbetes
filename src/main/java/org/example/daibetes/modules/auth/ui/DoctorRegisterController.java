@@ -1,16 +1,13 @@
 package org.example.daibetes.modules.auth.ui;
 
-import org.example.daibetes.core.database.CreateData;
-import org.example.daibetes.core.domain.Doctor;
-import org.example.daibetes.core.domain.DoctorFactory;
-import org.example.daibetes.core.domain.User;
-import org.example.daibetes.core.domain.UserFactory;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-
+import org.example.daibetes.shared.utils.ValidationUtils;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.Period;
 
 public class DoctorRegisterController {
 
@@ -20,9 +17,8 @@ public class DoctorRegisterController {
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
     @FXML private TextField contactNumber;
-    @FXML private RadioButton gender;
+    @FXML private ToggleGroup genderGroup;
     @FXML private DatePicker birthDate;
-
     @FXML private TextField hospital;
     @FXML private TextField licenseNumber;
     @FXML private Button uploadDoctorId;
@@ -45,12 +41,13 @@ public class DoctorRegisterController {
 
             // STRICT validation
             if (!(name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"))) {
-                showAlert("Error", "Only PNG, JPG, or JPEG allowed.");
+                ValidationUtils.showAlert("Error", "Only PNG, JPG, or JPEG allowed.");
                 return;
             }
 
             doctorId = selectedFile;
-            showAlert("Success", "Doctor ID uploaded!");
+            uploadDoctorId.setText("Uploaded: " + doctorId.getName());
+            ValidationUtils.showAlert("Success", "Doctor ID uploaded!");
         }
     }
 
@@ -63,7 +60,10 @@ public class DoctorRegisterController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
         String contact = contactNumber.getText().trim();
-        String selectedGender = gender.isSelected() ? gender.getText() : "";
+        String selectedGender = "";
+        if (genderGroup.getSelectedToggle() != null) {
+            selectedGender = ((RadioButton) genderGroup.getSelectedToggle()).getText();
+        }
         String hosp = hospital.getText().trim();
         String license = licenseNumber.getText().trim();
         LocalDate birth = birthDate.getValue();
@@ -72,63 +72,48 @@ public class DoctorRegisterController {
         if (fname.isEmpty() || lname.isEmpty() || email.isEmpty() ||
                 password.isEmpty() || confirmPassword.isEmpty() ||
                 contact.isEmpty() || selectedGender.isEmpty() ||
-               hosp.isEmpty() || license.isEmpty() || doctorId == null || birth == null) {
+                hosp.isEmpty() || license.isEmpty() || birth == null) {
 
-            showAlert("Error", "Please fill all fields.");
+            ValidationUtils.showAlert("Error", "Please fill all fields.");
             return;
         }
+
+        if (doctorId == null) {
+            ValidationUtils.showAlert("Error", "Please upload your Doctor ID image.");
+            return;
+        }
+
+        if (!ValidationUtils.isValidEmail(email)) return;
 
         if (!password.equals(confirmPassword)) {
-            showAlert("Error", "Passwords do not match.");
+            ValidationUtils.showAlert("Error", "Passwords do not match.");
             return;
         }
 
-        // age validation, doctor must be 18 years old and above
-        int age = java.time.Period.between(birth, LocalDate.now()).getYears();
+        if (!ValidationUtils.isValidPassword(password)) return;
+
+        if (birth.isAfter(LocalDate.now())) {
+            ValidationUtils.showAlert("Error", "Birthdate cannot be in the future.");
+            return;
+        }
+
+        int age = Period.between(birth, LocalDate.now()).getYears();
         if (age < 18) {
-            showAlert("Error", "Doctor must be at least 18 years old.");
+            ValidationUtils.showAlert("Error", "Doctor must be at least 18 years old.");
             return;
         }
-
-        // create obj using factory
-        UserFactory factory = new DoctorFactory(
-                fname, lname, email, password,
-                contact, selectedGender, birth.toString(),
-                license, hosp, doctorId
-        );
-
-        User user = factory.createUser();
-        Doctor doctor = (Doctor) user;
-
-        //save to database
-        CreateData createData = new CreateData();
-        boolean success = createData.createDoctor(doctor);
-
-        if (success) {
-            showAlert("Success", "Doctor registered successfully!");
-            clearFields();
-        } else {
-            showAlert("Error", "Registration failed.");
-        }
     }
 
-    //message alert
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     //clear form
-    private void clearFields() {
+    public void clearFields() {
         firstName.clear();
         lastName.clear();
         emailAddress.clear();
         passwordField.clear();
         confirmPasswordField.clear();
         contactNumber.clear();
-        gender.setSelected(false);
+        genderGroup.selectToggle(null);
         birthDate.setValue(null);
         hospital.clear();
         licenseNumber.clear();

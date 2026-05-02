@@ -90,8 +90,8 @@ public class CreateData {
 
         String sql = """
         INSERT INTO tbldoctor
-        (user_id, doctor_idcard_id, license_number)
-        VALUES (?, ?, ?)
+        (user_id, doctor_idcard_id, license_number, hospital)
+        VALUES (?, ?, ?, ?)
     """;
 
         try (Connection conn = MySQLConnection.getConnection();
