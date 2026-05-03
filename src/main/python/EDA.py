@@ -132,3 +132,32 @@ val_transform = A.Compose([
                 std =[0.229, 0.224, 0.225]),
     ToTensorV2()
 ])
+
+class RetinopathyDataset(Dataset):
+    def __init__(self, df, img_dir, transform=None, preprocess=True):
+        self.df         = df.reset_index(drop=True)
+        self.img_dir    = img_dir
+        self.transform  = transform
+        self.preprocess = preprocess
+
+    def __len__(self):
+        return len(self.df)
+
+    def __getitem__(self, idx):
+        row  = self.df.iloc[idx]
+        path = os.path.join(self.img_dir, row['image'] + '.jpeg')
+
+        img = cv2.imread(path)
+        if img is None:
+            # Fallback for corrupt/missing images
+            img = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.uint8)
+        else:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            if self.preprocess:
+                img = preprocess_fundus(img, IMG_SIZE)
+
+        if self.transform:
+            img = self.transform(image=img)['image']
+
+        label = int(row['level'])
+        return img, label
