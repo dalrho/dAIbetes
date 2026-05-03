@@ -19,3 +19,11 @@ warnings.filterwarnings('ignore')
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Device: {DEVICE}")  # Should print: Device: cuda
+
+df = pd.read_csv('/kaggle/input/diabetic-retinopathy-detection/trainLabels.csv')
+df.columns = ['image', 'level']
+
+print(f"Total images : {len(df)}")
+print(f"Unique patients: {df['image'].str.extract(r'(\d+)_')[0].nunique()}")
+print("\nClass distribution:")
+print(df['level'].value_counts().sort_index())
