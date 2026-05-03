@@ -54,3 +54,25 @@ plt.tight_layout()
 plt.savefig('class_distribution.png', dpi=120, bbox_inches='tight')
 plt.show()
 print("\n⚠️  Class 0 dominates — ~73% of all images. Must handle imbalance!")
+
+df['eye']     = df['image'].str.extract(r'_(left|right)')
+df['patient'] = df['image'].str.extract(r'(\d+)_')
+
+# Check if DR severity differs between eyes
+print("Mean DR grade by eye side:")
+print(df.groupby('eye')['level'].mean())
+
+# Sample images per class to visually audit
+IMG_DIR = '/kaggle/input/diabetic-retinopathy-detection/train'
+fig, axes = plt.subplots(1, 5, figsize=(20, 4))
+fig.suptitle('Sample image per DR grade (raw)', fontsize=13)
+
+for grade in range(5):
+    sample = df[df['level'] == grade].sample(1).iloc[0]
+    path   = os.path.join(IMG_DIR, sample['image'] + '.jpeg')
+    img    = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB)
+    axes[grade].imshow(img)
+    axes[grade].set_title(f'Grade {grade}\n{LABEL_NAMES[grade]}', fontsize=10)
+    axes[grade].axis('off')
+plt.tight_layout()
+plt.show()
