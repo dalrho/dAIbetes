@@ -107,3 +107,28 @@ axes[1].imshow(processed); axes[1].set_title('After Ben Graham');    axes[1].axi
 plt.suptitle('Preprocessing effect — vessel detail enhancement', fontsize=12)
 plt.tight_layout()
 plt.show()
+
+IMG_SIZE = 512
+
+train_transform = A.Compose([
+    A.HorizontalFlip(p=0.5),
+    A.VerticalFlip(p=0.5),
+    A.RandomRotate90(p=0.5),
+    A.ShiftScaleRotate(shift_limit=0.1, scale_limit=0.15,
+                       rotate_limit=30, p=0.6),
+    A.RandomBrightnessContrast(brightness_limit=0.2,
+                               contrast_limit=0.2, p=0.5),
+    A.HueSaturationValue(hue_shift_limit=10,
+                         sat_shift_limit=20, p=0.3),
+    A.CoarseDropout(max_holes=8, max_height=32,
+                    max_width=32, p=0.2),   # simulate lesion occlusion
+    A.Normalize(mean=[0.485, 0.456, 0.406],
+                std =[0.229, 0.224, 0.225]),
+    ToTensorV2()
+])
+
+val_transform = A.Compose([
+    A.Normalize(mean=[0.485, 0.456, 0.406],
+                std =[0.229, 0.224, 0.225]),
+    ToTensorV2()
+])
