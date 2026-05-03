@@ -8,6 +8,11 @@ module org.example.daibetes {
 
 //requires org.controlsfx.controls;
 //requires org.kordamp.bootstrapfx.core;
+    exports register;
+    opens register to javafx.fxml;
+
+    exports org.example.daibetes.modules.auth.ui;
+    opens org.example.daibetes.modules.auth.ui to javafx.fxml;
 
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;

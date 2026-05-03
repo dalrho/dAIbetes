@@ -2,104 +2,65 @@ package org.example.daibetes.modules.doctor.ui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.stage.FileChooser;
-import org.example.daibetes.core.database.ImageDAO;
-import org.example.daibetes.core.database.TestDAO;
-
-import java.io.File;
-
+import javafx.scene.control.*;
+import org.example.daibetes.core.database.DoctorDashboardDAO;
+import org.example.daibetes.shared.utils.ValidationUtils;
 
 public class DoctorDashboardController {
 
+    @FXML private Label doctorNameLabel;
+    @FXML private Label totalScansLabel;
+    @FXML private Label toReviewLabel;
+    @FXML private ListView<String> recentActivitiesList;
 
-    // These are inside the new diagnosis pane
-    @FXML private Button closePopupButton;
-    @FXML private Button uploadImageButton;
-    @FXML private Button openCameraButton;
-    private int selectedPatientId;
-    private int loggedInDoctorId;
+    // temp only, get this after login/session
+    private int loggedInDoctorId = 1;
 
-    // This is the whole new diagnosis pane from FXML - assuming nga mao ni naa sa fxml
-    @FXML private javafx.scene.layout.Pane diagnosisPopup;
+    private DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
 
-    private File selectedImage;
-
-
-
-    public void handleNewDiagnosis(ActionEvent actionEvent) {
-        diagnosisPopup.setVisible(true);
-        diagnosisPopup.setManaged(true);
-
+    @FXML
+    public void initialize() {
+        loadDashboardData();
     }
 
-    public void uploadImage(ActionEvent actionEvent){
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Upload Scan Image");
+    private void loadDashboardData() {
+        String doctorName = dashboardDAO.getDoctorName(loggedInDoctorId);
+        int totalScans = dashboardDAO.getTotalScans(loggedInDoctorId);
+        int toReview = dashboardDAO.getTestsWithoutDiagnosis(loggedInDoctorId);
 
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(
-                        "Image Files (*.png, *.jpg, *.jpeg)",
-                        "*.png", "*.jpg", "*.jpeg"
-                )
+        doctorNameLabel.setText("Good morning,\nDoc. " + doctorName);
+        totalScansLabel.setText(String.valueOf(totalScans));
+        toReviewLabel.setText(String.valueOf(toReview));
+
+        recentActivitiesList.getItems().clear();
+        recentActivitiesList.getItems().addAll(
+                dashboardDAO.getRecentViewedPatients(loggedInDoctorId)
         );
-
-        selectedImage = fileChooser.showOpenDialog(uploadImageButton.getScene().getWindow());
-
-        if (selectedImage != null) {
-
-            // 1 = raw scan image
-            ImageDAO imageDAO = new ImageDAO();
-            int rawImgId = imageDAO.createImage(selectedImage, 1);
-
-            if (rawImgId == -1) {
-                showAlert("Error", "Failed to save image.");
-                return;
-            }
-
-            // automatically create test record
-            int patientId = selectedPatientId;
-            int doctorId = loggedInDoctorId;
-
-            TestDAO testDAO = new TestDAO();
-            int testId = testDAO.createTest(patientId, doctorId, rawImgId);
-
-            if (testId == -1) {
-                showAlert("Error", "Failed to create test record.");
-                return;
-            }
-
-        }
-    }
-    public void setSelectedPatientId(int selectedPatientId) {
-        this.selectedPatientId = selectedPatientId;
     }
 
-    public void setLoggedInDoctorId(int loggedInDoctorId) {
-        this.loggedInDoctorId = loggedInDoctorId;
+    @FXML
+    public void handleNewDiagnosis(ActionEvent event) {
+        //not yet done
+        ValidationUtils.showAlert("New Diagnosis", "Open new diagnosis form here.");
     }
 
-
-
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    @FXML
+    public void handleViewRecords(ActionEvent event) {
+        //shows patients list
+        //not yet done
+        ValidationUtils.showAlert("View Patients", "Show all patients handled by this doctor.");
     }
 
-    public void handleViewRecords(ActionEvent actionEvent) {
+    @FXML
+    public void handleReports(ActionEvent event) {
+        //shows the reports the doctor made, retrieved from tblDiagnosis
+        //not yet done
+        ValidationUtils.showAlert("View Reports", "Show all diagnoses/reports made by this doctor.");
     }
 
-    public void handleReports(ActionEvent actionEvent) {
-    }
-
-
-    public void handleLogout(ActionEvent actionEvent) {
-
-
+    @FXML
+    public void handleLogout(ActionEvent event) {
+        //redirects to log-in page
+        ValidationUtils.showAlert("Logout", "Return to login page here.");
     }
 }
