@@ -76,3 +76,34 @@ for grade in range(5):
     axes[grade].axis('off')
 plt.tight_layout()
 plt.show()
+
+def preprocess_fundus(img, img_size=512):
+    """
+    Ben Graham's preprocessing — used in the winning Kaggle DR solution.
+    Subtracts local average to remove illumination variation across cameras.
+    """
+    img = cv2.resize(img, (img_size, img_size))
+
+    # Local average subtraction: amplifies vessel/lesion detail
+    blurred = cv2.GaussianBlur(img, (0, 0), img_size / 30)
+    img = cv2.addWeighted(img, 4, blurred, -4, 128)
+
+    # Circular mask: crops out black border artifacts
+    mask = np.zeros(img.shape, dtype=np.uint8)
+    h, w = img.shape[:2]
+    cv2.circle(mask, (w // 2, h // 2), int(min(w, h) * 0.47), (1, 1, 1), -1)
+    img = img * mask + 128 * (1 - mask)
+
+    return img.astype(np.uint8)
+
+# Visualize before vs after
+sample_path = os.path.join(IMG_DIR, df.sample(1).iloc[0]['image'] + '.jpeg')
+raw = cv2.cvtColor(cv2.imread(sample_path), cv2.COLOR_BGR2RGB)
+processed = preprocess_fundus(raw.copy())
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+axes[0].imshow(raw);       axes[0].set_title('Raw image');           axes[0].axis('off')
+axes[1].imshow(processed); axes[1].set_title('After Ben Graham');    axes[1].axis('off')
+plt.suptitle('Preprocessing effect — vessel detail enhancement', fontsize=12)
+plt.tight_layout()
+plt.show()
