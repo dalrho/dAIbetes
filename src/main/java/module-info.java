@@ -3,27 +3,23 @@ module org.example.daibetes {
     requires javafx.fxml;
     requires javafx.graphics;
 
-//requires org.controlsfx.controls;
-//requires org.kordamp.bootstrapfx.core;
-
-    opens org.example.daibetes to javafx.fxml;
-    exports org.example.daibetes;
+    opens login to javafx.fxml;
+    opens register to javafx.fxml;
 
     opens results to javafx.fxml;
-    exports results;
-
     opens records to javafx.fxml;
-    exports records;
-
     opens doctorDashboard to javafx.fxml;
-    exports doctorDashboard;
-
     opens splashscreen to javafx.fxml;
-    exports splashscreen;
-
-    opens login to javafx.fxml;
-    exports login;
-
     opens patientsdashboard to javafx.fxml;
+
+    exports login;
+    exports register;
+    exports results;
+    exports records;
+    exports doctorDashboard;
+    exports splashscreen;
     exports patientsdashboard;
+
+    opens styles to javafx.graphics;
+    opens images to javafx.graphics;
 }

@@ -1,21 +1,20 @@
-package login;
+package register;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import register.sceneLoader;
 
-public class loginApplication extends Application {
+public class registerApplication extends Application {
 
     @Override
     public void start(Stage stage) {
         stage.setScene(
                 sceneLoader.load(
-                        "login",
-                        "login-screen.fxml",
+                        "register",
+                        "register-screen.fxml",
                         "/styles/splash.css"
                 )
         );
-        stage.setTitle("dAIbetes - Login");
+        stage.setTitle("dAIbetes - Register");
         stage.show();
     }
 

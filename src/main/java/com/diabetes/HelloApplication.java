@@ -1,4 +1,4 @@
-package org.example.daibetes;
+package com.diabetes;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

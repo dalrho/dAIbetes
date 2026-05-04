@@ -1,4 +1,4 @@
-package org.example.daibetes;
+package com.diabetes;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

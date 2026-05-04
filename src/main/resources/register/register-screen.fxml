@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -7,9 +6,7 @@
 
 <AnchorPane prefWidth="900" prefHeight="600"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.testingscreen.registerController">
-
-
+            fx:controller="register.registerController">
 
     <StackPane prefWidth="900" prefHeight="600">
 
