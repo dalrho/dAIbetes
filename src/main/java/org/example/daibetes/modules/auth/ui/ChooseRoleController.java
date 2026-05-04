@@ -2,38 +2,41 @@ package org.example.daibetes.modules.auth.ui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class ChooseRoleController {
+
     @FXML private Button patient;
     @FXML private Button doctor;
 
+    @FXML
     public void goToPatientRegister() {
-        loadPage("patientRegister.fxml", patient);
+        loadPage("patient-register-screen.fxml", patient);
     }
 
+    @FXML
     public void goToDoctorRegister() {
-        loadPage("doctorRegister.fxml", doctor);
+        loadPage("doctor-register-screen.fxml", doctor);
     }
 
-    public void loadPage(String fxml, Button button) {
+    private void loadPage(String fxml, Button button) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/register/" + fxml)
             );
+            Parent root = loader.load();
 
-            Scene scene = new Scene(loader.load());
-
-            // get current stage from button
             Stage stage = (Stage) button.getScene().getWindow();
-
-            stage.setTitle("Diabetes Detection System");
-            stage.setScene(scene);
+            stage.setTitle("dAIbetes — Diabetes Early Detection System");
+            stage.setScene(new Scene(root));
             stage.show();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

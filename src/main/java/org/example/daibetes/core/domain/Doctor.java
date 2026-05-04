@@ -26,4 +26,7 @@ public class Doctor extends User{
     public String getHospital() {
         return hospital;
     }
+
+    public void setDId(int dId) {
+    }
 }

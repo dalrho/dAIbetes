@@ -1,6 +1,7 @@
 package doctorDashboard;
 
 import javafx.event.ActionEvent;
+import org.example.daibetes.core.domain.Doctor;
 
 public class doctorDashboardController {
     public void handleLogout(ActionEvent actionEvent) {
@@ -17,5 +18,8 @@ public class doctorDashboardController {
 
     public void handleReports(ActionEvent actionEvent) {
         System.out.println("View reports tab");
+    }
+
+    public void initData(Doctor doctor) {
     }
 }

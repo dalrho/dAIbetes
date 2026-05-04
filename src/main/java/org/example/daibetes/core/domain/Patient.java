@@ -10,4 +10,7 @@ public class Patient extends User{
     public int getAge() {
         return age;
     }
+
+    public void setPId(int pId) {
+    }
 }
