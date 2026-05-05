@@ -8,3 +8,7 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "diabetic_retinopathy_full_model.pth")
 
 app = FastAPI()
+
+# Load everything ONCE
+model, device = load_model(MODEL_PATH)
+transform = get_transform()
