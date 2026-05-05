@@ -5,9 +5,6 @@ module org.example.daibetes {
 
     requires java.sql;
     requires java.desktop;
-
-//requires org.controlsfx.controls;
-//requires org.kordamp.bootstrapfx.core;
     exports register;
     opens register to javafx.fxml;
 
