@@ -22,3 +22,25 @@ class DRClassificationService:
         self.model = model
         self.device = device
         self.transform = transform
+
+    def predict(self, image: Image.Image):
+        """
+        Processes an input image and performs model inference.
+
+        Args:
+            image (Image.Image): Raw PIL image object.
+
+        Returns:
+            tuple: (predicted_class: int, probabilities: np.ndarray)
+        """
+
+        # Execute model inference without gradient tracking
+        with torch.no_grad():
+            outputs = self.model(tensor)
+            probs = torch.nn.functional.softmax(outputs, dim=1)
+
+        # Convert result to CPU-bound numpy array for standard processing
+        probs = probs.cpu().numpy()[0]
+        predicted_class = int(np.argmax(probs))
+
+        return predicted_class, probs
