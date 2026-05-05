@@ -33,6 +33,9 @@ class DRClassificationService:
         Returns:
             tuple: (predicted_class: int, probabilities: np.ndarray)
         """
+        # Ensure image is in RGB format and apply preprocessing transforms
+        image = image.convert("RGB")
+        tensor = self.transform(image).unsqueeze(0).to(self.device)
 
         # Execute model inference without gradient tracking
         with torch.no_grad():
