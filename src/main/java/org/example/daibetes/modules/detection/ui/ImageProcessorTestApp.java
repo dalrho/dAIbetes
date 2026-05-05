@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.example.daibetes.HelloApplication;
 import org.example.daibetes.app.AppContext;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class ImageProcessorTestApp extends Application {
                 ImageProcessorTestApp.class.getResource("/imageProcessing/image-processing.fxml")
         );
 
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 900, 600);
         stage.setScene(scene);
         stage.show();
     }
