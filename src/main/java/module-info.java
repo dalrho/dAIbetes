@@ -13,6 +13,7 @@ module org.example.daibetes {
 
     exports org.example.daibetes.modules.auth.ui;
     opens org.example.daibetes.modules.auth.ui to javafx.fxml;
+    opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
 
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;

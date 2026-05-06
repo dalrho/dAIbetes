@@ -121,7 +121,7 @@ public class DoctorDashboardController {
 
     @FXML
     private void onLogout(ActionEvent event) {
-        loadPage(event, "/login/login.fxml", "dAIbetes — Login");
+        loadPage(event, "/login/login-screen.fxml", "dAIbetes — Login");
     }
 
     @FXML
