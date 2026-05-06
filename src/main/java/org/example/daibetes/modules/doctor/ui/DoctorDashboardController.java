@@ -24,6 +24,7 @@ public class DoctorDashboardController {
 
     @FXML private Pane gaugePane;
 
+    @FXML private Label doctorNameLabel;
     @FXML private Label recordsStatusLabel;
     @FXML private Label diagnosesStatusLabel;
     @FXML private Label patientsStatusLabel;
@@ -34,7 +35,8 @@ public class DoctorDashboardController {
     @FXML private VBox recentActivitiesContainer;
     @FXML private VBox scheduleContainer;
 
-    // temporary only, replace later with logged-in doctor ID
+    // For testing only.
+    // Later, this should come from the logged-in doctor account.
     private int loggedInDoctorId = 1;
 
     private final DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
@@ -44,19 +46,46 @@ public class DoctorDashboardController {
         loadDashboardData();
     }
 
+    public void setLoggedInDoctorId(int doctorId) {
+        this.loggedInDoctorId = doctorId;
+        loadDashboardData();
+    }
+
     private void loadDashboardData() {
-        int totalScans = dashboardDAO.getTotalScans(loggedInDoctorId);
-        int toReview = dashboardDAO.getTestsWithoutDiagnosis(loggedInDoctorId);
+        try {
+            String doctorName = dashboardDAO.getDoctorName(loggedInDoctorId);
+            int totalScans = dashboardDAO.getTotalScans(loggedInDoctorId);
+            int toReview = dashboardDAO.getTestsWithoutDiagnosis(loggedInDoctorId);
 
-        totalScansLabel.setText(String.valueOf(totalScans));
-        toReviewLabel.setText(String.valueOf(toReview));
+            doctorNameLabel.setText("Dr. " + doctorName);
 
-        recordsStatusLabel.setText("You have " + totalScans + " total scan record(s).");
-        diagnosesStatusLabel.setText(toReview + " test(s) still need diagnosis.");
-        patientsStatusLabel.setText("Recent patients are shown below.");
+            totalScansLabel.setText(String.valueOf(totalScans));
+            toReviewLabel.setText(String.valueOf(toReview));
 
-        loadRecentActivities();
-        loadSchedulePlaceholder();
+            recordsStatusLabel.setText("You have " + totalScans + " total scan record(s).");
+            diagnosesStatusLabel.setText(toReview + " scan(s) still need diagnosis.");
+            patientsStatusLabel.setText("Recent opened patient diagnoses are shown below.");
+
+            loadRecentActivities();
+            loadSchedulePlaceholder();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            doctorNameLabel.setText("Dr. Doctor");
+            totalScansLabel.setText("0");
+            toReviewLabel.setText("0");
+
+            recordsStatusLabel.setText("Unable to load scan records.");
+            diagnosesStatusLabel.setText("Unable to load review count.");
+            patientsStatusLabel.setText("Unable to load recent activities.");
+
+            recentActivitiesContainer.getChildren().clear();
+            recentActivitiesContainer.getChildren().add(new Label("No recent activities loaded."));
+
+            scheduleContainer.getChildren().clear();
+            scheduleContainer.getChildren().add(new Label("No schedule available."));
+        }
     }
 
     private void loadRecentActivities() {
@@ -104,8 +133,8 @@ public class DoctorDashboardController {
 
     @FXML
     private void onNewDiagnosis(ActionEvent event) {
-        ValidationUtils.showAlert("placeholder","to be developed");
-        //loadPage(event, "/test/test.fxml", "New Diagnosis");
+        ValidationUtils.showAlert("Placeholder", "New Diagnosis page is still to be developed.");
+        // loadPage(event, "/test/test.fxml", "New Diagnosis");
     }
 
     @FXML
@@ -115,8 +144,8 @@ public class DoctorDashboardController {
 
     @FXML
     private void onViewReports(ActionEvent event) {
-        ValidationUtils.showAlert("placeholder","to be developed");
-        //loadPage(event, "/results/results.fxml", "Reports");
+        ValidationUtils.showAlert("Placeholder", "Reports page is still to be developed.");
+        // loadPage(event, "/results/results.fxml", "Reports");
     }
 
     @FXML

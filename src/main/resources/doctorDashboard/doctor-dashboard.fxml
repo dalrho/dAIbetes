@@ -53,7 +53,7 @@
                     <VBox spacing="1">
                         <Label text="Good morning,"
                                style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
-                        <Label text="Doc. Jay Vince"
+                        <Label fx:id="doctorNameLabel" text="Doc. Jay Vince"
                                style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
                         <Label text="Serato"
                                style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
