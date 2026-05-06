@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="register.doctorRegisterController"
+           fx:controller="org.example.daibetes.modules.auth.ui.DoctorRegisterController"
            style="-fx-background-color: rgba(0,0,0,0.3);">
 
     <VBox fx:id="card"
