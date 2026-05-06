@@ -2,15 +2,19 @@ package login;
 
 import doctorDashboard.doctorDashboardController;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.example.daibetes.core.domain.Doctor;
 import org.example.daibetes.core.domain.Patient;
 import patientsdashboard.patientsdashboardController;
+import register.sceneLoader;
 
 import java.io.IOException;
 
@@ -27,124 +31,168 @@ import java.io.IOException;
  *   errorLabel     → error display  (Label)
  */
 public class loginController {
-
-    @FXML private TextField     emailtxtfield;
+    @FXML private TextField nameField;
     @FXML private PasswordField passwordField;
-    @FXML private ToggleButton  doctorToggle;
-    @FXML private ToggleButton  patientToggle;
-    @FXML private Button        loginButton;
-    @FXML private Label         errorLabel;
-    @FXML private Label         registerLabel;
-
-    private final LoginViewModel viewModel = new LoginViewModel();
 
     @FXML
-    public void initialize() {
-        // Wire inputs → ViewModel
-        emailtxtfield.textProperty().bindBidirectional(viewModel.emailProperty());
-        passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
-
-        // Wire outputs ← ViewModel
-        errorLabel.textProperty().bind(viewModel.errorMessageProperty());
-        loginButton.disableProperty().bind(viewModel.isLoadingProperty());
-
-        // Toggle group: only one role active at a time
-        ToggleGroup roleGroup = new ToggleGroup();
-        doctorToggle.setToggleGroup(roleGroup);
-        patientToggle.setToggleGroup(roleGroup);
-
-        // Listen for navigation trigger
-        viewModel.loginSuccessProperty().addListener((obs, wasSuccess, isSuccess) -> {
-            if (isSuccess) Platform.runLater(this::navigateToDashboard);
-        });
-    }
-
-    @FXML
-    private void onRoleToggled() {
-        if (doctorToggle.isSelected()) {
-            viewModel.roleProperty().set(LoginViewModel.Role.DOCTOR);
-            // Visual feedback: highlight selected toggle
-            doctorToggle.setStyle(
-                    "-fx-background-color: white; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: black;");
-            patientToggle.setStyle(
-                    "-fx-background-color: transparent; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: #ffffff99;");
-
-        } else if (patientToggle.isSelected()) {
-            viewModel.roleProperty().set(LoginViewModel.Role.PATIENT);
-            patientToggle.setStyle(
-                    "-fx-background-color: white; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: black;");
-            doctorToggle.setStyle(
-                    "-fx-background-color: transparent; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: white;");
-
+    public void handleLogin(ActionEvent event) {
+        if (nameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+            showAlert("Error", "Please fill in all fields.");
         } else {
-            // Deselected both — reset
-            viewModel.roleProperty().set(LoginViewModel.Role.NONE);
-        }
-    }
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
 
-    @FXML
-    private void onLoginButtonClicked() {
-        viewModel.login();
-    }
-
-    @FXML
-    private void onRegisterClicked() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/register/register-screen.fxml")
+            stage.setScene(
+                    sceneLoader.load(
+                            "doctorDashboard",
+                            "doctor-dashboard.fxml",
+                            "/styles/splash.css"
+                    )
             );
-            Parent root = loader.load();
-
-            Stage stage = (Stage) registerLabel.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            errorLabel.setText("Failed to load registration page.");
+            showAlert("Success", "Login attempted.");
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Navigation
-    // -------------------------------------------------------------------------
+    @FXML
+    public void goToRegister(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
 
-    private void navigateToDashboard() {
-        try {
-            String fxmlPath;
-            FXMLLoader loader;
-            Parent root;
-
-            if (viewModel.isDoctor()) {
-                Doctor doctor = viewModel.getAuthenticatedDoctor();
-                fxmlPath = "/org/example/daibetes/ui/view/DoctorDashboard.fxml";
-                loader   = new FXMLLoader(getClass().getResource(fxmlPath));
-                root     = loader.load();
-
-                doctorDashboardController ctrl = loader.getController();
-                ctrl.initData(doctor);
-
-            } else {
-                Patient patient = viewModel.getAuthenticatedPatient();
-                fxmlPath = "/org/example/daibetes/ui/view/PatientDashboard.fxml";
-                loader   = new FXMLLoader(getClass().getResource(fxmlPath));
-                root     = loader.load();
-
-                patientsdashboardController ctrl = loader.getController();
-                ctrl.initData(patient);
-            }
-
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            errorLabel.setText("Failed to load dashboard. Please try again.");
-        }
+        stage.setScene(
+                sceneLoader.load(
+                        "register",
+                        "register-screen.fxml",
+                        "/styles/splash.css"
+                )
+        );
     }
+
+    private void showAlert(String title, String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+//    @FXML private TextField     emailtxtfield;
+//    @FXML private PasswordField passwordField;
+//    @FXML private ToggleButton  doctorToggle;
+//    @FXML private ToggleButton  patientToggle;
+//    @FXML private Button        loginButton;
+//    @FXML private Label         errorLabel;
+//    @FXML private Label         registerLabel;
+//
+//    private final LoginViewModel viewModel = new LoginViewModel();
+//
+//    @FXML
+//    public void initialize() {
+//        // Wire inputs → ViewModel
+//        emailtxtfield.textProperty().bindBidirectional(viewModel.emailProperty());
+//        passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
+//
+//        // Wire outputs ← ViewModel
+//        errorLabel.textProperty().bind(viewModel.errorMessageProperty());
+//        loginButton.disableProperty().bind(viewModel.isLoadingProperty());
+//
+//        // Toggle group: only one role active at a time
+//        ToggleGroup roleGroup = new ToggleGroup();
+//        doctorToggle.setToggleGroup(roleGroup);
+//        patientToggle.setToggleGroup(roleGroup);
+//
+//        // Listen for navigation trigger
+//        viewModel.loginSuccessProperty().addListener((obs, wasSuccess, isSuccess) -> {
+//            if (isSuccess) Platform.runLater(this::navigateToDashboard);
+//        });
+//    }
+//
+//    @FXML
+//    private void onRoleToggled() {
+//        if (doctorToggle.isSelected()) {
+//            viewModel.roleProperty().set(LoginViewModel.Role.DOCTOR);
+//            // Visual feedback: highlight selected toggle
+//            doctorToggle.setStyle(
+//                    "-fx-background-color: white; -fx-background-radius: 0; " +
+//                            "-fx-border-color: white; -fx-text-fill: black;");
+//            patientToggle.setStyle(
+//                    "-fx-background-color: transparent; -fx-background-radius: 0; " +
+//                            "-fx-border-color: white; -fx-text-fill: #ffffff99;");
+//
+//        } else if (patientToggle.isSelected()) {
+//            viewModel.roleProperty().set(LoginViewModel.Role.PATIENT);
+//            patientToggle.setStyle(
+//                    "-fx-background-color: white; -fx-background-radius: 0; " +
+//                            "-fx-border-color: white; -fx-text-fill: black;");
+//            doctorToggle.setStyle(
+//                    "-fx-background-color: transparent; -fx-background-radius: 0; " +
+//                            "-fx-border-color: white; -fx-text-fill: white;");
+//
+//        } else {
+//            // Deselected both — reset
+//            viewModel.roleProperty().set(LoginViewModel.Role.NONE);
+//        }
+//    }
+//
+//    @FXML
+//    private void onLoginButtonClicked() {
+//        viewModel.login();
+//    }
+//
+//    @FXML
+//    private void onRegisterClicked() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/register/register-screen.fxml")
+//            );
+//            Parent root = loader.load();
+//
+//            Stage stage = (Stage) registerLabel.getScene().getWindow();
+//            stage.setScene(new Scene(root));
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            errorLabel.setText("Failed to load registration page.");
+//        }
+//    }
+//
+//    // -------------------------------------------------------------------------
+//    // Navigation
+//    // -------------------------------------------------------------------------
+//
+//    private void navigateToDashboard() {
+//        try {
+//            String fxmlPath;
+//            FXMLLoader loader;
+//            Parent root;
+//
+//            if (viewModel.isDoctor()) {
+//                Doctor doctor = viewModel.getAuthenticatedDoctor();
+//                fxmlPath = "/org/example/daibetes/ui/view/DoctorDashboard.fxml";
+//                loader   = new FXMLLoader(getClass().getResource(fxmlPath));
+//                root     = loader.load();
+//
+//                doctorDashboardController ctrl = loader.getController();
+//                ctrl.initData(doctor);
+//
+//            } else {
+//                Patient patient = viewModel.getAuthenticatedPatient();
+//                fxmlPath = "/org/example/daibetes/ui/view/PatientDashboard.fxml";
+//                loader   = new FXMLLoader(getClass().getResource(fxmlPath));
+//                root     = loader.load();
+//
+//                patientsdashboardController ctrl = loader.getController();
+//                ctrl.initData(patient);
+//            }
+//
+//            Stage stage = (Stage) loginButton.getScene().getWindow();
+//            stage.setScene(new Scene(root));
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            errorLabel.setText("Failed to load dashboard. Please try again.");
+//        }
+//    }
 }

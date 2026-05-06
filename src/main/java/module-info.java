@@ -5,8 +5,11 @@ module org.example.daibetes {
 
     requires java.sql;
     requires java.desktop;
-    exports register;
+    requires javafx.base;
+//    requires org.example.daibetes;
+
     opens register to javafx.fxml;
+    exports register;
 
     exports org.example.daibetes.modules.auth.ui;
     opens org.example.daibetes.modules.auth.ui to javafx.fxml;
@@ -19,6 +22,7 @@ module org.example.daibetes {
 
     opens records to javafx.fxml;
     exports records;
+
 
     opens doctorDashboard to javafx.fxml;
     exports doctorDashboard;
