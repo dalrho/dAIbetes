@@ -7,6 +7,7 @@ import org.example.daibetes.core.domain.User;
 import org.example.daibetes.core.domain.UserFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.example.daibetes.modules.auth.service.Authenticate;
 import org.example.daibetes.shared.utils.ValidationUtils;
 import java.time.LocalDate;
 import java.time.Period;
@@ -46,6 +47,13 @@ public class PatientRegisterController {
         }
 
         if (!ValidationUtils.isValidEmail(email)) return;
+
+        Authenticate auth = new Authenticate();
+
+        if (auth.emailExists(email)) {
+            ValidationUtils.showAlert("Error", "Email already exists.");
+            return;
+        }
 
         if (!password.equals(confirmPassword)) {
             ValidationUtils.showAlert("Error", "Passwords do not match.");
