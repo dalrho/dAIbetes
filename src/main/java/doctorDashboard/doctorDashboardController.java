@@ -262,6 +262,7 @@ public class doctorDashboardController implements Initializable {
 
     @FXML
     private void onLogout(ActionEvent event) {
+
         System.out.println("[Dashboard] Log out");
 
         Stage stage = (Stage) ((Node) event.getSource())

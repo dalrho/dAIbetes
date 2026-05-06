@@ -7,6 +7,8 @@ module org.example.daibetes {
     requires java.desktop;
     requires javafx.base;
 //    requires org.example.daibetes;
+//    requires org.example.daibetes;
+//    requires org.example.daibetes;
 
     opens register to javafx.fxml;
     exports register;
