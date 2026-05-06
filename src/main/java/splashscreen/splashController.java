@@ -1,20 +1,19 @@
 package splashscreen;
 
+
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import register.sceneLoader;
 
 public class splashController {
 
     @FXML
-    private VBox rootContainer;
+    private VBox rootContainer; // Make sure this matches fx:id in FXML
 
     // Runs automatically when FXML loads
     @FXML
@@ -33,25 +32,21 @@ public class splashController {
         fade.play();
     }
 
+    // START BUTTON → GO TO LOGIN
+    @FXML
     public void handleStart(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("results.fxml")
-            );
-
-            Parent root = loader.load();
-
             Stage stage = (Stage) ((Node) event.getSource())
                     .getScene()
                     .getWindow();
 
-            Scene scene = new Scene(root, 900, 600);
-            stage.setScene(scene);
-            stage.show();
-            System.out.println("NICEWORKING");
+            stage.setScene(
+                    sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
+            );
+
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("HOY NAAY ERROR ARI");
+            System.out.println("Error switching to login screen");
         }
     }
 }
