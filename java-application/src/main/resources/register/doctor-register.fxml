@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.daibetes.modules.auth.ui.DoctorRegisterController"
+           style="-fx-background-color: rgba(0,0,0,0.3);">
+
+    <VBox fx:id="card"
+          alignment="CENTER"
+          spacing="15"
+          maxWidth="620"
+          style="-fx-background-color: white;
+                 -fx-padding: 30;
+                 -fx-background-radius: 15;">
+
+        <!-- TITLE -->
+        <VBox alignment="CENTER" spacing="3">
+            <Label text="Create an Account"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <HBox alignment="CENTER" spacing="3">
+                <Label text="You are registering as a"
+                       style="-fx-font-size: 12px; -fx-text-fill: #444;"/>
+                <Label text="Doctor."
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #8B0000;"/>
+            </HBox>
+        </VBox>
+
+        <!-- FORM: two side-by-side columns, label above field -->
+        <HBox spacing="20" alignment="TOP_CENTER">
+
+            <!-- LEFT COLUMN -->
+            <VBox spacing="10" prefWidth="260">
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Doctor ID:"/>
+                    <TextField fx:id="doctorIdField"
+                               maxWidth="Infinity"
+                               style="-fx-background-radius: 8;
+                                      -fx-background-color: black;
+                                      -fx-text-fill: white;"/>
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Name:"/>
+                    <TextField fx:id="nameField"
+                               maxWidth="Infinity"
+                               style="-fx-background-radius: 8;
+                                      -fx-background-color: black;
+                                      -fx-text-fill: white;"/>
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Email:"/>
+                    <TextField fx:id="emailField"
+                               maxWidth="Infinity"
+                               style="-fx-background-radius: 8;
+                                      -fx-background-color: black;
+                                      -fx-text-fill: white;"/>
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Contact No:"/>
+                    <TextField fx:id="contactField"
+                               maxWidth="Infinity"
+                               style="-fx-background-radius: 8;
+                                      -fx-background-color: black;
+                                      -fx-text-fill: white;"/>
+                </VBox>
+
+            </VBox>
+
+            <!-- RIGHT COLUMN -->
+            <VBox spacing="10" prefWidth="260">
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Birthdate:"/>
+                    <DatePicker fx:id="birthdatePicker"
+                                maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Password:"/>
+                    <PasswordField fx:id="passwordField"
+                                   maxWidth="Infinity"
+                                   style="-fx-background-radius: 8;
+                                          -fx-background-color: black;
+                                          -fx-text-fill: white;"/>
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Confirm Password:"/>
+                    <PasswordField fx:id="confirmPasswordField"
+                                   maxWidth="Infinity"
+                                   style="-fx-background-radius: 8;
+                                          -fx-background-color: black;
+                                          -fx-text-fill: white;"/>
+                </VBox>
+
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Gender:"/>
+                    <HBox fx:id="genderBox" spacing="20" alignment="CENTER_LEFT">
+                        <RadioButton fx:id="maleBtn" text="Male"/>
+                        <RadioButton fx:id="femaleBtn" text="Female"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </HBox>
+
+        <!-- CREATE ACCOUNT BUTTON -->
+        <Button fx:id="createAccountBtn"
+                text="Create Account"
+                onAction="#handleCreateAccount"
+                style="-fx-background-color: #d71919;
+                       -fx-text-fill: white;
+                       -fx-background-radius: 10;
+                       -fx-padding: 8 25;
+                       -fx-cursor: hand;"/>
+
+        <!-- LOGIN LINK -->
+        <HBox alignment="CENTER">
+            <Label text="have an account? "/>
+            <Label text="Log-in instead"
+                   onMouseClicked="#goToLogin"
+                   style="-fx-text-fill: #8B0000; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        </HBox>
+
+    </VBox>
+</StackPane>
