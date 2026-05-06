@@ -11,7 +11,7 @@ public class RegisterApplication extends Application {
     public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/register/chooseRole.fxml")
+                getClass().getResource("/register/register-screen.fxml")
         );
 
         Scene scene = new Scene(loader.load());

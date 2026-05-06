@@ -1,12 +1,9 @@
 package doctorDashboard;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.daibetes.HelloApplication;
-
-import java.io.IOException;
+import register.sceneLoader;
 
 public class doctorDashboardApplication extends Application {
 
@@ -15,10 +12,15 @@ public class doctorDashboardApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/doctorDashboard/doctor-dashboard.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 900, 600);
-        stage.setTitle("Hello!");
+    public void start(Stage stage) {
+
+        Scene scene = sceneLoader.load(
+                "doctorDashboard",
+                "doctor-dashboard.fxml",
+                "/styles/doctorDashboard.css"
+        );
+
+        stage.setTitle("Doctor Dashboard");
         stage.setScene(scene);
         stage.show();
     }
