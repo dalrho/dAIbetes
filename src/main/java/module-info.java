@@ -5,6 +5,7 @@ module org.example.daibetes {
 
     requires java.sql;
     requires java.desktop;
+    requires org.example.daibetes;
     exports register;
     opens register to javafx.fxml;
 

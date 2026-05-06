@@ -1,6 +1,7 @@
 package org.example.daibetes.core.domain;
 
 public class Patient extends User{
+    private int pId;
     private int age;
     public Patient(String firstname, String lastname, String email, String password, String contactNumber, String gender, String birthdate, int age) {
         super(firstname, lastname, email, password, contactNumber, gender, birthdate);
@@ -12,5 +13,9 @@ public class Patient extends User{
     }
 
     public void setPId(int pId) {
+    }
+
+    public int getPId() {
+        return pId;
     }
 }

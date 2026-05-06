@@ -3,7 +3,7 @@ package org.example.daibetes.core.domain;
 import java.io.File;
 
 public class Doctor extends User{
-
+    private int dId;
     private String licenseNumber;
     private File doctorId;
     private String hospital;
@@ -28,5 +28,9 @@ public class Doctor extends User{
     }
 
     public void setDId(int dId) {
+    }
+
+    public int getDId() {
+        return dId;
     }
 }
