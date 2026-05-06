@@ -2,21 +2,42 @@ package org.example.daibetes.modules.doctor.ui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.example.daibetes.core.database.DoctorDashboardDAO;
 import org.example.daibetes.shared.utils.ValidationUtils;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+
 public class DoctorDashboardController {
 
-    @FXML private Label doctorNameLabel;
+    @FXML private ImageView profileImage;
+
+    @FXML private Pane gaugePane;
+
+    @FXML private Label recordsStatusLabel;
+    @FXML private Label diagnosesStatusLabel;
+    @FXML private Label patientsStatusLabel;
+
     @FXML private Label totalScansLabel;
     @FXML private Label toReviewLabel;
-    @FXML private ListView<String> recentActivitiesList;
 
-    // temp only, get this after login/session
+    @FXML private VBox recentActivitiesContainer;
+    @FXML private VBox scheduleContainer;
+
+    // temporary only, replace later with logged-in doctor ID
     private int loggedInDoctorId = 1;
 
-    private DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
+    private final DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
 
     @FXML
     public void initialize() {
@@ -24,43 +45,119 @@ public class DoctorDashboardController {
     }
 
     private void loadDashboardData() {
-        String doctorName = dashboardDAO.getDoctorName(loggedInDoctorId);
         int totalScans = dashboardDAO.getTotalScans(loggedInDoctorId);
         int toReview = dashboardDAO.getTestsWithoutDiagnosis(loggedInDoctorId);
 
-        doctorNameLabel.setText("Good morning,\nDoc. " + doctorName);
         totalScansLabel.setText(String.valueOf(totalScans));
         toReviewLabel.setText(String.valueOf(toReview));
 
-        recentActivitiesList.getItems().clear();
-        recentActivitiesList.getItems().addAll(
-                dashboardDAO.getRecentViewedPatients(loggedInDoctorId)
-        );
+        recordsStatusLabel.setText("You have " + totalScans + " total scan record(s).");
+        diagnosesStatusLabel.setText(toReview + " test(s) still need diagnosis.");
+        patientsStatusLabel.setText("Recent patients are shown below.");
+
+        loadRecentActivities();
+        loadSchedulePlaceholder();
+    }
+
+    private void loadRecentActivities() {
+        recentActivitiesContainer.getChildren().clear();
+
+        List<String> activities = dashboardDAO.getRecentViewedPatients(loggedInDoctorId);
+
+        if (activities.isEmpty()) {
+            Label emptyLabel = new Label("No recent activities yet.");
+            emptyLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #777777;");
+            recentActivitiesContainer.getChildren().add(emptyLabel);
+            return;
+        }
+
+        for (String activity : activities) {
+            Label activityLabel = new Label(activity);
+            activityLabel.setWrapText(true);
+            activityLabel.setStyle("""
+                    -fx-font-size: 13px;
+                    -fx-text-fill: #333333;
+                    -fx-background-color: #F5F5F5;
+                    -fx-padding: 10;
+                    -fx-background-radius: 8;
+                    """);
+
+            recentActivitiesContainer.getChildren().add(activityLabel);
+        }
+    }
+
+    private void loadSchedulePlaceholder() {
+        scheduleContainer.getChildren().clear();
+
+        Label scheduleLabel = new Label("No schedule available.");
+        scheduleLabel.setWrapText(true);
+        scheduleLabel.setStyle("""
+                -fx-font-size: 13px;
+                -fx-text-fill: #777777;
+                -fx-background-color: #F5F5F5;
+                -fx-padding: 10;
+                -fx-background-radius: 8;
+                """);
+
+        scheduleContainer.getChildren().add(scheduleLabel);
     }
 
     @FXML
-    public void handleNewDiagnosis(ActionEvent event) {
-        //not yet done
-        ValidationUtils.showAlert("New Diagnosis", "Open new diagnosis form here.");
+    private void onNewDiagnosis(ActionEvent event) {
+        ValidationUtils.showAlert("placeholder","to be developed");
+        //loadPage(event, "/test/test.fxml", "New Diagnosis");
     }
 
     @FXML
-    public void handleViewRecords(ActionEvent event) {
-        //shows patients list
-        //not yet done
-        ValidationUtils.showAlert("View Patients", "Show all patients handled by this doctor.");
+    private void onViewPatients(ActionEvent event) {
+        loadPage(event, "/records/records.fxml", "Patient Records");
     }
 
     @FXML
-    public void handleReports(ActionEvent event) {
-        //shows the reports the doctor made, retrieved from tblDiagnosis
-        //not yet done
-        ValidationUtils.showAlert("View Reports", "Show all diagnoses/reports made by this doctor.");
+    private void onViewReports(ActionEvent event) {
+        ValidationUtils.showAlert("placeholder","to be developed");
+        //loadPage(event, "/results/results.fxml", "Reports");
     }
 
     @FXML
-    public void handleLogout(ActionEvent event) {
-        //redirects to log-in page
-        ValidationUtils.showAlert("Logout", "Return to login page here.");
+    private void onLogout(ActionEvent event) {
+        loadPage(event, "/login/login.fxml", "dAIbetes — Login");
+    }
+
+    @FXML
+    private void onUpdateData(ActionEvent event) {
+        loadDashboardData();
+        ValidationUtils.showAlert("Updated", "Dashboard data has been refreshed.");
+    }
+
+    @FXML
+    private void onInbox(ActionEvent event) {
+        ValidationUtils.showAlert("Inbox", "Inbox page is not yet available.");
+    }
+
+    private void loadPage(ActionEvent event, String fxmlPath, String title) {
+        try {
+            URL resource = getClass().getResource(fxmlPath);
+
+            if (resource == null) {
+                ValidationUtils.showAlert(
+                        "Page Not Found",
+                        "Cannot find: " + fxmlPath + "\n\nCheck if the FXML file exists in resources."
+                );
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ValidationUtils.showAlert("Navigation Error", "Unable to open " + title + " page.");
+        }
     }
 }

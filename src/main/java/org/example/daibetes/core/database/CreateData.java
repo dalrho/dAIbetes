@@ -6,7 +6,7 @@ import org.example.daibetes.core.domain.User;
 
 import java.sql.*;
 
-
+//USABLE FOR REGISTER
 public class CreateData {
     // Creates a new user account and returns the generated user_id
     public int createUser(User user) {
