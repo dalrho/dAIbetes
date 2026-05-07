@@ -13,13 +13,7 @@ import java.util.List;
 
 public class RetrieveData {
 
-    /**
-     * Looks up a user by email and returns the correct subtype:
-     * Doctor, Patient, or null if not found.
-     *
-     * Strategy: join tblUser with tblDoctor / tblPatient in two separate
-     * queries so we get the role-specific fields without a messy UNION.
-     */
+
     public User getUserByEmail(String email) {
 
         // --- Try Doctor first ---
@@ -27,8 +21,8 @@ public class RetrieveData {
             SELECT u.user_id, u.firstname, u.lastname, u.email, u.password,
                    u.contact_number, u.gender, u.birthdate,
                    d.d_id, d.license_number, d.hospital, d.doctor_idcard_id
-            FROM tblUser u
-            JOIN tblDoctor d ON u.user_id = d.user_id
+            FROM tbluser u
+            JOIN tbldoctor d ON u.user_id = d.user_id
             WHERE u.email = ?
         """;
 
@@ -64,8 +58,8 @@ public class RetrieveData {
             SELECT u.user_id, u.firstname, u.lastname, u.email, u.password,
                    u.contact_number, u.gender, u.birthdate,
                    p.p_id, p.age
-            FROM tblUser u
-            JOIN tblPatient p ON u.user_id = p.user_id
+            FROM tbluser u
+            JOIN tblpatient p ON u.user_id = p.user_id
             WHERE u.email = ?
         """;
 
@@ -104,9 +98,9 @@ public class RetrieveData {
             SELECT DISTINCT u.firstname, u.lastname, u.email,
                             u.contact_number, u.gender, u.birthdate,
                             p.age, p.p_id
-            FROM tblPatient p
-            JOIN tblUser u ON p.user_id = u.user_id
-            JOIN tblTests t ON p.p_id = t.p_id
+            FROM tblpatient p
+            JOIN tbluser u ON p.user_id = u.user_id
+            JOIN tbltests t ON p.p_id = t.p_id
             WHERE t.d_id = ?
         """;
 
