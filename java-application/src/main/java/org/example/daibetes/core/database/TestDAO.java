@@ -5,7 +5,7 @@ import java.sql.*;
 public class TestDAO {
     public int createTest(int patientId, int doctorId, int rawImgId) {
         String sql = """
-        INSERT INTO tblTests (p_id, d_id, raw_img_id, tested_on)
+        INSERT INTO tbltests (p_id, d_id, raw_img_id, tested_on)
         VALUES (?, ?, ?, NOW())
     """;
 

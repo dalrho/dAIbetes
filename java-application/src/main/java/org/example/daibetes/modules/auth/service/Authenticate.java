@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class Authenticate {
     // Checks if email and password exist in tblUser
     public boolean login(String email, String password) {
-        String sql = "SELECT * FROM tblUser WHERE email = ? AND password = ?";
+        String sql = "SELECT * FROM tbluser WHERE email = ? AND password = ?";
 
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -31,7 +31,7 @@ public class Authenticate {
 
     // Checks if email already exists before registration
     public boolean emailExists(String email) {
-        String sql = "SELECT user_id FROM tblUser WHERE email = ?";
+        String sql = "SELECT user_id FROM tbluser WHERE email = ?";
 
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
