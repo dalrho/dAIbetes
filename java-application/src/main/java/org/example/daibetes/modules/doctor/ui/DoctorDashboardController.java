@@ -1,42 +1,28 @@
 package org.example.daibetes.modules.doctor.ui;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.example.daibetes.core.database.DoctorDashboardDAO;
 import org.example.daibetes.shared.utils.ValidationUtils;
-
-import java.io.IOException;
-import java.net.URL;
+import org.example.daibetes.shared.utils.NavigationUtils;
 import java.util.List;
 
 public class DoctorDashboardController {
 
     @FXML private ImageView profileImage;
-
     @FXML private Pane gaugePane;
-
     @FXML private Label doctorNameLabel;
     @FXML private Label recordsStatusLabel;
     @FXML private Label diagnosesStatusLabel;
     @FXML private Label patientsStatusLabel;
-
     @FXML private Label totalScansLabel;
     @FXML private Label toReviewLabel;
-
     @FXML private VBox recentActivitiesContainer;
     @FXML private VBox scheduleContainer;
 
-    // For testing only.
-    // Later, this should come from the logged-in doctor account.
     private int loggedInDoctorId = 1;
 
     private final DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
@@ -133,24 +119,47 @@ public class DoctorDashboardController {
 
     @FXML
     private void onNewDiagnosis(ActionEvent event) {
-        ValidationUtils.showAlert("Placeholder", "New Diagnosis page is still to be developed.");
-        // loadPage(event, "/test/test.fxml", "New Diagnosis");
+        /*NavigationUtils.switchScene(
+                (javafx.scene.Node) event.getSource(),
+                "/test/test.fxml",
+                "New Diagnosis"
+        );
+
+         */
     }
 
     @FXML
     private void onViewPatients(ActionEvent event) {
-        loadPage(event, "/records/records.fxml", "Patient Records");
+        NavigationUtils.switchScene(
+                (javafx.scene.Node) event.getSource(),
+                "records",
+                "records.fxml",
+                "Patient Records",
+                null
+        );
     }
 
     @FXML
     private void onViewReports(ActionEvent event) {
-        ValidationUtils.showAlert("Placeholder", "Reports page is still to be developed.");
-        // loadPage(event, "/results/results.fxml", "Reports");
+        /*
+        NavigationUtils.switchScene(
+                (javafx.scene.Node) event.getSource(),
+                "/results/results.fxml",
+                "Reports"
+        );
+
+         */
     }
 
     @FXML
     private void onLogout(ActionEvent event) {
-        loadPage(event, "/login/login-screen.fxml", "dAIbetes — Login");
+        NavigationUtils.switchScene(
+                (javafx.scene.Node) event.getSource(),
+                "login",
+                "login-screen.fxml",
+                "dAIbetes — Login",
+                null
+        );
     }
 
     @FXML
@@ -164,29 +173,4 @@ public class DoctorDashboardController {
         ValidationUtils.showAlert("Inbox", "Inbox page is not yet available.");
     }
 
-    private void loadPage(ActionEvent event, String fxmlPath, String title) {
-        try {
-            URL resource = getClass().getResource(fxmlPath);
-
-            if (resource == null) {
-                ValidationUtils.showAlert(
-                        "Page Not Found",
-                        "Cannot find: " + fxmlPath + "\n\nCheck if the FXML file exists in resources."
-                );
-                return;
-            }
-
-            FXMLLoader loader = new FXMLLoader(resource);
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setTitle(title);
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            ValidationUtils.showAlert("Navigation Error", "Unable to open " + title + " page.");
-        }
-    }
 }

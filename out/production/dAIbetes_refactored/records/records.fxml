@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="records.RecordsController"
+            style="-fx-font-family: 'Segoe UI', 'Roboto', sans-serif;">
+
+    <top>
+        <VBox spacing="0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E8EEF5; -fx-border-width: 0 0 1 0;">
+            <padding>
+                <Insets top="24" right="32" bottom="24" left="32"/>
+            </padding>
+
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="Scan Records" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #1A2332;"/>
+                    <Label text="Manage and review all patient scan records" style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-style: italic;"/>
+                </VBox>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <Button fx:id="exportButton" text="↓ Export" style="-fx-font-size: 11; -fx-padding: 10 18; -fx-background-color: #F3F4F6; -fx-text-fill: #374151; -fx-border-color: #D1D5DB; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"
+                            onMouseEntered="#handleButtonHover"
+                            onMouseExited="#handleButtonExit"/>
+
+                    <Button fx:id="refreshButton" text="⟳ Refresh" style="-fx-font-size: 11; -fx-padding: 10 18; -fx-background-color: #F3F4F6; -fx-text-fill: #374151; -fx-border-color: #D1D5DB; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"
+                            onMouseEntered="#handleButtonHover"
+                            onMouseExited="#handleButtonExit"/>
+
+                    <Button fx:id="addRecordButton" text="+ New Record" style="-fx-font-size: 11; -fx-padding: 10 20; -fx-background-color: #0066CC; -fx-text-fill: WHITE; -fx-font-weight: bold; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"
+                            onMouseEntered="#handlePrimaryButtonHover"
+                            onMouseExited="#handlePrimaryButtonExit"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="16" style="-fx-background-color: #F9FAFB;">
+            <padding>
+                <Insets top="24" right="32" bottom="32" left="32"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-background-color: FFFFFF; -fx-padding: 16; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #E8EEF5; -fx-border-width: 1;">
+
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Search Records" style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                    <TextField fx:id="searchField" promptText="Search by patient name, ID, or date..." style="-fx-font-size: 11; -fx-padding: 10; -fx-border-color: #D1D5DB; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-control-inner-background: #FFFFFF;"/>
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label text="Filter by Status" style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="statusFilter" prefWidth="150" style="-fx-font-size: 11; -fx-padding: 8;"/>
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label text="From Date" style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                    <DatePicker fx:id="fromDatePicker" style="-fx-font-size: 11; -fx-padding: 8;"/>
+                </VBox>
+
+                <VBox spacing="6">
+                    <Label text="To Date" style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                    <DatePicker fx:id="toDatePicker" style="-fx-font-size: 11; -fx-padding: 8;"/>
+                </VBox>
+
+                <VBox alignment="BOTTOM_CENTER">
+                    <Button fx:id="clearFiltersButton" text="Clear" style="-fx-font-size: 11; -fx-padding: 8 16; -fx-background-color: #F3F4F6; -fx-text-fill: #6B7280; -fx-border-color: #D1D5DB; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="12" VBox.vgrow="ALWAYS">
+                <Label text="All Records" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1A2332;"/>
+
+                <TableView fx:id="recordsTable" style="-fx-font-size: 11; -fx-table-cell-border-color: #E8EEF5; -fx-focus-color: #0066CC; -fx-faint-focus-color: #0066CC22;">
+                    <columns>
+                        <TableColumn fx:id="recordIdColumn" text="Record ID" prefWidth="100" sortable="true">
+                            <style>
+                                -fx-text-alignment: CENTER;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="patientNameColumn" text="Patient Name" prefWidth="150" sortable="true">
+                            <style>
+                                -fx-text-alignment: LEFT;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="patientIdColumn" text="Patient ID" prefWidth="120" sortable="true">
+                            <style>
+                                -fx-text-alignment: CENTER;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="scanDateColumn" text="Scan Date" prefWidth="130" sortable="true">
+                            <style>
+                                -fx-text-alignment: CENTER;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="scanTypeColumn" text="Scan Type" prefWidth="120" sortable="true">
+                            <style>
+                                -fx-text-alignment: CENTER;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="110" sortable="true">
+                            <style>
+                                -fx-text-alignment: CENTER;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="diagnosisColumn" text="Diagnosis" prefWidth="150" sortable="true">
+                            <style>
+                                -fx-text-alignment: LEFT;
+                            </style>
+                        </TableColumn>
+
+                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120" sortable="false">
+                            <style>
+                                -fx-text-alignment: CENTER;
+                            </style>
+                        </TableColumn>
+                    </columns>
+
+                    <placeholder>
+                        <VBox spacing="12" alignment="CENTER" style="-fx-padding: 60;">
+                            <Label text="📋" style="-fx-font-size: 48; -fx-text-fill: #D1D5DB;"/>
+                            <Label text="No Records Found" style="-fx-font-size: 16; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                            <Label text="Create a new record or adjust filters to see data" style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;"/>
+                        </VBox>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+            <HBox spacing="16" alignment="CENTER" style="-fx-background-color: FFFFFF; -fx-padding: 16; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #E8EEF5; -fx-border-width: 1;">
+
+                <Label fx:id="recordCountLabel" text="Showing 0 of 0 records" style="-fx-font-size: 11; -fx-text-fill: #6B7280;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <HBox spacing="8" alignment="CENTER">
+                    <Button fx:id="previousButton" text="← Previous" style="-fx-font-size: 11; -fx-padding: 8 16; -fx-background-color: #F3F4F6; -fx-text-fill: #374151; -fx-border-color: #D1D5DB; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+                    <Label fx:id="pageIndicatorLabel" text="Page 1 of 5" style="-fx-font-size: 11; -fx-text-fill: #6B7280;"/>
+
+                    <Button fx:id="nextButton" text="Next →" style="-fx-font-size: 11; -fx-padding: 8 16; -fx-background-color: #F3F4F6; -fx-text-fill: #374151; -fx-border-color: #D1D5DB; -fx-border-width: 1; -fx-border-radius: 6; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                </HBox>
+
+                <ComboBox fx:id="recordsPerPageCombo" prefWidth="80" style="-fx-font-size: 11;"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="16" alignment="CENTER_LEFT" style="-fx-background-color: #F3F4F6; -fx-border-color: #E8EEF5; -fx-border-width: 1 0 0 0;">
+            <padding>
+                <Insets top="12" right="32" bottom="12" left="32"/>
+            </padding>
+
+            <Label fx:id="statusBarLabel" text="Ready" style="-fx-font-size: 11; -fx-text-fill: #6B7280;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label text="Last updated: " style="-fx-font-size: 11; -fx-text-fill: #9CA3AF;"/>
+            <Label fx:id="lastUpdatedLabel" text="--:-- --" style="-fx-font-size: 11; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

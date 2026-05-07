@@ -1,20 +1,26 @@
 package org.example.daibetes;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.daibetes.shared.utils.NavigationUtils;
 
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                HelloApplication.class.getResource("/login/login-screen.fxml")
+        Scene scene = NavigationUtils.load(
+                "register",
+                "register-screen.fxml",
+                "/styles/splash.css"
         );
 
-        Scene scene = new Scene(fxmlLoader.load());
+        if (scene == null) {
+            throw new RuntimeException("Failed to load initial screen.");
+        }
+
         stage.setTitle("dAIbetes");
         stage.setScene(scene);
         stage.show();
