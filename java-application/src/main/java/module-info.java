@@ -6,6 +6,7 @@ module org.example.daibetes {
     requires java.sql;
     requires java.desktop;
     requires javafx.base;
+   // requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
@@ -20,7 +21,7 @@ module org.example.daibetes {
     exports org.example.daibetes.modules.auth.ui;
     opens org.example.daibetes.modules.auth.ui to javafx.fxml;
     opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
-
+    exports org.example.daibetes.modules.doctor.ui;
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;
 
