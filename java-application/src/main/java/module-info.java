@@ -8,6 +8,8 @@ module org.example.daibetes {
     requires mysql.connector.j;
     requires javafx.base;
     requires jbcrypt;
+    requires webcam.capture;
+    requires javafx.swing;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
