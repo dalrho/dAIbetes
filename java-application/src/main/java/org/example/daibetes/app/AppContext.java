@@ -23,4 +23,13 @@ public class AppContext {
     public List<java.io.File> getGalleryFiles() { return galleryFiles; }
     public void setGalleryFiles(List<java.io.File> files) { this.galleryFiles = files; }
 
+    private int selectedImageId;
+
+    public int getSelectedImageId() {
+        return selectedImageId;
+    }
+
+    public void setSelectedImageId(int selectedImageId) {
+        this.selectedImageId = selectedImageId;
+    }
 }
