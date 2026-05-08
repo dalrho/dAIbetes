@@ -111,7 +111,7 @@ public class ImageProcessingController {
     }
     @FXML
     private void handleGenerateReport() {
-        Image finalProcessedImage = enhancedImageView.getImage();
+        Image finalProcessedImage = rawImageView.getImage();
 
         if (finalProcessedImage == null) {
             System.err.println("No image available to generate a report.");
