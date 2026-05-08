@@ -64,6 +64,13 @@ public class ImageProcessingController {
             System.err.println("Navigation error: " + e.getMessage());
         }
     }
+    @FXML
+    private void handleGenerateReport() {
+        // Logic remains the same, just renamed for the new button purpose
+        System.out.println("Generating Diagnostic Report from enhanced image...");
+        // Implement report generation or export logic here
+    }
+
 
     @FXML
     private void handleAIDetection() {
