@@ -6,7 +6,7 @@
 
 <AnchorPane prefWidth="900" prefHeight="600"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="register.RegisterController">
+            fx:controller="org.example.daibetes.modules.auth.ui.RegisterController">
 
     <StackPane prefWidth="900" prefHeight="600">
 

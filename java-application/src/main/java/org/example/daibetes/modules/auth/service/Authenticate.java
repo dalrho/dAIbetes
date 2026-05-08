@@ -8,20 +8,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Authenticate {
-    // Checks if email and password exist in tblUser
+
     public boolean login(String email, String password) {
         String sql = "SELECT * FROM tbluser WHERE email = ? AND password = ?";
 
-        try (Connection conn = MySQLConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = MySQLConnection.getConnection()) {
 
-            ps.setString(1, email);
-            ps.setString(2, password);
+            if (conn == null) {
+                System.out.println("Login failed: database connection is null.");
+                return false;
+            }
 
-            ResultSet rs = ps.executeQuery();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, email);
+                ps.setString(2, password);
 
-            // returns true if account exists
-            return rs.next();
+                ResultSet rs = ps.executeQuery();
+                return rs.next();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,17 +33,22 @@ public class Authenticate {
         }
     }
 
-    // Checks if email already exists before registration
     public boolean emailExists(String email) {
         String sql = "SELECT user_id FROM tbluser WHERE email = ?";
 
-        try (Connection conn = MySQLConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = MySQLConnection.getConnection()) {
 
-            ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
+            if (conn == null) {
+                System.out.println("Email check failed: database connection is null.");
+                return false;
+            }
 
-            return rs.next();
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, email);
+
+                ResultSet rs = ps.executeQuery();
+                return rs.next();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,4 +56,3 @@ public class Authenticate {
         }
     }
 }
-

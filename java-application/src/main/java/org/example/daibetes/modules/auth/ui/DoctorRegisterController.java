@@ -1,8 +1,19 @@
 package org.example.daibetes.modules.auth.ui;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.example.daibetes.core.database.CreateData;
 import org.example.daibetes.core.domain.Doctor;
 import org.example.daibetes.core.domain.DoctorFactory;
@@ -11,121 +22,143 @@ import org.example.daibetes.core.domain.UserFactory;
 import org.example.daibetes.modules.auth.service.Authenticate;
 import org.example.daibetes.shared.utils.NavigationUtils;
 import org.example.daibetes.shared.utils.ValidationUtils;
+import register.sceneLoader;
 
 import java.io.File;
 import java.time.LocalDate;
 import java.time.Period;
 
 public class DoctorRegisterController {
+    @FXML private VBox card;
 
     @FXML private TextField doctorIdField;
     @FXML private TextField nameField;
     @FXML private TextField emailField;
     @FXML private TextField contactField;
-    @FXML private DatePicker birthdatePicker;
 
+    @FXML private DatePicker birthdatePicker;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
 
     @FXML private RadioButton maleBtn;
     @FXML private RadioButton femaleBtn;
+    @FXML private HBox genderBox;
 
     @FXML private Button createAccountBtn;
 
-    private File doctorIdImage;
-
     @FXML
     public void initialize() {
+        // Gender toggle group
         ToggleGroup genderGroup = new ToggleGroup();
         maleBtn.setToggleGroup(genderGroup);
         femaleBtn.setToggleGroup(genderGroup);
+        maleBtn.setMinWidth(Region.USE_PREF_SIZE);
+        femaleBtn.setMinWidth(Region.USE_PREF_SIZE);
+
+        // Entrance animation
+        card.setOpacity(0);
+        card.setScaleX(0.85);
+        card.setScaleY(0.85);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(300), card);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+
+        ScaleTransition scale = new ScaleTransition(Duration.millis(300), card);
+        scale.setFromX(0.85);
+        scale.setFromY(0.85);
+        scale.setToX(1.0);
+        scale.setToY(1.0);
+
+        new ParallelTransition(fade, scale).play();
     }
 
     @FXML
-    private void handleCreateAccount() {
-        register();
-    }
+    public void handleCreateAccount(ActionEvent event) {
 
-    public void register() {
+        if (doctorIdField.getText().isBlank() ||
+                nameField.getText().isBlank() ||
+                emailField.getText().isBlank() ||
+                contactField.getText().isBlank() ||
+                birthdatePicker.getValue() == null ||
+                passwordField.getText().isBlank() ||
+                confirmPasswordField.getText().isBlank()) {
+
+            showAlert(Alert.AlertType.WARNING, "Incomplete Fields", "Please fill in all fields.");
+            return;
+        }
+
+        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+            showAlert(Alert.AlertType.ERROR, "Password Mismatch", "Passwords do not match.");
+            return;
+        }
+
+        if (maleBtn.getToggleGroup().getSelectedToggle() == null) {
+            showAlert(Alert.AlertType.WARNING, "Gender Required", "Please select a gender.");
+            return;
+        }
+
         String doctorIdOrLicense = doctorIdField.getText().trim();
         String fullName = nameField.getText().trim();
         String email = emailField.getText().trim();
         String contact = contactField.getText().trim();
-        LocalDate birth = birthdatePicker.getValue();
-
         String password = passwordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
+        LocalDate birthdate = birthdatePicker.getValue();
 
-        String selectedGender = "";
-
-        if (maleBtn.isSelected()) {
-            selectedGender = "Male";
-        } else if (femaleBtn.isSelected()) {
-            selectedGender = "Female";
-        }
-
-        if (doctorIdOrLicense.isEmpty() || fullName.isEmpty() || email.isEmpty() ||
-                contact.isEmpty() || birth == null ||
-                password.isEmpty() || confirmPassword.isEmpty() ||
-                selectedGender.isEmpty()) {
-
-            ValidationUtils.showAlert("Error", "Please fill all fields.");
-            return;
-        }
+        String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
+                .getSelectedToggle())
+                .getText();
 
         String[] nameParts = fullName.split("\\s+", 2);
-        String fname = nameParts[0];
-        String lname = nameParts.length > 1 ? nameParts[1] : "";
+        String firstName = nameParts[0];
+        String lastName = nameParts.length > 1 ? nameParts[1] : "";
 
-        if (lname.isEmpty()) {
-            ValidationUtils.showAlert("Error", "Please enter both first name and last name.");
+        if (lastName.isBlank()) {
+            showAlert(Alert.AlertType.WARNING, "Invalid Name", "Please enter both first name and last name.");
             return;
         }
 
-        if (!ValidationUtils.isValidEmail(email)) return;
+        if (!ValidationUtils.isValidEmail(email)) {
+            return;
+        }
+
+        if (!ValidationUtils.isValidPassword(password)) {
+            return;
+        }
+
+        if (birthdate.isAfter(LocalDate.now())) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Birthdate", "Birthdate cannot be in the future.");
+            return;
+        }
+
+        int age = Period.between(birthdate, LocalDate.now()).getYears();
+
+        if (age < 18) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Age", "Doctor must be at least 18 years old.");
+            return;
+        }
 
         Authenticate auth = new Authenticate();
 
         if (auth.emailExists(email)) {
-            ValidationUtils.showAlert("Error", "Email already exists.");
+            showAlert(Alert.AlertType.ERROR, "Email Exists", "Email is already registered.");
             return;
         }
 
-        if (!password.equals(confirmPassword)) {
-            ValidationUtils.showAlert("Error", "Passwords do not match.");
-            return;
-        }
-
-        if (!ValidationUtils.isValidPassword(password)) return;
-
-        if (birth.isAfter(LocalDate.now())) {
-            ValidationUtils.showAlert("Error", "Birthdate cannot be in the future.");
-            return;
-        }
-
-        int age = Period.between(birth, LocalDate.now()).getYears();
-
-        if (age < 18) {
-            ValidationUtils.showAlert("Error", "Doctor must be at least 18 years old.");
-            return;
-        }
-
-        /*
-         The doctor-register.fxml only has doctorIdField. It does not have a hospital field or image upload button.
-
-         * So for now:
-         * - doctorIdOrLicense is used as the license number
-         * - hospital is set as "Not specified"
-         * - doctorIdImage is null
-         */
-
-        String license = doctorIdOrLicense; //not implemented in the ui yet, ignore
-        String hospital = "Not specified"; //not implemented in the ui yet, ignore
+        String licenseNumber = doctorIdField.getText().trim();
+        String hospital = "Not specified";
 
         UserFactory factory = new DoctorFactory(
-                fname, lname, email, password,
-                contact, selectedGender, birth.toString(),
-                license, hospital, doctorIdImage
+                firstName,
+                lastName,
+                email,
+                password,
+                contact,
+                selectedGender,
+                birthdate.toString(),
+                licenseNumber,
+                hospital,
+                null
         );
 
         User user = factory.createUser();
@@ -135,46 +168,41 @@ public class DoctorRegisterController {
         boolean success = createData.createDoctor(doctor);
 
         if (success) {
-            ValidationUtils.showAlert("Success", "Doctor registered successfully!");
-            clearFields();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Doctor account created successfully!");
 
-            NavigationUtils.switchScene(
-                    nameField,
-                    "login",
-                    "login-screen.fxml",
-                    "dAIbetes — Login",
-                    null
-            );
+            goToLogin(event);
 
         } else {
-            ValidationUtils.showAlert("Error", "Registration failed.");
+            showAlert(Alert.AlertType.ERROR, "Registration Failed", "Doctor account was not saved.");
         }
     }
 
-    @FXML
-    private void goToLogin(MouseEvent event) {
-        NavigationUtils.switchScene(
-                (javafx.scene.Node) event.getSource(),
-                "login",
-                "login-screen.fxml",
-                "dAIbetes — Login",
-                null
-        );
+    private void closeWindow(Object eventSource) {
+        Node source = null;
+        if (eventSource instanceof ActionEvent ae && ae.getSource() instanceof Node n) source = n;
+        else if (eventSource instanceof MouseEvent me && me.getSource() instanceof Node n) source = n;
+        if (source != null) ((Stage) source.getScene().getWindow()).close();
     }
 
-    private void clearFields() {
-        doctorIdField.clear();
-        nameField.clear();
-        emailField.clear();
-        contactField.clear();
-        birthdatePicker.setValue(null);
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
-        passwordField.clear();
-        confirmPasswordField.clear();
+    @FXML
+    private void goToLogin(Event event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
 
-        maleBtn.setSelected(false);
-        femaleBtn.setSelected(false);
+        stage.setScene(
+                sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
+        );
 
-        doctorIdImage = null;
+        stage.setTitle("dAIbetes — Login");
+        stage.show();
     }
 }

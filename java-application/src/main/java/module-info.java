@@ -5,10 +5,9 @@ module org.example.daibetes {
 
     requires java.sql;
     requires java.desktop;
+    requires mysql.connector.j;
     requires javafx.base;
-//    requires org.example.daibetes;
-//    requires org.example.daibetes;
-//    requires org.example.daibetes;
+    //requires org.example.daibetes;
     exports popdiagnosis;
     exports imageUpload;
     opens imageUpload to javafx.fxml;
