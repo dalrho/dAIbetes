@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -19,7 +20,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
-import org.example.daibetes.core.domain.Doctor;
+import register.PopupManager;
 import register.sceneLoader;
 
 import java.net.URL;
@@ -240,9 +241,15 @@ public class doctorDashboardController implements Initializable {
 
     // ── Button handlers ───────────────────────────────────────────
 
-    @FXML private void onNewDiagnosis() {
-        System.out.println("[Dashboard] New Diagnosis");
-        // TODO: navigate
+    @FXML
+    private void onNewDiagnosisBtn() {
+
+        PopupManager.open(
+                "popdiagnosis",
+                "popdiagnosis-screen.fxml",
+                null,
+                "New Diagnosis"
+        );
     }
 
     @FXML private void onViewPatients() {
@@ -262,7 +269,6 @@ public class doctorDashboardController implements Initializable {
 
     @FXML
     private void onLogout(ActionEvent event) {
-
         System.out.println("[Dashboard] Log out");
 
         Stage stage = (Stage) ((Node) event.getSource())
@@ -283,6 +289,6 @@ public class doctorDashboardController implements Initializable {
         // TODO: open inbox
     }
 
-    public void initData(Doctor doctor) {
-    }
+//    public void initData(Doctor doctor) {
+//    }
 }

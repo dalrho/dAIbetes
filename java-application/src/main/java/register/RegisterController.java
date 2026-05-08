@@ -7,6 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class RegisterController {
+
     @FXML
     public void selectPatient(ActionEvent event) {
         openScene(event, "register", "patient-register.fxml", "/styles/splash.css");

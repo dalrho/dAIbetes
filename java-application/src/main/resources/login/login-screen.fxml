@@ -44,7 +44,7 @@
 
                 <!-- NAME -->
                 <VBox alignment="CENTER_LEFT" spacing="5" maxWidth="300">
-                    <Label text="Name:"/>
+                    <Label text="Email:"/>
                     <TextField fx:id="nameField"
                                maxWidth="300"
                                style="-fx-background-radius: 8; -fx-background-color: black; -fx-text-fill: white;" />
