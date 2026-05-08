@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.text.Text?>
+
 <StackPane xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="imageUpload.ImageUploadController"
@@ -21,19 +21,14 @@
 
         <!-- TOP BAR -->
         <HBox spacing="10" alignment="CENTER">
-
             <TextFlow>
-                <Text text="d"
-                      style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
-                <Text text="AI"
-                      style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #999999;"/>
-                <Text text="betes"
-                      style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
+                <Text text="d" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
+                <Text text="AI" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #999999;"/>
+                <Text text="betes" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
             </TextFlow>
 
-            <Label text="Upload up to 3 images for analysis"
-                   style="-fx-text-fill: gray;
-                      -fx-font-size: 12px;"/>
+            <Label text="Click an image to select it for analysis"
+                   style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
 
             <Pane HBox.hgrow="ALWAYS"/>
 
@@ -49,7 +44,8 @@
         <!-- IMAGE PREVIEW -->
         <HBox spacing="15" alignment="CENTER">
 
-            <VBox alignment="CENTER" spacing="10">
+            <!-- Added fx:id, onMouseClicked, and cursor hand for Selection -->
+            <VBox fx:id="box1" onMouseClicked="#onSelect1" alignment="CENTER" spacing="10" style="-fx-cursor: hand;">
                 <ImageView fx:id="img1"
                            fitWidth="180"
                            fitHeight="180"
@@ -58,7 +54,7 @@
                 <Button text="Remove" onAction="#remove1"/>
             </VBox>
 
-            <VBox alignment="CENTER" spacing="10">
+            <VBox fx:id="box2" onMouseClicked="#onSelect2" alignment="CENTER" spacing="10" style="-fx-cursor: hand;">
                 <ImageView fx:id="img2"
                            fitWidth="180"
                            fitHeight="180"
@@ -67,7 +63,7 @@
                 <Button text="Remove" onAction="#remove2"/>
             </VBox>
 
-            <VBox alignment="CENTER" spacing="10">
+            <VBox fx:id="box3" onMouseClicked="#onSelect3" alignment="CENTER" spacing="10" style="-fx-cursor: hand;">
                 <ImageView fx:id="img3"
                            fitWidth="180"
                            fitHeight="180"
@@ -82,7 +78,6 @@
 
         <!-- ACTION BUTTONS -->
         <HBox spacing="15" alignment="CENTER">
-
             <Button text="Upload Images"
                     onAction="#onUpload"
                     style="-fx-background-color: black;
@@ -96,9 +91,6 @@
                            -fx-text-fill: white;
                            -fx-background-radius: 10;
                            -fx-padding: 8 20;"/>
-
         </HBox>
-
     </VBox>
-
 </StackPane>
