@@ -17,7 +17,7 @@ import java.util.List;
  * Owns all state for: View Diagnosis, Schedule Follow-Up,
  * My Doctors, Recent Visits, and Request Scan.
  */
-public class PatientDashboardViewModelTest {
+public class PatientDashboardViewModel {
 
     private final PatientDashboardDAO dao = new PatientDashboardDAO();
     private Patient currentPatient;

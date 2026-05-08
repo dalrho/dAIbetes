@@ -34,7 +34,7 @@ import java.util.ResourceBundle;
  * Implements Initializable to match the existing FXML contract.
  * Reads the logged-in patient from AppContext — no initData() needed.
  */
-public class PatientDashboardControllerTest implements Initializable {
+public class PatientDashboardController implements Initializable {
 
     // ════════════════════════════════════════════════════════════
     // FXML COMPONENTS - LEFT SIDEBAR
@@ -65,7 +65,7 @@ public class PatientDashboardControllerTest implements Initializable {
 
     @FXML private Button inboxBtn;
 
-    private final PatientDashboardViewModelTest viewModel = new PatientDashboardViewModelTest();
+    private final PatientDashboardViewModel viewModel = new PatientDashboardViewModel();
 
     // ════════════════════════════════════════════════════════════
     // INITIALIZATION

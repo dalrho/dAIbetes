@@ -11,7 +11,7 @@ import javafx.stage.Stage;
  * In production this screen is reached via loginController after login —
  * this Application class exists for standalone testing.
  */
-public class PatientDashboardApplicationTest extends Application {
+public class PatientDashboardApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
