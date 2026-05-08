@@ -1,14 +1,18 @@
 package org.example.daibetes.app;
 
 import javafx.scene.image.Image;
+import org.example.daibetes.core.domain.User;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppContext {
     private static AppContext instance;
+
     private Image selectedImage;
-    private List<File> galleryFiles = new java.util.ArrayList<>();
+    private User currentUser;
+    private List<File> galleryFiles = new ArrayList<>();
 
     private AppContext() {}
 
@@ -17,19 +21,16 @@ public class AppContext {
         return instance;
     }
 
+    // --- Existing ---
     public Image getSelectedImage() { return selectedImage; }
     public void setSelectedImage(Image image) { this.selectedImage = image; }
 
-    public List<java.io.File> getGalleryFiles() { return galleryFiles; }
-    public void setGalleryFiles(List<java.io.File> files) { this.galleryFiles = files; }
+    // --- Session ---
+    public User getCurrentUser() { return currentUser; }
+    public void setCurrentUser(User user) { this.currentUser = user; }
+    public void clearSession() { this.currentUser = null; }
 
-    private int selectedImageId;
-
-    public int getSelectedImageId() {
-        return selectedImageId;
-    }
-
-    public void setSelectedImageId(int selectedImageId) {
-        this.selectedImageId = selectedImageId;
-    }
+    // --- Gallery ---
+    public List<File> getGalleryFiles() { return galleryFiles; }
+    public void setGalleryFiles(List<File> files) { this.galleryFiles = files; }
 }
