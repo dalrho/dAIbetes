@@ -7,3 +7,9 @@ class GeminiService:
         genai.configure(api_key=api_key)
 
         self.model = genai.GenerativeModel("gemini-2.0-flash")
+
+    def generate_clinical_guidance(self, prompt):
+
+        response = self.model.generate_content(prompt)
+
+        return response.text
