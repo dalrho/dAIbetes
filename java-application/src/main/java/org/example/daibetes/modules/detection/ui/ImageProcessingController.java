@@ -103,12 +103,19 @@ public class ImageProcessingController {
     private void handleBackToGallery() {
         try {
             Stage stage = (Stage) enhancedImageView.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/daibetes/modules/detection/ui/GalleryView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/imageUpload/image-upload-view.fxml"));
             stage.setScene(new Scene(loader.load()));
         } catch (Exception e) {
             System.err.println("Navigation error: " + e.getMessage());
         }
     }
+    @FXML
+    private void handleGenerateReport() {
+        // Logic remains the same, just renamed for the new button purpose
+        System.out.println("Generating Diagnostic Report from enhanced image...");
+        // Implement report generation or export logic here
+    }
+
 
     @FXML
     private void handleAIDetection() {

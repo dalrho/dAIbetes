@@ -7,42 +7,41 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #ECEFF1;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.detection.ui.ImageProcessingController">
+<VBox prefHeight="650.0" prefWidth="1000.0" style="-fx-background-color: #F4F7F9;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.detection.ui.ImageProcessingController">
     <children>
         <!-- 1. Header Navigation Bar -->
-        <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="15.0" style="-fx-background-color: #263238; -fx-padding: 0 20 0 20;">
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" spacing="15.0" style="-fx-background-color: #263238; -fx-padding: 0 25 0 25;">
             <children>
-                <Button onAction="#handleBackToGallery" style="-fx-background-color: #546E7A; -fx-text-fill: white;" text="← BACK TO GALLERY" />
-                <Separator orientation="VERTICAL" prefHeight="20.0" />
+                <Button onAction="#handleBackToGallery" style="-fx-background-color: #455A64; -fx-text-fill: white; -fx-cursor: hand;" text="← BACK TO GALLERY" />
+                <Separator orientation="VERTICAL" prefHeight="30.0">
+                    <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                    </padding></Separator>
                 <Label text="DIAGNOSTIC IMAGE ENHANCEMENT" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="13.0" />
+                        <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
                 <Region HBox.hgrow="ALWAYS" />
-                <Button onAction="#handleReset" style="-fx-background-color: #CFD8DC;" text="RESET FILTERS" />
+                <Button onAction="#handleReset" style="-fx-background-color: transparent; -fx-text-fill: #CFD8DC; -fx-border-color: #CFD8DC; -fx-border-radius: 3; -fx-cursor: hand;" text="RESET ALL FILTERS" />
             </children>
         </HBox>
 
-        <!-- 2. Main Workspace (Comparison Panes) -->
-        <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+        <!-- 2. Main Workspace -->
+        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
             </padding>
             <children>
                 <!-- Left Pane: Original -->
-                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label style="-fx-font-weight: bold;" text="ORIGINAL (RAW)" textFill="#546E7A" />
-                        <ScrollPane fx:id="rawScroll" pannable="true" style="-fx-background: #000000; -fx-border-color: #B0BEC5;" VBox.vgrow="ALWAYS">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #546E7A;" text="ORIGINAL (RAW) SCAN" />
+                        <ScrollPane fx:id="rawScroll" fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background-color: transparent; -fx-background: #FFFFFF; -fx-border-color: #CFD8DC; -fx-border-radius: 5; -fx-background-radius: 5;" VBox.vgrow="ALWAYS">
                             <content>
-                                <StackPane>
+                                <StackPane alignment="CENTER">
                                     <children>
-                                        <Group>
-                                            <children>
-                                                <ImageView fx:id="rawImageView" fitWidth="400.0" preserveRatio="true" />
-                                            </children>
-                                        </Group>
+                                        <ImageView fx:id="rawImageView" fitWidth="420.0" preserveRatio="true" />
                                     </children>
                                 </StackPane>
                             </content>
@@ -51,33 +50,29 @@
                 </VBox>
 
                 <!-- Right Pane: Enhanced -->
-                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label style="-fx-font-weight: bold;" text="ENHANCED PREVIEW" textFill="#1976D2" />
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #1976D2;" text="ENHANCED PREVIEW" />
                         <HBox spacing="10.0" VBox.vgrow="ALWAYS">
                             <children>
-                                <ScrollPane fx:id="enhancedScroll" pannable="true" style="-fx-background: #000000; -fx-border-color: #B0BEC5;" HBox.hgrow="ALWAYS">
+                                <ScrollPane fx:id="enhancedScroll" fitToHeight="true" fitToWidth="true" pannable="true" style="-fx-background-color: transparent; -fx-background: #FFFFFF; -fx-border-color: #1976D2; -fx-border-radius: 5; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
                                     <content>
-                                        <StackPane>
+                                        <StackPane alignment="CENTER">
                                             <children>
-                                                <Group>
-                                                    <children>
-                                                        <ImageView fx:id="enhancedImageView" fitWidth="400.0" preserveRatio="true" />
-                                                    </children>
-                                                </Group>
+                                                <ImageView fx:id="enhancedImageView" fitWidth="420.0" preserveRatio="true" />
                                             </children>
                                         </StackPane>
                                     </content>
                                 </ScrollPane>
                                 <!-- Vertical Zoom Slider -->
-                                <VBox alignment="CENTER" spacing="5.0">
+                                <VBox alignment="CENTER" spacing="8.0" style="-fx-padding: 0 5 0 5;">
                                     <children>
-                                        <Label rotate="-90.0" text="ZOOM">
+                                        <Label text="ZOOM" textFill="#546E7A">
                                             <font>
-                                                <Font size="9.0" />
+                                                <Font name="System Bold" size="9.0" />
                                             </font>
                                         </Label>
-                                        <Slider fx:id="zoomSlider" min="1.0" max="4.0" orientation="VERTICAL" prefHeight="300.0" value="1.0" />
+                                        <Slider fx:id="zoomSlider" max="4.0" min="1.0" orientation="VERTICAL" prefHeight="300.0" value="1.0" />
                                     </children>
                                 </VBox>
                             </children>
@@ -88,19 +83,21 @@
         </HBox>
 
         <!-- 3. Control Dashboard -->
-        <HBox prefHeight="150.0" spacing="20.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #CFD8DC transparent transparent transparent; -fx-padding: 15;">
+        <HBox prefHeight="160.0" spacing="25.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #CFD8DC transparent transparent transparent; -fx-padding: 20;">
             <children>
-                <VBox spacing="10.0">
+                <!-- Global Settings Group -->
+                <VBox prefWidth="160.0" spacing="12.0">
                     <children>
-                        <ToggleButton fx:id="grayscaleToggle" onAction="#updatePreview" prefWidth="140.0" text="GRAYSCALE" />
-                        <VBox spacing="2.0">
+                        <Label style="-fx-font-weight: bold; -fx-text-fill: #37474F;" text="Preprocessing" />
+                        <ToggleButton fx:id="grayscaleToggle" maxWidth="1.7976931348623157E308" onAction="#updatePreview" prefHeight="30.0" style="-fx-cursor: hand;" text="GRAYSCALE MODE" />
+                        <VBox spacing="3.0">
                             <children>
-                                <Label text="Resolution Target">
+                                <Label text="Target Resolution" textFill="#78909C">
                                     <font>
                                         <Font size="11.0" />
                                     </font>
                                 </Label>
-                                <ComboBox fx:id="resizeCombo" onAction="#updatePreview" prefWidth="140.0" />
+                                <ComboBox fx:id="resizeCombo" maxWidth="1.7976931348623157E308" onAction="#updatePreview" prefHeight="30.0" />
                             </children>
                         </VBox>
                     </children>
@@ -108,52 +105,56 @@
 
                 <Separator orientation="VERTICAL" />
 
-                <GridPane hgap="30.0" vgap="10.0" HBox.hgrow="ALWAYS">
+                <!-- Filters Grid -->
+                <GridPane hgap="40.0" vgap="15.0" HBox.hgrow="ALWAYS">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" />
-                        <ColumnConstraints hgrow="ALWAYS" minWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
                     </columnConstraints>
                     <children>
-                        <VBox spacing="2.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <children>
-                                <Label text="Brightness" />
+                                <HBox>
+                                    <Label text="Brightness" textFill="#455A64" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                </HBox>
                                 <Slider fx:id="brightnessSlider" max="0.5" min="-0.5" onMouseReleased="#updatePreview" />
                             </children>
                         </VBox>
-                        <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <children>
-                                <Label text="Contrast (CLAHE)" />
+                                <Label text="Contrast (CLAHE)" textFill="#455A64" />
                                 <Slider fx:id="claheSlider" max="3.0" min="0.5" onMouseReleased="#updatePreview" value="1.0" />
                             </children>
                         </VBox>
-                        <VBox spacing="2.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <children>
-                                <Label text="Edge Sharpness" />
+                                <Label text="Edge Sharpness" textFill="#455A64" />
                                 <Slider fx:id="sharpSlider" max="10.0" onMouseReleased="#updatePreview" />
                             </children>
                         </VBox>
-                        <VBox spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <children>
-                                <Label text="Noise Reduction" />
+                                <Label text="Noise Reduction" textFill="#455A64" />
                                 <Slider fx:id="denoiseSlider" max="1.0" onMouseReleased="#updatePreview" />
                             </children>
                         </VBox>
                     </children>
                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                 </GridPane>
 
                 <Separator orientation="VERTICAL" />
 
-                <!-- AI Detection Section -->
-                <VBox alignment="CENTER" spacing="10.0">
+                <!-- Action Section -->
+                <VBox alignment="CENTER" prefWidth="200.0" spacing="10.0">
                     <children>
-                        <Button onAction="#handleAIDetection" prefHeight="60.0" prefWidth="170.0" style="-fx-background-color: #1976D2; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13;" text="RUN AI DETECTION" />
-                        <Label text="Detect after processing" textFill="#78909C">
+                        <Button onAction="#handleGenerateReport" prefHeight="55.0" prefWidth="180.0" style="-fx-background-color: #2E7D32; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 5;" text="GENERATE REPORT" />
+                        <Label text="Finalize and save results" textFill="#90A4AE">
                             <font>
-                                <Font size="9.0" />
+                                <Font name="System Italic" size="10.0" />
                             </font>
                         </Label>
                     </children>
