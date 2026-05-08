@@ -1,6 +1,7 @@
 package popdiagnosis;
 
 import imageUpload.ImageUploadController;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,12 +9,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.daibetes.app.AppContext;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +49,7 @@ public class Popdiagnosiscontroller implements Initializable {
         setupButtonHover(uploadImageBtn);
         setupButtonHover(closeBtn);
     }
-    @FXML
-    private void onOpenCamera() {
-        System.out.println("Camera coming soon");
-    }
+
 
 
     // =========================
@@ -227,5 +229,54 @@ public class Popdiagnosiscontroller implements Initializable {
     // =========================
     public List<File> getUploadedImages() {
         return uploadedImages;
+    }
+
+    @FXML
+    private void onOpenCamera() {
+        try {
+            // 1. Open the Camera Popup
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/cameraPopup/camera-popup.fxml"));
+            Parent root = loader.load();
+
+            Stage cameraStage = new Stage();
+            cameraStage.setTitle("Capture Image");
+            cameraStage.initModality(Modality.APPLICATION_MODAL); // Keeps it on top
+            cameraStage.setScene(new Scene(root));
+
+            // Wait for user to capture and close
+            cameraStage.showAndWait();
+
+            // 2. Retrieve the captured image from AppContext
+            Image capturedImg = AppContext.getInstance().getSelectedImage();
+
+            if (capturedImg != null) {
+                // 3. Save Image to a temporary file so the next screen can handle it
+                File tempFile = saveImageToTempFile(capturedImg);
+
+                List<File> cameraList = new ArrayList<>();
+                cameraList.add(tempFile);
+
+                // 4. Open the gallery screen with this new "file"
+                openUploadScreen(cameraList);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Camera Error", "Could not initialize camera: " + e.getMessage());
+        }
+    }
+
+
+    private File saveImageToTempFile(Image image) throws IOException {
+        // Convert JavaFX Image back to BufferedImage
+        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+
+        // Create a temp file
+        File tempFile = File.createTempFile("captured_scan_", ".png");
+        tempFile.deleteOnExit(); // Clean up when app closes
+
+        // Write to file
+        ImageIO.write(bImage, "png", tempFile);
+        return tempFile;
     }
 }
