@@ -14,6 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.core.database.ImageDAO;
+import org.example.daibetes.core.database.TestDAO;
 import org.example.daibetes.modules.detection.ui.ImageProcessingController;
 import register.PopupManager;
 
@@ -131,15 +132,29 @@ public class ImageUploadController {
                 return;
             }
 
+            /*
+             * TEMPORARY VALUES:
+             * Replace these later with the actual logged-in patient and assigned doctor.
+             */
+            int patientId = 1;
+            int doctorId = 1;
+
+            // Save scan/test record to tbltests
+            TestDAO testDAO = new TestDAO();
+            int testId = testDAO.createTest(patientId, doctorId, imageId);
+
+            if (testId == -1) {
+                showAlert("Test Save Failed", "Image was saved, but test record was not saved.");
+                return;
+            }
+
             // Convert selected file to JavaFX Image for display/use in next screen
             Image runtimeSelectedImage = new Image(selectedFile.toURI().toString());
 
-            // Store selected image in AppContext
+            // Store selected image and IDs in AppContext
             AppContext.getInstance().setSelectedImage(runtimeSelectedImage);
-
-            // Optional but recommended:
-            // Store img_id too so you can use it later in tbltests, tblfilteredscans, etc.
             AppContext.getInstance().setSelectedImageId(imageId);
+            AppContext.getInstance().setCurrentTestId(testId);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/imageProcessing/image-processing.fxml"));
             Scene scene = new Scene(loader.load());

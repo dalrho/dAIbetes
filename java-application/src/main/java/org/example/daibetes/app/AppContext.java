@@ -11,30 +11,29 @@ public class AppContext {
     private static AppContext instance;
 
     private Image selectedImage;
+    private int selectedImageId;
+    private int currentTestId;
+
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
 
     private AppContext() {}
 
     public static AppContext getInstance() {
-        if (instance == null) instance = new AppContext();
+        if (instance == null) {
+            instance = new AppContext();
+        }
         return instance;
     }
 
-    // --- Existing ---
-    public Image getSelectedImage() { return selectedImage; }
-    public void setSelectedImage(Image image) { this.selectedImage = image; }
+    // --- Selected Image ---
+    public Image getSelectedImage() {
+        return selectedImage;
+    }
 
-    // --- Session ---
-    public User getCurrentUser() { return currentUser; }
-    public void setCurrentUser(User user) { this.currentUser = user; }
-    public void clearSession() { this.currentUser = null; }
-
-    // --- Gallery ---
-    public List<File> getGalleryFiles() { return galleryFiles; }
-    public void setGalleryFiles(List<File> files) { this.galleryFiles = files; }
-
-    private int selectedImageId;
+    public void setSelectedImage(Image image) {
+        this.selectedImage = image;
+    }
 
     public int getSelectedImageId() {
         return selectedImageId;
@@ -42,5 +41,40 @@ public class AppContext {
 
     public void setSelectedImageId(int selectedImageId) {
         this.selectedImageId = selectedImageId;
+    }
+
+    // --- Current Test ---
+    public int getCurrentTestId() {
+        return currentTestId;
+    }
+
+    public void setCurrentTestId(int currentTestId) {
+        this.currentTestId = currentTestId;
+    }
+
+    // --- Session ---
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+    }
+
+    public void clearSession() {
+        this.currentUser = null;
+        this.selectedImage = null;
+        this.selectedImageId = 0;
+        this.currentTestId = 0;
+        this.galleryFiles.clear();
+    }
+
+    // --- Gallery ---
+    public List<File> getGalleryFiles() {
+        return galleryFiles;
+    }
+
+    public void setGalleryFiles(List<File> files) {
+        this.galleryFiles = files;
     }
 }
