@@ -3,7 +3,7 @@ package org.example.daibetes;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.daibetes.shared.utils.NavigationUtils;
+import register.sceneLoader;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Scene scene = NavigationUtils.load(
+        Scene scene = sceneLoader.load(
                 "register",
                 "register-screen.fxml",
                 "/styles/splash.css"
