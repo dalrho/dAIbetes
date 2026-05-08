@@ -45,4 +45,6 @@ module org.example.daibetes {
 
     opens org.example.daibetes.modules.detection.ui to javafx.fxml;
     exports org.example.daibetes.modules.detection.ui;
+    exports org.example.daibetes.modules.auth.viewmodel;
+    opens org.example.daibetes.modules.auth.viewmodel to javafx.fxml;
 }

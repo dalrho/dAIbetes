@@ -1,4 +1,4 @@
-package login;
+package org.example.daibetes.modules.auth.viewmodel;
 
 import javafx.beans.property.*;
 import org.example.daibetes.core.database.RetrieveData;
