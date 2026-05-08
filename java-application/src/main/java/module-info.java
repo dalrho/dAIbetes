@@ -10,6 +10,7 @@ module org.example.daibetes {
     requires jbcrypt;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
+    //requires org.example.daibetes;
     exports popdiagnosis;
     exports imageUpload;
     opens imageUpload to javafx.fxml;
