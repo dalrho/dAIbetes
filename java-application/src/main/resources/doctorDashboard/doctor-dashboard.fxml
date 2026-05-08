@@ -22,7 +22,7 @@
 <BorderPane
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="org.example.daibetes.modules.doctor.ui.DoctorDashboardController"
+        fx:controller="doctorDashboard.doctorDashboardController"
         prefHeight="860.0"
         prefWidth="1366.0"
         style="-fx-background-color: #EBEBEB;">
@@ -53,7 +53,7 @@
                     <VBox spacing="1">
                         <Label text="Good morning,"
                                style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
-                        <Label fx:id="doctorNameLabel" text="Doc. Jay Vince"
+                        <Label text="Doc. Jay Vince"
                                style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
                         <Label text="Serato"
                                style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
@@ -74,7 +74,7 @@
             <VBox spacing="12">
                 <padding><Insets top="6" right="20" bottom="0" left="20"/></padding>
                 <Button fx:id="newDiagnosisBtn" text="New Diagnosis"
-                        maxWidth="Infinity" onAction="#onNewDiagnosis"
+                        maxWidth="Infinity" onAction="#onNewDiagnosisBtn"
                         style="-fx-background-color: #1A1A1A; -fx-text-fill: white;
                                -fx-font-size: 14px; -fx-font-weight: bold;
                                -fx-padding: 14 20; -fx-background-radius: 7;
