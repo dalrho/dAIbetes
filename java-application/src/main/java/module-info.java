@@ -5,6 +5,7 @@ module org.example.daibetes {
 
     requires java.sql;
     requires java.desktop;
+    requires mysql.connector.j;
     requires javafx.base;
     requires java.net.http;
     requires org.apache.httpcomponents.client5.httpclient5;
@@ -12,6 +13,12 @@ module org.example.daibetes {
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
+    requires jbcrypt;
+    requires webcam.capture;
+    requires javafx.swing;
+    //requires org.example.daibetes;
+    //requires org.example.daibetes;
+    //requires org.example.daibetes;
     exports popdiagnosis;
     exports imageUpload;
     opens imageUpload to javafx.fxml;
@@ -23,7 +30,7 @@ module org.example.daibetes {
     exports org.example.daibetes.modules.auth.ui;
     opens org.example.daibetes.modules.auth.ui to javafx.fxml;
     opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
-
+    exports org.example.daibetes.modules.doctor.ui;
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;
 
@@ -48,4 +55,6 @@ module org.example.daibetes {
 
     opens org.example.daibetes.modules.detection.ui to javafx.fxml;
     exports org.example.daibetes.modules.detection.ui;
+    exports org.example.daibetes.modules.auth.viewmodel;
+    opens org.example.daibetes.modules.auth.viewmodel to javafx.fxml;
 }

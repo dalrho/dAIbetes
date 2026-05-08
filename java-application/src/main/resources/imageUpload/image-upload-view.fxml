@@ -77,20 +77,30 @@
         <Separator/>
 
         <!-- ACTION BUTTONS -->
+        <!-- ACTION BUTTONS -->
         <HBox spacing="15" alignment="CENTER">
             <Button text="Upload Images"
                     onAction="#onUpload"
                     style="-fx-background-color: black;
-                           -fx-text-fill: white;
-                           -fx-background-radius: 10;
-                           -fx-padding: 8 20;"/>
+                   -fx-text-fill: white;
+                   -fx-background-radius: 10;
+                   -fx-padding: 8 20; -fx-cursor: hand;"/>
+
+            <!-- NEW CAMERA BUTTON -->
+            <Button text="Capture Photo"
+                    onAction="#onCapturePhoto"
+                    style="-fx-background-color: #3B82F6;
+                   -fx-text-fill: white;
+                   -fx-background-radius: 10;
+                   -fx-padding: 8 20; -fx-cursor: hand;"/>
 
             <Button text="Next"
                     onAction="#onNext"
                     style="-fx-background-color: #2ecc71;
-                           -fx-text-fill: white;
-                           -fx-background-radius: 10;
-                           -fx-padding: 8 20;"/>
+                   -fx-text-fill: white;
+                   -fx-background-radius: 10;
+                   -fx-padding: 8 20; -fx-cursor: hand;"/>
+
         </HBox>
     </VBox>
 </StackPane>

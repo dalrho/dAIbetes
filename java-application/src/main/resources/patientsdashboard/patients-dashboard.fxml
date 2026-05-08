@@ -22,7 +22,7 @@
 <BorderPane
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="patientsdashboard.patientsdashboardController"
+        fx:controller="patientsdashboard.PatientDashboardController"
         prefHeight="860.0"
         prefWidth="1366.0"
         style="-fx-background-color: #EBEBEB;">

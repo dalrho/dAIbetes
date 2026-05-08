@@ -1,4 +1,4 @@
-package login;
+package org.example.daibetes.modules.auth.viewmodel;
 
 import javafx.beans.property.*;
 import org.example.daibetes.core.database.RetrieveData;
@@ -9,20 +9,21 @@ import org.example.daibetes.modules.auth.service.Authenticate;
 
 /**
  * ViewModel for login-screen.fxml (MVVM).
+ * Package: org.example.daibetes.modules.auth.viewmodel
  *
  * Auth flow:
- *   1. Authenticate.login()  → verifies credentials exist in tblUser
- *   2. RetrieveData          → fetches the full User/Doctor/Patient object
- *   3. Role cross-check      → confirms DB role matches the toggle selection
+ *   1. Authenticate.login()       → verifies credentials exist in tblUser
+ *   2. RetrieveData.getUserByEmail() → fetches typed Doctor or Patient object
+ *   3. Role cross-check           → confirms DB role matches the toggle selection
  */
 public class LoginViewModel {
 
     public enum Role { DOCTOR, PATIENT, NONE }
 
     // --- Bindable input properties ---
-    private final StringProperty        email    = new SimpleStringProperty("");
-    private final StringProperty        password = new SimpleStringProperty("");
-    private final ObjectProperty<Role>  role     = new SimpleObjectProperty<>(Role.NONE);
+    private final StringProperty       email    = new SimpleStringProperty("");
+    private final StringProperty       password = new SimpleStringProperty("");
+    private final ObjectProperty<Role> role     = new SimpleObjectProperty<>(Role.NONE);
 
     // --- Bindable output properties ---
     private final StringProperty  errorMessage = new SimpleStringProperty("");
@@ -34,9 +35,9 @@ public class LoginViewModel {
     private final Authenticate  authenticate = new Authenticate();
     private final RetrieveData  retrieveData = new RetrieveData();
 
-    // -------------------------------------------------------------------------
-    // Login action (called by controller on Sign In click)
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // Login action
+    // =========================================================================
 
     public void login() {
         errorMessage.set("");
@@ -45,7 +46,7 @@ public class LoginViewModel {
         String emailVal    = email.get().trim();
         String passwordVal = password.get().trim();
 
-        // --- Client-side validation ---
+        // Client-side validation
         if (emailVal.isEmpty() || passwordVal.isEmpty()) {
             errorMessage.set("Email and password are required.");
             return;
@@ -61,7 +62,7 @@ public class LoginViewModel {
 
         isLoading.set(true);
 
-        // Step 1: verify credentials via existing Authenticate service
+        // Step 1: verify credentials
         boolean credentialsValid = authenticate.login(emailVal, passwordVal);
 
         if (!credentialsValid) {
@@ -70,7 +71,7 @@ public class LoginViewModel {
             return;
         }
 
-        // Step 2: fetch full User object by email
+        // Step 2: fetch typed User object
         User user = retrieveData.getUserByEmail(emailVal);
 
         isLoading.set(false);
@@ -94,9 +95,9 @@ public class LoginViewModel {
         loginSuccess.set(true);
     }
 
-    // -------------------------------------------------------------------------
-    // Role helpers — read by controller after loginSuccess fires
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // Role helpers
+    // =========================================================================
 
     public boolean isDoctor()  { return authenticatedUser instanceof Doctor; }
     public boolean isPatient() { return authenticatedUser instanceof Patient; }
@@ -105,14 +106,14 @@ public class LoginViewModel {
     public Patient getAuthenticatedPatient() { return (Patient) authenticatedUser; }
     public User    getAuthenticatedUser()    { return authenticatedUser; }
 
-    // -------------------------------------------------------------------------
-    // Property accessors (for FXML binding in controller)
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // Property accessors
+    // =========================================================================
 
-    public StringProperty        emailProperty()        { return email; }
-    public StringProperty        passwordProperty()     { return password; }
-    public ObjectProperty<Role>  roleProperty()         { return role; }
-    public StringProperty        errorMessageProperty() { return errorMessage; }
-    public BooleanProperty       isLoadingProperty()    { return isLoading; }
-    public BooleanProperty       loginSuccessProperty() { return loginSuccess; }
+    public StringProperty       emailProperty()        { return email; }
+    public StringProperty       passwordProperty()     { return password; }
+    public ObjectProperty<Role> roleProperty()         { return role; }
+    public StringProperty       errorMessageProperty() { return errorMessage; }
+    public BooleanProperty      isLoadingProperty()    { return isLoading; }
+    public BooleanProperty      loginSuccessProperty() { return loginSuccess; }
 }

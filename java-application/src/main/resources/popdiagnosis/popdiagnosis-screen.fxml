@@ -52,13 +52,13 @@
 
         <!-- CAMERA -->
         <Button fx:id="openCameraBtn"
-                text="Open Camera (Coming Soon)"
+                text="Open Camera"
                 onAction="#onOpenCamera"
                 prefWidth="260"
-                style="-fx-background-color: #999;
-                       -fx-text-fill: white;
-                       -fx-background-radius: 10;
-                       -fx-padding: 8 18;"/>
+                style="-fx-background-color: #3B82F6;
+               -fx-text-fill: white;
+               -fx-background-radius: 10;
+               -fx-padding: 8 18; -fx-cursor: hand;"/>
 
 
 

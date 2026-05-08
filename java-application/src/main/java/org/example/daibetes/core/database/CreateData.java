@@ -10,33 +10,35 @@ import java.sql.*;
 public class CreateData {
     // Creates a new user account and returns the generated user_id
     public int createUser(User user) {
-
         String sql = """
         INSERT INTO tbluser 
         (firstname, lastname, email, password, contact_number, gender, birthdate)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """;
 
-        try (Connection conn = MySQLConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = MySQLConnection.getConnection()) {
 
-            // Using getters from User class
-            ps.setString(1, user.getFirstname());
-            ps.setString(2, user.getLastname());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPassword());
-            ps.setString(5, user.getContactNumber());
-            ps.setString(6, user.getGender());
-            ps.setString(7, user.getBirthdate());
+            if (conn == null) {
+                System.out.println("Create user failed: database connection is null.");
+                return -1;
+            }
 
+            try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, user.getFirstname());
+                ps.setString(2, user.getLastname());
+                ps.setString(3, user.getEmail());
+                ps.setString(4, user.getPassword());
+                ps.setString(5, user.getContactNumber());
+                ps.setString(6, user.getGender());
+                ps.setString(7, user.getBirthdate());
 
+                ps.executeUpdate();
 
-            ps.executeUpdate();
+                ResultSet rs = ps.getGeneratedKeys();
 
-            ResultSet rs = ps.getGeneratedKeys();
-
-            if (rs.next()) {
-                return rs.getInt(1); // return user_id
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
 
         } catch (SQLException e) {
@@ -76,33 +78,26 @@ public class CreateData {
             return false;
         }
 
-        // 2 = doctor ID card (refer to the database structure tab in the docs file)
-        ImageDAO imageDAO = new ImageDAO();
-
-        int doctorIdCardId = imageDAO.createImage(
-                doctor.getDoctorId(),
-                2
-        );
-
-        if (doctorIdCardId == -1) {
-            return false;
-        }
-
         String sql = """
         INSERT INTO tbldoctor
-        (user_id, doctor_idcard_id, license_number, hospital)
-        VALUES (?, ?, ?, ?)
+        (user_id, license_number, hospital)
+        VALUES (?, ?, ?)
     """;
 
-        try (Connection conn = MySQLConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = MySQLConnection.getConnection()) {
 
-            ps.setInt(1, userId);
-            ps.setInt(2, doctorIdCardId);
-            ps.setString(3, doctor.getLicenseNumber());
-            ps.setString(4, doctor.getHospital());
+            if (conn == null) {
+                System.out.println("Create doctor failed: database connection is null.");
+                return false;
+            }
 
-            return ps.executeUpdate() > 0;
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, userId);
+                ps.setString(2, doctor.getLicenseNumber());
+                ps.setString(3, doctor.getHospital());
+
+                return ps.executeUpdate() > 0;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

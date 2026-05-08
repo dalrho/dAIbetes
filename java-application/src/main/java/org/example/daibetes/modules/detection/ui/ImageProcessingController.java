@@ -111,9 +111,38 @@ public class ImageProcessingController {
     }
     @FXML
     private void handleGenerateReport() {
-        // Logic remains the same, just renamed for the new button purpose
-        System.out.println("Generating Diagnostic Report from enhanced image...");
-        // Implement report generation or export logic here
+        Image finalProcessedImage = rawImageView.getImage();
+
+        if (finalProcessedImage == null) {
+            System.err.println("No image available to generate a report.");
+            return;
+        }
+
+        // Save image to AppContext
+        AppContext.getInstance().setSelectedImage(finalProcessedImage);
+
+        try {
+            Stage stage = (Stage) enhancedImageView.getScene().getWindow();
+
+            // 1. Try to find the resource
+            var resource = getClass().getResource("/generateReport/generate-report.fxml");
+
+            // 2. Debug check: if this is null, the path is wrong
+            if (resource == null) {
+                System.err.println("ERROR: Could not find /generateReport/generate-report.fxml");
+                System.err.println("Check if the folder is named 'generateReport' or 'generatereport'");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+            stage.centerOnScreen();
+
+        } catch (Exception e) {
+            System.err.println("Navigation Error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
