@@ -1,51 +1,45 @@
 package patientsdashboard;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.example.daibetes.app.AppContext;
 import org.example.daibetes.core.database.ImageDAO;
 import org.example.daibetes.core.domain.Doctor;
 import org.example.daibetes.core.domain.Patient;
+import org.example.daibetes.core.domain.User;
+import register.sceneLoader;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
- * Controller for patients-dashboard-screen.fxml.
- * Package: patientsdashboard (matches fx:controller in FXML).
- *
- * fx:id mapping:
- *   profileImage            → patient avatar
- *   patientNameLabel        → patient full name
- *   patientIdLabel          → patient ID
- *   viewDiagnosisBtn        → sidebar: opens diagnosis overlay
- *   scheduleFollowUpBtn     → sidebar: opens request-scan overlay
- *   myDoctorsBtn            → sidebar: opens my doctors overlay
- *   logoutBtn               → top-right logout
- *   recentVisitsContainer   → VBox: last 3 diagnosis rows
- *   viewAllVisitsBtn        → opens all diagnoses overlay
- *   daysUntilFollowUpLabel  → countdown number
- *   followUpDetailsLabel    → "Follow-up on <date>"
- *   followUpDoctorLabel     → "Dr. <name>"
- *   medicationNotesContainer→ VBox: recommendation rows from latest diagnosis
- *   scheduleContainer       → VBox: upcoming test rows
- *   inboxBtn                → placeholder (future feature)
+ * Controller for patients-dashboard.fxml.
+ * Implements Initializable to match the existing FXML contract.
+ * Reads the logged-in patient from AppContext — no initData() needed.
  */
-public class PatientDashboardControllerTest {
+public class PatientDashboardControllerTest implements Initializable {
 
-    // --- Sidebar ---
+    // ════════════════════════════════════════════════════════════
+    // FXML COMPONENTS - LEFT SIDEBAR
+    // ════════════════════════════════════════════════════════════
+
     @FXML private ImageView profileImage;
     @FXML private Label     patientNameLabel;
     @FXML private Label     patientIdLabel;
@@ -53,43 +47,57 @@ public class PatientDashboardControllerTest {
     @FXML private Button    scheduleFollowUpBtn;
     @FXML private Button    myDoctorsBtn;
 
-    // --- Top bar ---
-    @FXML private Button    logoutBtn;
+    // ════════════════════════════════════════════════════════════
+    // FXML COMPONENTS - MAIN CONTENT
+    // ════════════════════════════════════════════════════════════
 
-    // --- Dashboard cards ---
-    @FXML private VBox      recentVisitsContainer;
-    @FXML private Button    viewAllVisitsBtn;
-    @FXML private Label     daysUntilFollowUpLabel;
-    @FXML private Label     followUpDetailsLabel;
-    @FXML private Label     followUpDoctorLabel;
-    @FXML private VBox      medicationNotesContainer;
-    @FXML private VBox      scheduleContainer;
+    @FXML private Button logoutBtn;
 
-    // --- Bottom ---
-    @FXML private Button    inboxBtn;
+    @FXML private VBox   recentVisitsContainer;
+    @FXML private Button viewAllVisitsBtn;
+
+    @FXML private Label  daysUntilFollowUpLabel;
+    @FXML private Label  followUpDetailsLabel;
+    @FXML private Label  followUpDoctorLabel;
+
+    @FXML private VBox   medicationNotesContainer;
+    @FXML private VBox   scheduleContainer;
+
+    @FXML private Button inboxBtn;
 
     private final PatientDashboardViewModelTest viewModel = new PatientDashboardViewModelTest();
 
-    // =========================================================================
-    // Init — called by loginController after successful login
-    // =========================================================================
+    // ════════════════════════════════════════════════════════════
+    // INITIALIZATION
+    // ════════════════════════════════════════════════════════════
 
-    public void initData(Patient patient) {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // Load profile image
+        URL imgUrl = getClass().getResource("/images/serato.jpg");
+        if (imgUrl != null) {
+            profileImage.setImage(new Image(imgUrl.toExternalForm()));
+        } else {
+            System.out.println("Profile image not found in resources.");
+        }
+
+        // Resolve logged-in patient from session
+        User currentUser = AppContext.getInstance().getCurrentUser();
+
+        if (!(currentUser instanceof Patient)) {
+            System.err.println("ERROR: Current user is not a Patient.");
+            return;
+        }
+
+        Patient patient = (Patient) currentUser;
         viewModel.initData(patient);
-    }
 
-    // =========================================================================
-    // JavaFX initialize — bindings and listeners
-    // =========================================================================
-
-    @FXML
-    public void initialize() {
-
-        // --- Patient profile bindings ---
+        // --- Bind profile labels ---
         patientNameLabel.textProperty().bind(viewModel.patientNameProperty());
         patientIdLabel.textProperty().bind(viewModel.patientIdProperty());
 
-        // --- Follow-up card bindings ---
+        // --- Bind follow-up card ---
         daysUntilFollowUpLabel.textProperty().bind(viewModel.daysUntilFollowUpProperty());
         followUpDetailsLabel.textProperty().bind(viewModel.followUpDetailsProperty());
         followUpDoctorLabel.textProperty().bind(viewModel.followUpDoctorProperty());
@@ -102,27 +110,31 @@ public class PatientDashboardControllerTest {
                 });
 
         viewModel.getSchedule().addListener(
-                (javafx.collections.ListChangeListener<String[]>) c -> populateScheduleCard());
+                (javafx.collections.ListChangeListener<String[]>) c ->
+                        populateSchedule());
+
+        // Initial population
+        populateRecentVisits();
+        populateMedicationNotes();
+        populateSchedule();
+
+        setupTooltips();
     }
 
-    // =========================================================================
-    // VBox card population helpers
-    // =========================================================================
+    // ════════════════════════════════════════════════════════════
+    // POPULATE METHODS
+    // ════════════════════════════════════════════════════════════
 
-    /**
-     * Fills recentVisitsContainer with the 3 most recent diagnoses.
-     * Each row: "Dr. <name>  |  <date>"
-     */
     private void populateRecentVisits() {
         recentVisitsContainer.getChildren().clear();
         List<String[]> diagnoses = viewModel.getDiagnoses();
-
         int limit = Math.min(3, diagnoses.size());
+
         for (int i = 0; i < limit; i++) {
             String[] row = diagnoses.get(i);
             // row: [0]=id [1]=doctor [2]=diagnosis [3]=recommendation [4]=date
             recentVisitsContainer.getChildren().add(
-                    buildVisitRow("Dr. " + row[1], row[4], row[2]));
+                    createVisitItem("Dr. " + row[1], row[4], row[2]));
         }
 
         if (diagnoses.isEmpty()) {
@@ -131,21 +143,39 @@ public class PatientDashboardControllerTest {
         }
     }
 
-    /**
-     * Fills medicationNotesContainer with recommendations from the
-     * 3 most recent diagnoses.
-     */
+    private VBox createVisitItem(String doctorName, String date, String diagnosisText) {
+        VBox visitBox = new VBox();
+        visitBox.setStyle("-fx-padding: 12; -fx-border-color: #E0E0E0; -fx-border-radius: 8;");
+
+        Label doctorLabel = new Label(doctorName);
+        doctorLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #333333;");
+
+        Label dateLabel = new Label(date);
+        dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666; -fx-padding: 4 0 0 0;");
+
+        Label diagLabel = new Label(truncate(diagnosisText, 60));
+        diagLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #F39C12; -fx-padding: 4 0 0 0;");
+        diagLabel.setWrapText(true);
+
+        visitBox.getChildren().addAll(doctorLabel, dateLabel, diagLabel);
+        return visitBox;
+    }
+
     private void populateMedicationNotes() {
         medicationNotesContainer.getChildren().clear();
         List<String[]> diagnoses = viewModel.getDiagnoses();
-
         int limit = Math.min(3, diagnoses.size());
+
         for (int i = 0; i < limit; i++) {
             String[] row = diagnoses.get(i);
-            String rec = row[3] != null && !row[3].isEmpty()
-                    ? row[3] : "No specific notes.";
-            medicationNotesContainer.getChildren().add(
-                    buildNoteRow(row[4], rec));
+            String rec = (row[3] != null && !row[3].isEmpty()) ? row[3] : "No specific notes.";
+
+            Label medLabel = new Label(rec);
+            medLabel.setWrapText(true);
+            medLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #333333; -fx-line-spacing: 3;");
+            medLabel.setPadding(new javafx.geometry.Insets(8, 0, 8, 0));
+
+            medicationNotesContainer.getChildren().add(medLabel);
         }
 
         if (diagnoses.isEmpty()) {
@@ -154,19 +184,16 @@ public class PatientDashboardControllerTest {
         }
     }
 
-    /**
-     * Fills scheduleContainer with upcoming pending tests.
-     */
-    private void populateScheduleCard() {
+    private void populateSchedule() {
         scheduleContainer.getChildren().clear();
         List<String[]> schedule = viewModel.getSchedule();
-
         boolean hasPending = false;
+
         for (String[] row : schedule) {
             // row: [0]=test_id [1]=doctor [2]=date [3]=status
             if ("Pending".equals(row[3])) {
                 scheduleContainer.getChildren().add(
-                        buildScheduleRow("Dr. " + row[1], row[2], row[3]));
+                        createScheduleItem(row[2], "Dr. " + row[1]));
                 hasPending = true;
             }
         }
@@ -177,11 +204,40 @@ public class PatientDashboardControllerTest {
         }
     }
 
-    // =========================================================================
-    // Sidebar button handlers
-    // =========================================================================
+    private VBox createScheduleItem(String time, String description) {
+        VBox scheduleBox = new VBox();
+        scheduleBox.setSpacing(4);
+        scheduleBox.setStyle("-fx-padding: 0;");
 
-    /** VIEW DIAGNOSIS — opens a modal listing all diagnosis records. */
+        HBox timeBox = new HBox();
+        timeBox.setStyle("-fx-alignment: center-left; -fx-spacing: 8;");
+
+        javafx.scene.shape.Circle dotCircle = new javafx.scene.shape.Circle(6);
+        dotCircle.setStyle("-fx-fill: #F39C12;");
+
+        Label timeLabel = new Label(time);
+        timeLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;");
+
+        timeBox.getChildren().addAll(dotCircle, timeLabel);
+
+        Label descLabel = new Label(description);
+        descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #999999; -fx-padding: 0 0 0 22;");
+
+        scheduleBox.getChildren().addAll(timeBox, descLabel);
+        return scheduleBox;
+    }
+
+    private void setupTooltips() {
+        viewDiagnosisBtn.setTooltip(new Tooltip("View your current diagnoses and medical history"));
+        scheduleFollowUpBtn.setTooltip(new Tooltip("Schedule or reschedule follow-up appointments"));
+        myDoctorsBtn.setTooltip(new Tooltip("View your assigned doctors and specialists"));
+        inboxBtn.setTooltip(new Tooltip("Check your messages from doctors and clinic"));
+    }
+
+    // ════════════════════════════════════════════════════════════
+    // BUTTON ACTION HANDLERS
+    // ════════════════════════════════════════════════════════════
+
     @FXML
     private void onViewDiagnosis() {
         Stage modal = new Stage();
@@ -190,29 +246,21 @@ public class PatientDashboardControllerTest {
 
         VBox content = new VBox(14);
         content.setStyle("-fx-padding: 24; -fx-background-color: #F2F2F2;");
-
-        Label title = styledLabel("Diagnosis Records", "#111111", "18px");
-        title.setStyle(title.getStyle() + "; -fx-font-weight: bold;");
-        content.getChildren().add(title);
+        content.getChildren().add(styledLabel("Diagnosis Records", "#111111", "18px"));
 
         List<String[]> diagnoses = viewModel.getDiagnoses();
         if (diagnoses.isEmpty()) {
             content.getChildren().add(styledLabel("No records found.", "#888888", "13px"));
         } else {
-            for (String[] row : diagnoses) {
-                content.getChildren().add(buildDetailCard(row));
-            }
+            for (String[] row : diagnoses) content.getChildren().add(buildDetailCard(row));
         }
 
         javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(content);
         scroll.setFitToWidth(true);
-        scroll.setStyle("-fx-background-color: transparent;");
-
         modal.setScene(new Scene(scroll, 600, 500));
         modal.show();
     }
 
-    /** SCHEDULE FOLLOW-UP — search for a doctor and submit a scan request. */
     @FXML
     private void onScheduleFollowUp() {
         Stage modal = new Stage();
@@ -221,15 +269,14 @@ public class PatientDashboardControllerTest {
 
         VBox content = new VBox(14);
         content.setStyle("-fx-padding: 24; -fx-background-color: #F2F2F2;");
+        content.getChildren().add(styledLabel("Request a Scan", "#111111", "18px"));
 
-        Label title = styledLabel("Request a Scan", "#111111", "18px");
-        title.setStyle(title.getStyle() + "; -fx-font-weight: bold;");
-
-        // Search row
         javafx.scene.control.TextField searchField = new javafx.scene.control.TextField();
         searchField.setPromptText("Search doctor name or hospital...");
         searchField.textProperty().bindBidirectional(viewModel.searchKeywordProperty());
+
         VBox searchResultsBox = new VBox(8);
+
         Button searchBtn = new Button("SEARCH");
         searchBtn.setStyle("-fx-background-color: #1A1A1A; -fx-text-fill: white; " +
                 "-fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 6;");
@@ -241,14 +288,11 @@ public class PatientDashboardControllerTest {
         HBox searchRow = new HBox(10, searchField, searchBtn);
         HBox.setHgrow(searchField, Priority.ALWAYS);
 
-
-
-        // Status label
         Label statusLbl = new Label();
         statusLbl.textProperty().bind(viewModel.statusMessageProperty());
         statusLbl.setStyle("-fx-text-fill: #C0392B; -fx-font-size: 12px;");
 
-        content.getChildren().addAll(title, searchRow, searchResultsBox, statusLbl);
+        content.getChildren().addAll(searchRow, searchResultsBox, statusLbl);
 
         javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(content);
         scroll.setFitToWidth(true);
@@ -258,7 +302,6 @@ public class PatientDashboardControllerTest {
 
     private void populateSearchResults(VBox container, Stage modal) {
         container.getChildren().clear();
-
         for (Doctor doctor : viewModel.getSearchResults()) {
             HBox row = new HBox(12);
             row.setStyle("-fx-background-color: white; -fx-padding: 12; " +
@@ -298,17 +341,16 @@ public class PatientDashboardControllerTest {
         if (file == null) return;
 
         ImageDAO imageDAO = new ImageDAO();
-        int rawImageId = imageDAO.createImage(new File(file.getAbsolutePath()), 1);
+        int rawImageId = imageDAO.createImage(file, 1);
 
         viewModel.requestTest(rawImageId);
 
         if (viewModel.requestSuccessProperty().get()) {
             modal.close();
-            populateScheduleCard();
+            populateSchedule();
         }
     }
 
-    /** MY DOCTORS — lists all doctors the patient has had tests with. */
     @FXML
     private void onMyDoctors() {
         Stage modal = new Stage();
@@ -317,24 +359,18 @@ public class PatientDashboardControllerTest {
 
         VBox content = new VBox(12);
         content.setStyle("-fx-padding: 24; -fx-background-color: #F2F2F2;");
-
-        Label title = styledLabel("My Doctors", "#111111", "18px");
-        title.setStyle(title.getStyle() + "; -fx-font-weight: bold;");
-        content.getChildren().add(title);
+        content.getChildren().add(styledLabel("My Doctors", "#111111", "18px"));
 
         List<Doctor> doctors = viewModel.getMyDoctors();
         if (doctors.isEmpty()) {
-            content.getChildren().add(
-                    styledLabel("No doctors found.", "#888888", "13px"));
+            content.getChildren().add(styledLabel("No doctors found.", "#888888", "13px"));
         } else {
             for (Doctor d : doctors) {
                 HBox row = new HBox(14);
-                row.setStyle("-fx-background-color: white; -fx-padding: 14; " +
-                        "-fx-background-radius: 8;");
+                row.setStyle("-fx-background-color: white; -fx-padding: 14; -fx-background-radius: 8;");
                 VBox info = new VBox(3);
                 info.getChildren().addAll(
-                        styledLabel("Dr. " + d.getFirstname() + " " + d.getLastname(),
-                                "#111111", "14px"),
+                        styledLabel("Dr. " + d.getFirstname() + " " + d.getLastname(), "#111111", "14px"),
                         styledLabel(d.getHospital(), "#666666", "12px"),
                         styledLabel("License: " + d.getLicenseNumber(), "#999999", "11px")
                 );
@@ -349,95 +385,46 @@ public class PatientDashboardControllerTest {
         modal.show();
     }
 
-    /** VIEW ALL VISITS — same as onViewDiagnosis, shows all records. */
     @FXML
     private void onViewAllVisits() {
         onViewDiagnosis();
     }
 
-    // =========================================================================
-    // Other handlers
-    // =========================================================================
-
-    @FXML
-    private void onLogout() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/login/login-screen.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) logoutBtn.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void onInbox() {
         // Placeholder — Inbox feature to be implemented in a future PR
+        showNotification("Opening Inbox...");
     }
 
-    // =========================================================================
-    // UI builder helpers
-    // =========================================================================
+    @FXML
+    private void onLogout(ActionEvent event) {
+        AppContext.getInstance().clearSession();
 
-    private HBox buildVisitRow(String doctorName, String date, String diagnosisText) {
-        HBox row = new HBox(12);
-        row.setStyle("-fx-background-color: #F8F8F8; -fx-padding: 12; " +
-                "-fx-background-radius: 8;");
-
-        VBox info = new VBox(3);
-        info.getChildren().addAll(
-                styledLabel(doctorName, "#111111", "14px"),
-                styledLabel(truncate(diagnosisText, 60), "#666666", "12px")
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(
+                sceneLoader.load(
+                        "splashscreen",
+                        "splash-screen.fxml",
+                        "/styles/splash.css"
+                )
         );
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        Label dateLbl = styledLabel(date, "#999999", "12px");
-        row.getChildren().addAll(info, spacer, dateLbl);
-        return row;
     }
 
-    private VBox buildNoteRow(String date, String note) {
-        VBox box = new VBox(4);
-        box.setStyle("-fx-background-color: #F8F8F8; -fx-padding: 12; " +
-                "-fx-background-radius: 8;");
-        box.getChildren().addAll(
-                styledLabel(date, "#999999", "11px"),
-                styledLabel(truncate(note, 80), "#333333", "13px")
-        );
-        return box;
+    // ════════════════════════════════════════════════════════════
+    // UTILITY METHODS
+    // ════════════════════════════════════════════════════════════
+
+    public void refreshDashboard() {
+        populateRecentVisits();
+        populateMedicationNotes();
+        populateSchedule();
     }
 
-    private HBox buildScheduleRow(String doctorName, String date, String status) {
-        HBox row = new HBox(12);
-        row.setStyle("-fx-background-color: #F8F8F8; -fx-padding: 12; " +
-                "-fx-background-radius: 8;");
-
-        VBox info = new VBox(3);
-        info.getChildren().addAll(
-                styledLabel(doctorName, "#111111", "13px"),
-                styledLabel(date, "#666666", "12px")
-        );
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        String dotColor = "Pending".equals(status) ? "#E67E22" : "#27AE60";
-        Label statusDot = new Label("● " + status);
-        statusDot.setStyle("-fx-text-fill: " + dotColor + "; -fx-font-size: 12px;");
-
-        row.getChildren().addAll(info, spacer, statusDot);
-        return row;
+    private void showNotification(String message) {
+        System.out.println("Notification: " + message);
     }
 
     private VBox buildDetailCard(String[] row) {
-        // row: [0]=id [1]=doctor [2]=diagnosis [3]=recommendation [4]=date
         VBox card = new VBox(8);
         card.setStyle("-fx-background-color: white; -fx-padding: 16; " +
                 "-fx-background-radius: 10; " +
