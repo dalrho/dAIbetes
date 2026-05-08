@@ -1,5 +1,7 @@
 package imageUpload;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,12 +10,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.detection.ui.ImageProcessingController;
 import register.PopupManager;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class ImageUploadController {
@@ -150,4 +156,48 @@ public class ImageUploadController {
         refresh();
     }
     public List<File> getImages() { return images; }
+
+    @FXML
+    private void onCapturePhoto() {
+        if (images.size() >= 3) {
+            showAlert("Limit reached", "You already have 3 images in your gallery.");
+            return;
+        }
+
+        try {
+            // 1. Open Camera Popup
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/cameraPopup/camera-popup.fxml"));
+            Stage cameraStage = new Stage();
+            cameraStage.initModality(Modality.APPLICATION_MODAL);
+            cameraStage.setTitle("Camera Capture");
+            cameraStage.setScene(new Scene(loader.load()));
+            cameraStage.showAndWait();
+
+            // 2. Retrieve captured image from AppContext
+            Image capturedImg = AppContext.getInstance().getSelectedImage();
+
+            if (capturedImg != null) {
+                // 3. Convert Image to a File so it can stay in our gallery list
+                File tempFile = saveImageToTempFile(capturedImg);
+                images.add(tempFile);
+
+                // 4. Update Context and UI
+                AppContext.getInstance().setGalleryFiles(images);
+                refresh();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Camera Error", "Could not open camera: " + e.getMessage());
+        }
+    }
+
+    // Helper to turn the Camera capture into a temporary file
+    private File saveImageToTempFile(Image image) throws IOException {
+        BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
+        File tempFile = File.createTempFile("capture_", ".png");
+        tempFile.deleteOnExit();
+        ImageIO.write(bImage, "png", tempFile);
+        return tempFile;
+    }
 }
