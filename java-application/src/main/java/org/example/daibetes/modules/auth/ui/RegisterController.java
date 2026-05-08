@@ -4,40 +4,42 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import org.example.daibetes.shared.utils.NavigationUtils;
+import javafx.stage.Stage;
+import register.sceneLoader;
 
 public class RegisterController {
 
     @FXML
-    private void selectPatient(ActionEvent event) {
-        NavigationUtils.switchScene(
-                (Node) event.getSource(),
-                "register",
-                "patient-register.fxml",
-                "dAIbetes — Patient Registration",
-                null
-        );
+    public void selectPatient(ActionEvent event) {
+        openScene(event, "register", "patient-register.fxml", "/styles/splash.css");
     }
 
     @FXML
-    private void selectDoctor(ActionEvent event) {
-        NavigationUtils.switchScene(
-                (Node) event.getSource(),
-                "register",
-                "doctor-register.fxml",
-                "dAIbetes — Doctor Registration",
-                null
-        );
+    public void selectDoctor(ActionEvent event) {
+        openScene(event, "register", "doctor-register.fxml", "/styles/splash.css");
     }
 
     @FXML
-    private void goToLogin(MouseEvent event) {
-        NavigationUtils.switchScene(
-                (Node) event.getSource(),
-                "login",
-                "login-screen.fxml",
-                "dAIbetes — Login",
-                null
+    public void goToLogin(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
         );
+    }
+
+    private void openScene(ActionEvent event, String folder, String fxml, String css) {
+        try {
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            stage.setScene(sceneLoader.load(folder, fxml, css));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
