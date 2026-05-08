@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="org.example.daibetes.modules.auth.ui.DoctorRegisterController"
+           fx:controller="register.doctorRegisterController"
            style="-fx-background-color: rgba(0,0,0,0.3);">
 
     <VBox fx:id="card"
@@ -44,7 +44,7 @@
                 </VBox>
 
                 <VBox alignment="CENTER_LEFT" spacing="5">
-                    <Label text="Name:"/>
+                    <Label text="Email:"/>
                     <TextField fx:id="nameField"
                                maxWidth="Infinity"
                                style="-fx-background-radius: 8;

@@ -9,6 +9,10 @@ module org.example.daibetes {
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
+    exports popdiagnosis;
+    exports imageUpload;
+    opens imageUpload to javafx.fxml;
+    opens popdiagnosis to javafx.fxml;
 
     opens register to javafx.fxml;
     exports register;
