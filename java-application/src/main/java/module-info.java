@@ -7,6 +7,12 @@ module org.example.daibetes {
     requires java.desktop;
     requires mysql.connector.j;
     requires javafx.base;
+    requires java.net.http;
+    requires org.apache.httpcomponents.client5.httpclient5;
+    requires org.apache.httpcomponents.core5.httpcore5;
+//    requires org.example.daibetes;
+//    requires org.example.daibetes;
+//    requires org.example.daibetes;
     requires jbcrypt;
     requires webcam.capture;
     requires javafx.swing;
