@@ -11,7 +11,7 @@ public class ImageDAO {
 
     public int createImage(File imageFile, int imageTypeId) {
         String sql = """
-        INSERT INTO tblImage (image_name, image_type_id, image_data)
+        INSERT INTO tblimage (image_name, image_type_id, image_data)
         VALUES (?, ?, ?)
     """;
 

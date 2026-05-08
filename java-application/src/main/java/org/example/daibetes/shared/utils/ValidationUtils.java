@@ -4,6 +4,7 @@ import javafx.scene.control.Alert;
 
 public class ValidationUtils {
 
+    //usable for register only when checking the password validity
     public static boolean isValidPassword(String password) {
 
         if (password == null || password.length() < 8) {
@@ -34,6 +35,7 @@ public class ValidationUtils {
         return true;
     }
 
+        //usable for both register and login
     public static boolean isValidEmail(String email) {
 
         if (email == null || email.isBlank()) {

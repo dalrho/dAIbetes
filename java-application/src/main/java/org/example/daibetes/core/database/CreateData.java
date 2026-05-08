@@ -12,7 +12,7 @@ public class CreateData {
     public int createUser(User user) {
 
         String sql = """
-        INSERT INTO tblUser 
+        INSERT INTO tbluser 
         (firstname, lastname, email, password, contact_number, gender, birthdate)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """;
@@ -53,7 +53,7 @@ public class CreateData {
             return false;
         }
 
-        String sql = "INSERT INTO tblPatient (user_id, age) VALUES (?, ?)";
+        String sql = "INSERT INTO tblpatient (user_id, age) VALUES (?, ?)";
 
 
         try (Connection conn = MySQLConnection.getConnection();

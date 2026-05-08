@@ -16,21 +16,23 @@ public class BrightnessDecorator extends ImageFilterDecorator {
 
     @Override
     public Image process(Image input) {
-       Image img = inner.process(input);
-       int w = (int)img.getWidth();
-       int h = (int)img.getHeight();
+        Image img = inner.process(input);
+        int w = (int) img.getWidth();
+        int h = (int) img.getHeight();
+
         WritableImage output = new WritableImage(w, h);
-        PixelWriter writer = output.getPixelWriter();
-        PixelReader reader = img.getPixelReader();
+        PixelReader pr = img.getPixelReader();
+        PixelWriter pw = output.getPixelWriter();
+
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
-                Color c = reader.getColor(x, y);
-                writer.setColor(x, y, new Color(
-                        clamp(c.getRed() + level),
-                        clamp(c.getGreen() + level),
-                        clamp(c.getBlue() + level),
-                        c.getOpacity()
-                ));
+                Color c = pr.getColor(x, y);
+                // brightnessValue is likely your double (e.g., 0.2 for +20%)
+                double r = Math.min(1.0, Math.max(0.0, c.getRed() + level));
+                double g = Math.min(1.0, Math.max(0.0, c.getGreen() + level));
+                double b = Math.min(1.0, Math.max(0.0, c.getBlue() + level));
+
+                pw.setColor(x, y, new Color(r, g, b, c.getOpacity()));
             }
         }
         return output;

@@ -10,7 +10,7 @@ public class UpdateData {
     public boolean updateUser(int userId, User user) {
 
         String sql = """
-        UPDATE tblUser
+        UPDATE tbluser
         SET firstname = ?, lastname = ?, contact_number = ?, gender = ?
         WHERE user_id = ?
     """;

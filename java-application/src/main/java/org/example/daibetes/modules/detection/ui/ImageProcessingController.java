@@ -1,5 +1,6 @@
 package org.example.daibetes.modules.detection.ui;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,15 +20,15 @@ public class ImageProcessingController {
     private final ScanAnalysisService analysisService = new ScanAnalysisService();
     private Image currentRawImage;
 
+    private Task<Image> currentProcessingTask;
+
     @FXML
     public void initialize() {
         currentRawImage = AppContext.getInstance().getSelectedImage();
 
-        // Populate Resize Options
         resizeCombo.getItems().setAll("Original", "400px", "600px", "800px");
         resizeCombo.setValue("Original");
 
-        // Sync Zoom Logic: Bind image scale to zoom slider
         if (enhancedImageView != null && rawImageView != null) {
             enhancedImageView.scaleXProperty().bind(zoomSlider.valueProperty());
             enhancedImageView.scaleYProperty().bind(zoomSlider.valueProperty());
@@ -39,6 +40,51 @@ public class ImageProcessingController {
             rawImageView.setImage(currentRawImage);
             updatePreview();
         }
+    }
+
+    @FXML
+    private void updatePreview() {
+        if (currentRawImage == null) return;
+
+        if (currentProcessingTask != null && currentProcessingTask.isRunning()) {
+            currentProcessingTask.cancel();
+        }
+
+        boolean isGray = grayscaleToggle.isSelected();
+        double bright = brightnessSlider.getValue();
+        double clahe = claheSlider.getValue();
+        double sharp = sharpSlider.getValue();
+        double denoise = denoiseSlider.getValue();
+        int targetWidth = 0;
+        String resizeVal = resizeCombo.getValue();
+        if (resizeVal != null && !resizeVal.equals("Original")) {
+            targetWidth = Integer.parseInt(resizeVal.replace("px", ""));
+        }
+
+        final int finalWidth = targetWidth;
+
+        currentProcessingTask = new Task<>() {
+            @Override
+            protected Image call() throws Exception {
+                // This heavy lifting happens on a separate core
+                return analysisService.applyEnhancements(
+                        currentRawImage, isGray, bright, clahe, sharp, denoise, finalWidth
+                );
+            }
+        };
+
+        currentProcessingTask.setOnSucceeded(event -> {
+            enhancedImageView.setImage(currentProcessingTask.getValue());
+        });
+
+        currentProcessingTask.setOnFailed(event -> {
+            Throwable e = currentProcessingTask.getException();
+            if (e != null) e.printStackTrace();
+        });
+
+        Thread thread = new Thread(currentProcessingTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @FXML
@@ -56,7 +102,6 @@ public class ImageProcessingController {
     @FXML
     private void handleBackToGallery() {
         try {
-            // Path must match your actual Gallery FXML location
             Stage stage = (Stage) enhancedImageView.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/daibetes/modules/detection/ui/GalleryView.fxml"));
             stage.setScene(new Scene(loader.load()));
@@ -67,30 +112,6 @@ public class ImageProcessingController {
 
     @FXML
     private void handleAIDetection() {
-        // Here you would pass 'enhancedImageView.getImage()' to your model
         System.out.println("Processing AI Detection on the enhanced image...");
-    }
-
-    @FXML
-    private void updatePreview() {
-        if (currentRawImage == null) return;
-
-        int targetWidth = 0;
-        String resizeVal = resizeCombo.getValue();
-        if (resizeVal != null && !resizeVal.equals("Original")) {
-            targetWidth = Integer.parseInt(resizeVal.replace("px", ""));
-        }
-
-        Image result = analysisService.applyEnhancements(
-                currentRawImage,
-                grayscaleToggle.isSelected(),
-                brightnessSlider.getValue(),
-                claheSlider.getValue(),
-                sharpSlider.getValue(),
-                denoiseSlider.getValue(),
-                targetWidth
-        );
-
-        enhancedImageView.setImage(result);
     }
 }
