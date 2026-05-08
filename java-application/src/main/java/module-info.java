@@ -7,6 +7,8 @@ module org.example.daibetes {
     requires java.desktop;
     requires mysql.connector.j;
     requires javafx.base;
+    requires jbcrypt;
+    //requires org.example.daibetes;
     //requires org.example.daibetes;
     exports popdiagnosis;
     exports imageUpload;

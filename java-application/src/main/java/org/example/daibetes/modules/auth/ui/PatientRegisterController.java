@@ -22,6 +22,7 @@ import org.example.daibetes.core.domain.UserFactory;
 import org.example.daibetes.modules.auth.service.Authenticate;
 import org.example.daibetes.shared.utils.ValidationUtils;
 import register.sceneLoader;
+import org.example.daibetes.shared.utils.PasswordUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -100,6 +101,7 @@ public class PatientRegisterController {
         String email = emailField.getText().trim();
         String contact = contactField.getText().trim();
         String password = passwordField.getText();
+        String hashedPassword = PasswordUtils.hashPassword(password);
         LocalDate birthdate = birthdatePicker.getValue();
 
         String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
@@ -141,7 +143,7 @@ public class PatientRegisterController {
                 firstName,
                 lastName,
                 email,
-                password,
+                hashedPassword,
                 contact,
                 selectedGender,
                 birthdate.toString(),

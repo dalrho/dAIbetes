@@ -1,6 +1,7 @@
 package org.example.daibetes.modules.auth.service;
 
 import org.example.daibetes.core.database.MySQLConnection;
+import org.example.daibetes.shared.utils.PasswordUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 public class Authenticate {
 
     public boolean login(String email, String password) {
-        String sql = "SELECT * FROM tbluser WHERE email = ? AND password = ?";
+        String sql = "SELECT password FROM tbluser WHERE email = ?";
 
         try (Connection conn = MySQLConnection.getConnection()) {
 
@@ -21,16 +22,20 @@ public class Authenticate {
 
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, email);
-                ps.setString(2, password);
 
                 ResultSet rs = ps.executeQuery();
-                return rs.next();
+
+                if (rs.next()) {
+                    String hashedPassword = rs.getString("password");
+                    return PasswordUtils.checkPassword(password, hashedPassword);
+                }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+
+        return false;
     }
 
     public boolean emailExists(String email) {

@@ -1,13 +1,17 @@
 package org.example.daibetes.modules.doctor.ui;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.example.daibetes.core.database.DoctorDashboardDAO;
 import org.example.daibetes.shared.utils.ValidationUtils;
-import org.example.daibetes.shared.utils.NavigationUtils;
+import register.sceneLoader;
+
 import java.util.List;
 
 public class DoctorDashboardController {
@@ -130,13 +134,18 @@ public class DoctorDashboardController {
 
     @FXML
     private void onViewPatients(ActionEvent event) {
-        NavigationUtils.switchScene(
-                (javafx.scene.Node) event.getSource(),
-                "records",
-                "records.fxml",
-                "Patient Records",
-                null
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load("records", "records.fxml", null)
         );
+
+        stage.setTitle("dAIbetes — View Patients");
+        stage.show();
+
+
     }
 
     @FXML
@@ -153,14 +162,18 @@ public class DoctorDashboardController {
 
     @FXML
     private void onLogout(ActionEvent event) {
-        NavigationUtils.switchScene(
-                (javafx.scene.Node) event.getSource(),
-                "login",
-                "login-screen.fxml",
-                "dAIbetes — Login",
-                null
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
         );
+
+        stage.setTitle("dAIbetes — Login");
+        stage.show();
     }
+
 
     @FXML
     private void onUpdateData(ActionEvent event) {
