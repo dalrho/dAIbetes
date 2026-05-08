@@ -146,6 +146,7 @@ public class ImageUploadController {
             showAlert("Error", "Something went wrong while processing the image.");
         }
     }
+
     @FXML
     private void onBack() {
         try {
