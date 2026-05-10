@@ -13,6 +13,7 @@ public class AppContext {
     private Image selectedImage;
     private int selectedImageId;
     private int currentTestId;
+    private File selectedImageFile;
 
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
@@ -26,7 +27,7 @@ public class AppContext {
         return instance;
     }
 
-    // --- Selected Image ---
+    // --- Image is for displaying in JavaFX ---
     public Image getSelectedImage() {
         return selectedImage;
     }
@@ -41,6 +42,15 @@ public class AppContext {
 
     public void setSelectedImageId(int selectedImageId) {
         this.selectedImageId = selectedImageId;
+    }
+
+    // --- File is for uploading in FastAPI ---
+    public File getSelectedImageFile() {
+        return selectedImageFile;
+    }
+
+    public void setSelectedImageFile(File selectedImageFile) {
+        this.selectedImageFile = selectedImageFile;
     }
 
     // --- Current Test ---
@@ -64,6 +74,7 @@ public class AppContext {
     public void clearSession() {
         this.currentUser = null;
         this.selectedImage = null;
+        this.selectedImageFile = null;
         this.selectedImageId = 0;
         this.currentTestId = 0;
         this.galleryFiles.clear();
