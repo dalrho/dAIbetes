@@ -9,6 +9,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
+import javafx.concurrent.Task;
+
+import org.example.daibetes.modules.ai.dto.AIResponseDTO;
+import org.example.daibetes.modules.ai.service.AIInferenceService;
+
+import java.io.File;
 
 public class GenerateResultsController {
 
@@ -63,19 +69,90 @@ public class GenerateResultsController {
 
     @FXML
     private void handleAIDetection() {
-        // 1. Show loading state
+
         aiLoader.setVisible(true);
-        aiExplanationLabel.setText("Analyzing retinal features...");
 
-        // 2. Simulate AI Processing (use Platform.runLater if using a real thread)
-        // For demo purposes:
-        aiLoader.setVisible(false);
-        aiCriticalityLabel.setText("MODERATE");
-        aiConfidenceLabel.setText("92.4%");
-        aiExplanationLabel.setText("AI has identified clusters of Hard Exudates in the macular region and possible Microaneurysms. No evidence of Neovascularization detected. Suggested Grade: Mild NPDR.");
+        aiCriticalityLabel.setText("Analyzing...");
+        aiConfidenceLabel.setText("");
+        aiExplanationLabel.setText("Running AI inference...");
 
-        // Change card color to a light green to indicate completion
-        aiResultBox.setStyle("-fx-background-color: #F0FDF4; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #BBF7D0;");
+        Task<Void> task = new Task<>() {
+
+            @Override
+            protected Void call() {
+
+                try {
+
+                    File imageFile =
+                            AppContext.getInstance().getSelectedImageFile();
+
+                    if (imageFile == null) {
+
+                        aiLoader.setVisible(false);
+
+                        aiExplanationLabel.setText(
+                                "No retinal image selected."
+                        );
+
+                        return null;
+                    }
+
+                    AIInferenceService aiService =
+                            new AIInferenceService();
+
+                    AIResponseDTO response =
+                            aiService.analyzeImage(imageFile);
+
+                    javafx.application.Platform.runLater(() -> {
+
+                        aiLoader.setVisible(false);
+
+                        aiCriticalityLabel.setText(
+                                response.getPrediction()
+                                        .getPredicted_class()
+                        );
+
+                        double confidence =
+                                response.getPrediction()
+                                        .getConfidence() * 100;
+
+                        aiConfidenceLabel.setText(
+                                String.format("%.2f%%", confidence)
+                        );
+
+                        aiExplanationLabel.setText(
+                                response.getClinical_guidance()
+                        );
+
+                        aiResultBox.setStyle("""
+                        -fx-background-color: #F0FDF4;
+                        -fx-background-radius: 12;
+                        -fx-padding: 20;
+                        -fx-border-color: #BBF7D0;
+                    """);
+                    });
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    javafx.application.Platform.runLater(() -> {
+
+                        aiLoader.setVisible(false);
+
+                        aiCriticalityLabel.setText("ERROR");
+
+                        aiExplanationLabel.setText(
+                                "AI analysis failed."
+                        );
+                    });
+                }
+
+                return null;
+            }
+        };
+
+        new Thread(task).start();
     }
     private String getSelected(ToggleGroup group) {
 
