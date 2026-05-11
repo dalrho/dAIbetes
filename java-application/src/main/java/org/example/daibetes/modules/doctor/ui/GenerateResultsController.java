@@ -198,38 +198,116 @@ public class GenerateResultsController {
         String dmeGrade = getSelected(tgDME);
 
         String criticality = criticalityCombo.getValue();
-        String doctorReasoning = doctorCriticalityArea.getText().trim();
-        String notes = notesArea.getText().trim();
+        String doctorReasoning = doctorCriticalityArea.getText() == null
+                ? ""
+                : doctorCriticalityArea.getText().trim();
 
+        String notes = notesArea.getText() == null
+                ? ""
+                : notesArea.getText().trim();
 
+        // =========================
+        // STRICT VALIDATION FIRST
+        // Do not save anything unless everything is complete.
+        // =========================
 
-        if (criticality == null || criticality.isBlank()) {
-            showAlert("Missing Criticality", "Please select a criticality level.");
+        if (reportImageView.getImage() == null) {
+            showAlert("Missing Image", "Please make sure a report image is loaded before saving.");
             return;
         }
 
-        if (drGrade == null || drGrade.isBlank()) {
+        if (isBlank(microaneurysms)) {
+            showAlert("Missing Finding", "Please select a value for Microaneurysms.");
+            return;
+        }
+
+        if (isBlank(hemorrhages)) {
+            showAlert("Missing Finding", "Please select a value for Hemorrhages.");
+            return;
+        }
+
+        if (isBlank(exudates)) {
+            showAlert("Missing Finding", "Please select a value for Hard Exudates.");
+            return;
+        }
+
+        if (isBlank(cottonWoolSpots)) {
+            showAlert("Missing Finding", "Please select a value for Cotton Wool Spots.");
+            return;
+        }
+
+        if (isBlank(macularEdemaFinding)) {
+            showAlert("Missing Finding", "Please select a value for Macular Edema.");
+            return;
+        }
+
+        if (isBlank(venousBeading)) {
+            showAlert("Missing Finding", "Please select a value for Venous Beading.");
+            return;
+        }
+
+        if (isBlank(irma)) {
+            showAlert("Missing Finding", "Please select a value for IRMA.");
+            return;
+        }
+
+        if (isBlank(neovascularization)) {
+            showAlert("Missing Finding", "Please select a value for Neovascularization.");
+            return;
+        }
+
+        if (isBlank(vitreousHemorrhage)) {
+            showAlert("Missing Finding", "Please select a value for Vitreous Hemorrhage.");
+            return;
+        }
+
+        if (isBlank(retinalDetachment)) {
+            showAlert("Missing Finding", "Please select a value for Retinal Detachment.");
+            return;
+        }
+
+        if (isBlank(drGrade)) {
             showAlert("Missing Evaluation", "Please select a final DR grade.");
             return;
         }
 
-        if (dmeGrade == null || dmeGrade.isBlank()) {
+        if (isBlank(dmeGrade)) {
             showAlert("Missing Evaluation", "Please select a macular edema grade.");
             return;
         }
+
+        if (isBlank(criticality)) {
+            showAlert("Missing Criticality", "Please select a criticality level.");
+            return;
+        }
+
+        if (isBlank(doctorReasoning)) {
+            showAlert("Missing Reasoning", "Please enter the doctor's criticality reasoning.");
+            return;
+        }
+
+        if (!hasAtLeastOneRecommendation()) {
+            showAlert("Missing Recommendation", "Please select at least one recommendation.");
+            return;
+        }
+
+        if (isBlank(notes)) {
+            showAlert("Missing Notes", "Please enter final notes.");
+            return;
+        }
+
+        // =========================
+        // SAVE ONLY AFTER ALL VALIDATION PASSES
+        // =========================
 
         try {
             ImageDAO imageDAO = new ImageDAO();
             ReportDAO reportDAO = new ReportDAO();
 
-            /*
-             * Save reportImageView to tblimage.
-             * image_type_id does not matter yet, so use 1 temporarily.
-             */
             File reportImageFile = imageViewToTempFile(reportImageView);
 
-            if (reportImageFile == null) {
-                showAlert("Image Error", "No report image found.");
+            if (reportImageFile == null || !reportImageFile.exists()) {
+                showAlert("Image Error", "No valid report image file was created.");
                 return;
             }
 
@@ -274,7 +352,7 @@ public class GenerateResultsController {
             );
 
             if (evaluationId == -1) {
-                showAlert( "Save Failed", "Evaluation was not saved.");
+                showAlert("Save Failed", "Evaluation was not saved.");
                 return;
             }
 
@@ -289,7 +367,7 @@ public class GenerateResultsController {
             );
 
             if (recommendationsId == -1) {
-                showAlert( "Save Failed", "Recommendations were not saved.");
+                showAlert("Save Failed", "Recommendations were not saved.");
                 return;
             }
 
@@ -319,18 +397,16 @@ public class GenerateResultsController {
                 return;
             }
 
-            Alert success = new Alert(Alert.AlertType.INFORMATION);
-            success.setTitle("Report Generated");
-            success.setHeaderText(null);
-            success.setContentText("The diagnostic report has been finalized and saved.");
-            success.showAndWait();
+            showAlert(
+                    "Report Generated",
+                    "The diagnostic report has been finalized and saved."
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Save Error", "Something went wrong while saving the report.");
         }
     }
-
     private File imageViewToTempFile(ImageView imageView) {
         try {
             if (imageView.getImage() == null) {
@@ -350,6 +426,19 @@ public class GenerateResultsController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private boolean hasAtLeastOneRecommendation() {
+        return annualFollowupCheck.isSelected()
+                || sixMonthCheck.isSelected()
+                || referCheck.isSelected()
+                || urgentCheck.isSelected()
+                || laserCheck.isSelected()
+                || antiVegfCheck.isSelected();
     }
 
 
