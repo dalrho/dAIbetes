@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 11, 2026 at 01:10 PM
+-- Generation Time: May 11, 2026 at 02:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -69,15 +69,7 @@ CREATE TABLE `tbldoctor` (
 
 INSERT INTO `tbldoctor` (`d_id`, `user_id`, `doctor_idcard_id`, `license_number`, `hospital`) VALUES
 (1, 1, 1, 'LIC-2026-001', 'Cebu City Medical Center'),
-(2, 2, 2, 'LIC-2026-002', 'Chong Hua Hospital'),
-(3, 8, NULL, 'rfrferfer', 'Not specified'),
-(4, 9, NULL, '4242', 'Not specified'),
-(5, 10, NULL, 'efefesfs', 'Not specified'),
-(6, 11, NULL, 'esfsfs', 'Not specified'),
-(7, 14, NULL, '23432', 'Not specified'),
-(8, 16, NULL, '12121', 'Not specified'),
-(9, 18, NULL, '342434', 'Not specified'),
-(10, 19, NULL, '55353', 'Not specified');
+(2, 2, 2, 'LIC-2026-002', 'Chong Hua Hospital');
 
 -- --------------------------------------------------------
 
@@ -169,11 +161,7 @@ INSERT INTO `tblpatient` (`p_id`, `user_id`, `age`) VALUES
 (2, 4, 25),
 (3, 5, 23),
 (4, 6, 26),
-(5, 7, 27),
-(6, 12, 5),
-(7, 13, 1),
-(8, 15, 0),
-(9, 17, 0);
+(5, 7, 27);
 
 -- --------------------------------------------------------
 
@@ -250,19 +238,7 @@ INSERT INTO `tbluser` (`user_id`, `firstname`, `lastname`, `email`, `password`, 
 (4, 'Mark', 'Dela Cruz', 'patient2@gmail.com', 'Password123', '09222222222', 'Male', '2001-06-10', '2026-05-06 04:11:47'),
 (5, 'Jessa', 'Lim', 'patient3@gmail.com', 'Password123', '09333333333', 'Female', '2003-09-25', '2026-05-06 04:11:47'),
 (6, 'Carlo', 'Garcia', 'patient4@gmail.com', 'Password123', '09444444444', 'Male', '2000-03-18', '2026-05-06 04:11:47'),
-(7, 'Mika', 'Tan', 'patient5@gmail.com', 'Password123', '09555555555', 'Female', '1999-12-05', '2026-05-06 04:11:47'),
-(8, 'freeferf', 'ferfeferf', 'rfefer@gmail.com', 'Admin123!!', '23232', 'Female', '1997-05-22', '2026-05-08 07:21:13'),
-(9, 'fefse', 'fesfsefes', 'fesfs@gmail.com', 'Admin123!!', '242424', 'Female', '1998-05-05', '2026-05-08 07:26:05'),
-(10, 'fesfs', 'fsfesf', 'efsfefse@gmail.com', 'Admin123!', '8408930294', 'Female', '2002-05-02', '2026-05-08 07:30:14'),
-(11, 'fsefs', 'fsefesfs', 'fsfefs@gmail.com', 'Doctor12!!', '4335353534', 'Female', '2002-05-30', '2026-05-08 07:38:06'),
-(12, 'ycia', 'magnanao', 'ycia@gmail.com', 'Pat123!!', '84039854038503', 'Female', '2021-05-06', '2026-05-08 07:52:17'),
-(13, 'ycia', 'magnanao', 'yciadh@gmail.com', 'Ycia123!!', '890840328048204', 'Female', '2025-05-07', '2026-05-08 08:05:06'),
-(14, 'ycia', 'magnanao', 'doctor@gmail.com', 'Doc12345!!', '209942304903840', 'Female', '1998-05-12', '2026-05-08 08:09:09'),
-(15, 'ycc', 'ccc', 'dddd@gmail.com', 'Pat12345!!', '038408208423', 'Female', '2026-03-30', '2026-05-08 08:21:50'),
-(16, 'dwd', 'wadwad', 'dwadw@gmail.com', 'Doc12345!!', '92839028903', 'Female', '1998-04-02', '2026-05-08 08:22:45'),
-(17, 'dfsefs', 'fsfsefs', 'esfesf@gmail.com', '$2a$10$tdy6Hv0U/2wlU16WjX1tZOZ5wmFgD2qw1/R2vj/rnx.qZ65HW/exq', '535353', 'Female', '2025-05-21', '2026-05-08 08:49:18'),
-(18, 'Ycia', 'Magnanao', 'yciadhm@gmail.com', '$2a$10$jsU11.CkyX6/PJ77DY2Srutb.s5ucKw14DaDZA2wFN66TiCXNljyS', '90830280423', 'Male', '1996-05-09', '2026-05-08 08:50:28'),
-(19, 'gtcgrtrgc', 'fefwfw', 'rgre@gmail.com', '$2a$10$19Ib37S63IjcwJtj0dJi7.JabV3DKmoNB43qwYa5mi15fLHqOpebW', '3242342', 'Female', '1998-05-20', '2026-05-08 09:50:35');
+(7, 'Mika', 'Tan', 'patient5@gmail.com', 'Password123', '09555555555', 'Female', '1999-12-05', '2026-05-06 04:11:47');
 
 --
 -- Indexes for dumped tables
@@ -364,7 +340,7 @@ ALTER TABLE `tblconsultationrequest`
 -- AUTO_INCREMENT for table `tblcriticality`
 --
 ALTER TABLE `tblcriticality`
-  MODIFY `criticality_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `criticality_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbldoctor`
@@ -376,19 +352,19 @@ ALTER TABLE `tbldoctor`
 -- AUTO_INCREMENT for table `tblfindings`
 --
 ALTER TABLE `tblfindings`
-  MODIFY `evaluation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tblimage`
 --
 ALTER TABLE `tblimage`
-  MODIFY `img_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `img_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `tblpathological`
 --
 ALTER TABLE `tblpathological`
-  MODIFY `findings_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `findings_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tblpatient`
@@ -400,19 +376,19 @@ ALTER TABLE `tblpatient`
 -- AUTO_INCREMENT for table `tblrecommendations`
 --
 ALTER TABLE `tblrecommendations`
-  MODIFY `recommendation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `recommendation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tblreport`
 --
 ALTER TABLE `tblreport`
-  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tbltests`
 --
 ALTER TABLE `tbltests`
-  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tbluser`

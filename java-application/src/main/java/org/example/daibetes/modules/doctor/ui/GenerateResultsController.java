@@ -1,5 +1,6 @@
 package org.example.daibetes.modules.doctor.ui;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,27 +12,39 @@ import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import javafx.concurrent.Task;
 
+import org.example.daibetes.core.database.ImageDAO;
+import org.example.daibetes.core.database.ReportDAO;
+import org.example.daibetes.core.database.TestDAO;
 import org.example.daibetes.modules.ai.dto.AIResponseDTO;
 import org.example.daibetes.modules.ai.service.AIInferenceService;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+
+import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
 
 public class GenerateResultsController {
 
     @FXML private ImageView reportImageView;
 
     @FXML private Label aiCriticalityLabel;
-    @FXML private Label aiBriefLabel;
 
     @FXML private ComboBox<String> criticalityCombo;
-
     @FXML private TextArea doctorCriticalityArea;
-    @FXML private TextArea notesArea;
+
 
     @FXML private ToggleGroup tgMA;
     @FXML private ToggleGroup tgHem;
     @FXML private ToggleGroup tgExu;
+    @FXML private ToggleGroup tgCWS;
     @FXML private ToggleGroup tgME;
+    @FXML private ToggleGroup tgVB;
+    @FXML private ToggleGroup tgIRMA;
+    @FXML private ToggleGroup tgNV;
+    @FXML private ToggleGroup tgVH;
+    @FXML private ToggleGroup tgRD;
+
 
     @FXML private ToggleGroup tgDR;
     @FXML private ToggleGroup tgDME;
@@ -42,10 +55,14 @@ public class GenerateResultsController {
     @FXML private CheckBox urgentCheck;
     @FXML private CheckBox laserCheck;
     @FXML private CheckBox antiVegfCheck;
+    @FXML private TextArea notesArea;
+
 
     @FXML private Label  aiConfidenceLabel, aiExplanationLabel;
     @FXML private VBox aiResultBox;
     @FXML private ProgressIndicator aiLoader;
+
+
     private Image passedImage;
     @FXML
     public void initialize() {
@@ -166,73 +183,177 @@ public class GenerateResultsController {
 
     @FXML
     private void handleSaveReport() {
-
         String microaneurysms = getSelected(tgMA);
         String hemorrhages = getSelected(tgHem);
         String exudates = getSelected(tgExu);
-        String macularEdema = getSelected(tgME);
+        String cottonWoolSpots = getSelected(tgCWS);
+        String macularEdemaFinding = getSelected(tgME);
+        String venousBeading = getSelected(tgVB);
+        String irma = getSelected(tgIRMA);
+        String neovascularization = getSelected(tgNV);
+        String vitreousHemorrhage = getSelected(tgVH);
+        String retinalDetachment = getSelected(tgRD);
 
         String drGrade = getSelected(tgDR);
         String dmeGrade = getSelected(tgDME);
 
         String criticality = criticalityCombo.getValue();
-        String doctorReasoning = doctorCriticalityArea.getText();
-        String notes = notesArea.getText();
+        String doctorReasoning = doctorCriticalityArea.getText().trim();
+        String notes = notesArea.getText().trim();
 
-        System.out.println("========== DIAGNOSTIC REPORT ==========");
 
-        System.out.println("Microaneurysms: " + microaneurysms);
-        System.out.println("Hemorrhages: " + hemorrhages);
-        System.out.println("Hard Exudates: " + exudates);
-        System.out.println("Macular Edema: " + macularEdema);
 
-        System.out.println("DR Grade: " + drGrade);
-        System.out.println("DME Grade: " + dmeGrade);
-
-        System.out.println("Criticality: " + criticality);
-
-        System.out.println("Doctor Analysis:");
-        System.out.println(doctorReasoning);
-
-        System.out.println("Recommendations:");
-
-        if (annualFollowupCheck.isSelected()) {
-            System.out.println("- Annual Follow-up");
+        if (criticality == null || criticality.isBlank()) {
+            showAlert("Missing Criticality", "Please select a criticality level.");
+            return;
         }
 
-        if (sixMonthCheck.isSelected()) {
-            System.out.println("- 6-month Follow-up");
+        if (drGrade == null || drGrade.isBlank()) {
+            showAlert("Missing Evaluation", "Please select a final DR grade.");
+            return;
         }
 
-        if (referCheck.isSelected()) {
-            System.out.println("- Refer to Specialist");
+        if (dmeGrade == null || dmeGrade.isBlank()) {
+            showAlert("Missing Evaluation", "Please select a macular edema grade.");
+            return;
         }
 
-        if (urgentCheck.isSelected()) {
-            System.out.println("- Urgent Evaluation");
+        try {
+            ImageDAO imageDAO = new ImageDAO();
+            ReportDAO reportDAO = new ReportDAO();
+
+            /*
+             * Save reportImageView to tblimage.
+             * image_type_id does not matter yet, so use 1 temporarily.
+             */
+            File reportImageFile = imageViewToTempFile(reportImageView);
+
+            if (reportImageFile == null) {
+                showAlert("Image Error", "No report image found.");
+                return;
+            }
+
+            int imageId = imageDAO.createImage(reportImageFile, 1);
+
+            if (imageId == -1) {
+                showAlert("Image Save Failed", "Report image was not saved.");
+                return;
+            }
+
+            int criticalityId = reportDAO.createCriticality(
+                    criticality,
+                    doctorReasoning
+            );
+
+            if (criticalityId == -1) {
+                showAlert("Save Failed", "Criticality was not saved.");
+                return;
+            }
+
+            int findingsId = reportDAO.createPathologicalFindings(
+                    microaneurysms,
+                    hemorrhages,
+                    exudates,
+                    cottonWoolSpots,
+                    macularEdemaFinding,
+                    venousBeading,
+                    irma,
+                    neovascularization,
+                    vitreousHemorrhage,
+                    retinalDetachment
+            );
+
+            if (findingsId == -1) {
+                showAlert("Save Failed", "Pathological findings were not saved.");
+                return;
+            }
+
+            int evaluationId = reportDAO.createEvaluation(
+                    drGrade,
+                    dmeGrade
+            );
+
+            if (evaluationId == -1) {
+                showAlert( "Save Failed", "Evaluation was not saved.");
+                return;
+            }
+
+            int recommendationsId = reportDAO.createRecommendations(
+                    annualFollowupCheck.isSelected(),
+                    sixMonthCheck.isSelected(),
+                    referCheck.isSelected(),
+                    urgentCheck.isSelected(),
+                    laserCheck.isSelected(),
+                    antiVegfCheck.isSelected(),
+                    notes
+            );
+
+            if (recommendationsId == -1) {
+                showAlert( "Save Failed", "Recommendations were not saved.");
+                return;
+            }
+
+            int patientId = 1; // temporary
+            int doctorId = 1;  // temporary
+
+            TestDAO testDAO = new TestDAO();
+            int testId = testDAO.createTest(patientId, doctorId, imageId);
+
+            if (testId == -1) {
+                showAlert("Save Failed", "Test record was not saved.");
+                return;
+            }
+
+            AppContext.getInstance().setCurrentTestId(testId);
+
+            int reportId = reportDAO.createReport(
+                    testId,
+                    criticalityId,
+                    findingsId,
+                    recommendationsId,
+                    evaluationId
+            );
+
+            if (reportId == -1) {
+                showAlert("Save Failed", "Final report was not saved.");
+                return;
+            }
+
+            Alert success = new Alert(Alert.AlertType.INFORMATION);
+            success.setTitle("Report Generated");
+            success.setHeaderText(null);
+            success.setContentText("The diagnostic report has been finalized and saved.");
+            success.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Save Error", "Something went wrong while saving the report.");
         }
-
-        if (laserCheck.isSelected()) {
-            System.out.println("- Laser Treatment");
-        }
-
-        if (antiVegfCheck.isSelected()) {
-            System.out.println("- Anti-VEGF Therapy");
-        }
-
-        System.out.println("Final Notes:");
-        System.out.println(notes);
-
-        Alert success = new Alert(Alert.AlertType.INFORMATION);
-
-        success.setTitle("Report Generated");
-        success.setHeaderText(null);
-        success.setContentText(
-                "The diagnostic report has been finalized and saved."
-        );
-
-        success.showAndWait();
     }
+
+    private File imageViewToTempFile(ImageView imageView) {
+        try {
+            if (imageView.getImage() == null) {
+                return null;
+            }
+
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(imageView.getImage(), null);
+
+            File tempFile = File.createTempFile("report_image_", ".png");
+            tempFile.deleteOnExit();
+
+            ImageIO.write(bufferedImage, "png", tempFile);
+
+            return tempFile;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
     @FXML
     private void handleBack() {
