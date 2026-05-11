@@ -121,43 +121,17 @@ public class ImageUploadController {
             // Get selected image file
             File selectedFile = images.get(selectedImageIndex);
 
-            // Save selected image to tblimage
-            ImageDAO imageDAO = new ImageDAO();
-
-            // image_type_id does not matter yet, so use 1 temporarily
-            int imageId = imageDAO.createImage(selectedFile, 1);
-
-            if (imageId == -1) {
-                showAlert("Upload Failed", "Image was not saved to the database.");
-                return;
-            }
-
-            /*
-             * TEMPORARY VALUES:
-             * Replace these later with the actual logged-in patient and assigned doctor.
-             */
-            int patientId = 1;
-            int doctorId = 1;
-
-            // Save scan/test record to tbltests
-            TestDAO testDAO = new TestDAO();
-            int testId = testDAO.createTest(patientId, doctorId, imageId);
-
-            if (testId == -1) {
-                showAlert("Test Save Failed", "Image was saved, but test record was not saved.");
-                return;
-            }
-
             // Convert selected file to JavaFX Image for display/use in next screen
             Image runtimeSelectedImage = new Image(selectedFile.toURI().toString());
 
-            // Store selected image, file, and IDs in AppContext
+            // Store selected image and file in AppContext only
             AppContext.getInstance().setSelectedImage(runtimeSelectedImage);
             AppContext.getInstance().setSelectedImageFile(selectedFile);
-            AppContext.getInstance().setSelectedImageId(imageId);
-            AppContext.getInstance().setCurrentTestId(testId);
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/imageProcessing/image-processing.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/imageProcessing/image-processing.fxml")
+            );
+
             Scene scene = new Scene(loader.load());
 
             Stage stage = (Stage) img1.getScene().getWindow();

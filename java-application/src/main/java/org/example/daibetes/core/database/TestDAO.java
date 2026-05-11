@@ -9,9 +9,9 @@ public class TestDAO {
 
     public int createTest(int patientId, int doctorId, int rawImageId) {
         String sql = """
-            INSERT INTO tbltests (p_id, d_id, raw_img_id)
-            VALUES (?, ?, ?)
-        """;
+        INSERT INTO tbltests (p_id, d_id, raw_img_id)
+        VALUES (?, ?, ?)
+    """;
 
         try (Connection conn = MySQLConnection.getConnection()) {
 

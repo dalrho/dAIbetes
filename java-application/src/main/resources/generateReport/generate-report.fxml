@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.*?>
 
-<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.GenerateResultsController">
+<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.GenerateResultsController">
     <children>
         <!-- 1. Header Navigation -->
         <HBox alignment="CENTER_LEFT" prefHeight="75.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 0 30 0 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);">
             <children>
                 <TextFlow>
-                    <Text text="d" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;"/>
-                    <Text text="AI" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #94A3B8;"/>
-                    <Text text="betes" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;"/>
+                    <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;" text="d" />
+                    <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #94A3B8;" text="AI" />
+                    <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;" text="betes" />
                 </TextFlow>
                 <Separator orientation="VERTICAL" prefHeight="35.0" />
-                <Label text="DIAGNOSTIC REPORT GENERATOR" style="-fx-font-weight: bold; -fx-text-fill: #64748B;" />
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="DIAGNOSTIC REPORT GENERATOR" />
                 <Region HBox.hgrow="ALWAYS" />
                 <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-border-color: #CBD5E1; -fx-border-radius: 5; -fx-text-fill: #1E293B; -fx-padding: 8 20;" text="Back" />
                 <Button onAction="#handleSaveReport" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #0F172A; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;" text="SAVE REPORT" />
@@ -44,7 +42,7 @@
                                         <ImageView fx:id="reportImageView" fitHeight="280.0" fitWidth="400.0" preserveRatio="true" />
                                     </children>
                                 </StackPane>
-                                <Button onAction="#handleAIDetection" maxWidth="Infinity" prefHeight="45.0" style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="✨ RUN AI ASSISTANT" />
+                                <Button maxWidth="Infinity" onAction="#handleAIDetection" prefHeight="45.0" style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" text="✨ RUN AI ASSISTANT" />
                             </children>
                         </VBox>
 
@@ -107,84 +105,91 @@
                                             </columnConstraints>
                                             <children>
                                                 <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                                                    <Label text="1. Microaneurysms" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="1. Microaneurysms" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgMA"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Mild" toggleGroup="$tgMA" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Moderate" toggleGroup="$tgMA" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Severe" toggleGroup="$tgMA" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgMA" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Mild" toggleGroup="$tgMA" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Moderate" toggleGroup="$tgMA" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Severe" toggleGroup="$tgMA" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                                                    <Label text="2. Retinal Hemorrhages" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="2. Retinal Hemorrhages" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgHem"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Few" toggleGroup="$tgHem" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Multiple" toggleGroup="$tgHem" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Extensive" toggleGroup="$tgHem" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgHem" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Few" toggleGroup="$tgHem" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Multiple" toggleGroup="$tgHem" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Extensive" toggleGroup="$tgHem" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                                                    <Label text="3. Hard Exudates" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="3. Hard Exudates" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgExu"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Present" toggleGroup="$tgExu" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Macular" toggleGroup="$tgExu" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgExu" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Present" toggleGroup="$tgExu" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Macular" toggleGroup="$tgExu" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                    <Label text="4. Cotton-Wool Spots" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="4. Cotton-Wool Spots" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgCWS"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Present" toggleGroup="$tgCWS" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgCWS" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Present" toggleGroup="$tgCWS" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                                                    <Label text="5. Macular Edema" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="5. Macular Edema" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgME"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Suspect" toggleGroup="$tgME" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="CSME" toggleGroup="$tgME" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgME" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Suspect" toggleGroup="$tgME" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="CSME" toggleGroup="$tgME" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                                    <Label text="6. Venous Beading" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="6. Venous Beading" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgVB"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Present" toggleGroup="$tgVB" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgVB" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Present" toggleGroup="$tgVB" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="3">
-                                                    <Label text="7. IRMA" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="7. IRMA" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgIRMA"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Present" toggleGroup="$tgIRMA" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgIRMA" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Present" toggleGroup="$tgIRMA" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                    <Label text="8. Neovascularization" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="8. Neovascularization" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgNV"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Disc" toggleGroup="$tgNV" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Elsewhere" toggleGroup="$tgNV" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgNV" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Disc" toggleGroup="$tgNV" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Elsewhere" toggleGroup="$tgNV" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="4">
-                                                    <Label text="9. Vitreous Hemorrhage" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="9. Vitreous Hemorrhage" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgVH"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Present" toggleGroup="$tgVH" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgVH" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Present" toggleGroup="$tgVH" />
                                                     </HBox>
                                                 </VBox>
                                                 <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                                    <Label text="10. Retinal Detachment" style="-fx-font-weight: bold; -fx-text-fill: #475569;" />
+                                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #475569;" text="10. Retinal Detachment" />
                                                     <HBox spacing="15">
-                                                        <RadioButton text="Absent" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgRD"/></toggleGroup></RadioButton>
-                                                        <RadioButton text="Suspect" toggleGroup="$tgRD" style="-fx-text-fill: #1E293B;" />
-                                                        <RadioButton text="Present" toggleGroup="$tgRD" style="-fx-text-fill: #1E293B;" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Absent"><toggleGroup><ToggleGroup fx:id="tgRD" /></toggleGroup></RadioButton>
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Suspect" toggleGroup="$tgRD" />
+                                                        <RadioButton style="-fx-text-fill: #1E293B;" text="Present" toggleGroup="$tgRD" />
                                                     </HBox>
                                                 </VBox>
                                             </children>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                 </rowConstraints>
                                         </GridPane>
                                     </children>
                                 </VBox>
@@ -196,11 +201,11 @@
                                             <children>
                                                 <Label style="-fx-font-weight: bold; -fx-text-fill: #E11D48;" text="FINAL DR GRADE" />
                                                 <VBox spacing="12">
-                                                    <RadioButton text="No DR (Grade 0)" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgDR"/></toggleGroup></RadioButton>
-                                                    <RadioButton text="Mild NPDR (Grade 1)" toggleGroup="$tgDR" style="-fx-text-fill: #1E293B;" />
-                                                    <RadioButton text="Moderate NPDR (Grade 2)" toggleGroup="$tgDR" style="-fx-text-fill: #1E293B;" />
-                                                    <RadioButton text="Severe NPDR (Grade 3)" toggleGroup="$tgDR" style="-fx-text-fill: #1E293B;" />
-                                                    <RadioButton text="Proliferative DR (PDR)" toggleGroup="$tgDR" style="-fx-text-fill: #1E293B;" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="No DR (Grade 0)"><toggleGroup><ToggleGroup fx:id="tgDR" /></toggleGroup></RadioButton>
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Mild NPDR (Grade 1)" toggleGroup="$tgDR" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Moderate NPDR (Grade 2)" toggleGroup="$tgDR" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Severe NPDR (Grade 3)" toggleGroup="$tgDR" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Proliferative DR (PDR)" toggleGroup="$tgDR" />
                                                 </VBox>
                                             </children>
                                         </VBox>
@@ -208,10 +213,10 @@
                                             <children>
                                                 <Label style="-fx-font-weight: bold; -fx-text-fill: #E11D48;" text="MACULAR EDEMA (DME)" />
                                                 <VBox spacing="12">
-                                                    <RadioButton text="No DME" style="-fx-text-fill: #1E293B;"><toggleGroup><ToggleGroup fx:id="tgDME"/></toggleGroup></RadioButton>
-                                                    <RadioButton text="Mild" toggleGroup="$tgDME" style="-fx-text-fill: #1E293B;" />
-                                                    <RadioButton text="Moderate" toggleGroup="$tgDME" style="-fx-text-fill: #1E293B;" />
-                                                    <RadioButton text="Severe" toggleGroup="$tgDME" style="-fx-text-fill: #1E293B;" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="No DME"><toggleGroup><ToggleGroup fx:id="tgDME" /></toggleGroup></RadioButton>
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Mild" toggleGroup="$tgDME" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Moderate" toggleGroup="$tgDME" />
+                                                    <RadioButton style="-fx-text-fill: #1E293B;" text="Severe" toggleGroup="$tgDME" />
                                                 </VBox>
                                             </children>
                                         </VBox>
@@ -224,12 +229,12 @@
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #1E293B;" text="MANAGEMENT &amp; RECOMMENDATIONS" />
                                         <FlowPane hgap="30.0" vgap="20.0">
                                             <children>
-                                                <CheckBox text="Annual Follow-up" style="-fx-text-fill: #1E293B;" />
-                                                <CheckBox text="6-month Follow-up" style="-fx-text-fill: #1E293B;" />
-                                                <CheckBox text="Refer to Specialist" style="-fx-text-fill: #1E293B;" />
-                                                <CheckBox text="Urgent Evaluation" style="-fx-text-fill: #1E293B;" />
-                                                <CheckBox text="Laser Treatment" style="-fx-text-fill: #1E293B;" />
-                                                <CheckBox text="Anti-VEGF Therapy" style="-fx-text-fill: #1E293B;" />
+                                                <CheckBox fx:id="annualFollowupCheck" style="-fx-text-fill: #1E293B;" text="Annual Follow-up" />
+                                                <CheckBox fx:id="sixMonthCheck" style="-fx-text-fill: #1E293B;" text="6-month Follow-up" />
+                                                <CheckBox fx:id="referCheck" style="-fx-text-fill: #1E293B;" text="Refer to Specialist" />
+                                                <CheckBox fx:id="urgentCheck" style="-fx-text-fill: #1E293B;" text="Urgent Evaluation" />
+                                                <CheckBox fx:id="laserCheck" style="-fx-text-fill: #1E293B;" text="Laser Treatment" />
+                                                <CheckBox fx:id="antiVegfCheck" style="-fx-text-fill: #1E293B;" text="Anti-VEGF Therapy" />
                                             </children>
                                         </FlowPane>
                                         <TextArea fx:id="notesArea" prefHeight="80.0" promptText="Enter final clinical notes..." style="-fx-background-radius: 8; -fx-border-color: #E2E8F0;" />
