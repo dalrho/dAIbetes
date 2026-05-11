@@ -10,6 +10,8 @@ module org.example.daibetes {
     requires java.net.http;
     requires org.apache.httpcomponents.client5.httpclient5;
     requires org.apache.httpcomponents.core5.httpcore5;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.annotation;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
@@ -28,15 +30,15 @@ module org.example.daibetes {
     opens register to javafx.fxml;
     exports register;
 
-    exports org.example.daibetes.modules.auth.ui;
-    opens org.example.daibetes.modules.auth.ui to javafx.fxml;
-    opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
-    exports org.example.daibetes.modules.doctor.ui;
-    opens org.example.daibetes to javafx.fxml;
-    exports org.example.daibetes;
+        exports org.example.daibetes.modules.auth.ui;
+        opens org.example.daibetes.modules.auth.ui to javafx.fxml;
+        opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
+        exports org.example.daibetes.modules.doctor.ui;
+        opens org.example.daibetes to javafx.fxml;
+        exports org.example.daibetes;
 
-    opens results to javafx.fxml;
-    exports results;
+        opens results to javafx.fxml;
+        exports results;
 
     opens records to javafx.fxml;
     exports records;

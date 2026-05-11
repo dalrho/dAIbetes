@@ -46,11 +46,11 @@ public class GenerateResultsController {
     @FXML private Label  aiConfidenceLabel, aiExplanationLabel;
     @FXML private VBox aiResultBox;
     @FXML private ProgressIndicator aiLoader;
-
+    private Image passedImage;
     @FXML
     public void initialize() {
         // 1. Pull the image that was just saved in the previous step
-        Image passedImage = AppContext.getInstance().getSelectedImage();
+         passedImage = AppContext.getInstance().getSelectedImage();
 
         if (passedImage != null) {
             // 2. Set it to the ImageView on the report screen
@@ -82,9 +82,7 @@ public class GenerateResultsController {
             protected Void call() {
 
                 try {
-
-                    File imageFile =
-                            AppContext.getInstance().getSelectedImageFile();
+                    File imageFile = AppContext.getInstance().getSelectedImageFile();
 
                     if (imageFile == null) {
 
@@ -265,4 +263,7 @@ public class GenerateResultsController {
             e.printStackTrace();
         }
     }
+
+
+
 }

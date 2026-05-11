@@ -151,8 +151,9 @@ public class ImageUploadController {
             // Convert selected file to JavaFX Image for display/use in next screen
             Image runtimeSelectedImage = new Image(selectedFile.toURI().toString());
 
-            // Store selected image and IDs in AppContext
+            // Store selected image, file, and IDs in AppContext
             AppContext.getInstance().setSelectedImage(runtimeSelectedImage);
+            AppContext.getInstance().setSelectedImageFile(selectedFile);
             AppContext.getInstance().setSelectedImageId(imageId);
             AppContext.getInstance().setCurrentTestId(testId);
 
