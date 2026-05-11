@@ -111,16 +111,15 @@ public class ImageProcessingController {
     }
     @FXML
     private void handleGenerateReport() {
-        Image finalProcessedImage = rawImageView.getImage();
+        Image saveImage = rawImageView.getImage();
 
-        if (finalProcessedImage == null) {
+        if (saveImage == null) {
             System.err.println("No image available to generate a report.");
             return;
         }
 
         // Save image to AppContext
-        AppContext.getInstance().setSelectedImage(finalProcessedImage);
-
+        AppContext.getInstance().setSelectedImage(saveImage);
         try {
             Stage stage = (Stage) enhancedImageView.getScene().getWindow();
 
