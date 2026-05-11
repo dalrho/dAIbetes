@@ -4,6 +4,9 @@ from app.api.inference_controller import router
 from app.infrastructure.model_loader import load_model
 from app.infrastructure.image_preprocessor import get_transform
 from app.application.dr_classification_service import DRClassificationService
+from app.application.gemini_service import GeminiService
+from app.config.settings import GEMINI_API_KEY
+import app.api.inference_controller as controller
 
 # --- Configuration ---
 # Set up absolute paths for model artifact resolution
@@ -27,8 +30,10 @@ classifier = DRClassificationService(model, device, transform)
 # --- Dependency Injection ---
 # Manually inject the service instance into the controller module
 # to provide routing logic access to the classifier
-import app.api.inference_controller as controller
+
+gemini_service = GeminiService(GEMINI_API_KEY)
 controller.classifier = classifier
+controller.gemini_service = gemini_service
 
 # Register API endpoints
 app.include_router(router)

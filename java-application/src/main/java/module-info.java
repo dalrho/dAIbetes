@@ -16,6 +16,7 @@ module org.example.daibetes {
     requires jbcrypt;
     requires webcam.capture;
     requires javafx.swing;
+    requires com.fasterxml.jackson.databind;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
