@@ -1,5 +1,6 @@
 package doctorDashboard;
 
+import Inbox.InboxLauncher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import register.PopupManager;
 import register.sceneLoader;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -240,6 +242,12 @@ public class doctorDashboardController implements Initializable {
     }
 
     // ── Button handlers ───────────────────────────────────────────
+    // ── Button handlers ───────────────────────────────────────────
+    @FXML
+    private void handleInbox() {
+        Stage stage = (Stage) inboxBtn.getScene().getWindow();
+        InboxLauncher.toggleInbox(stage);
+    }
 
     @FXML
     private void onNewDiagnosisBtn() {
@@ -252,9 +260,26 @@ public class doctorDashboardController implements Initializable {
         );
     }
 
-    @FXML private void onViewPatients() {
+    @FXML private void onViewPatients(ActionEvent event) {
         System.out.println("[Dashboard] View Patients");
         // TODO: navigate
+        Scene scene = register.sceneLoader.load(
+                "records",
+                "records-screen.fxml",
+                null
+        );
+
+        if (scene == null) {
+            System.out.println("Failed to load Records screen");
+            return;
+        }
+
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(scene);
+        stage.setTitle("Patient Records");
     }
 
     @FXML private void onViewReports() {
@@ -284,9 +309,14 @@ public class doctorDashboardController implements Initializable {
         );
     }
 
-    @FXML private void onInbox() {
-        System.out.println("[Dashboard] Inbox");
-        // TODO: open inbox
+    @FXML
+    private void onInbox(ActionEvent event) {
+
+        Button button = (Button) event.getSource();
+
+        Stage stage = (Stage) button.getScene().getWindow();
+
+        InboxLauncher.toggleInbox(stage);
     }
 
 //    public void initData(Doctor doctor) {

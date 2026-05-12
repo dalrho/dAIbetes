@@ -19,6 +19,7 @@ module org.example.daibetes {
     requires webcam.capture;
     requires javafx.swing;
     requires com.fasterxml.jackson.databind;
+//    requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
@@ -26,7 +27,8 @@ module org.example.daibetes {
     exports imageUpload;
     opens imageUpload to javafx.fxml;
     opens popdiagnosis to javafx.fxml;
-
+    opens Inbox to javafx.fxml;
+    exports Inbox;
     opens register to javafx.fxml;
     exports register;
 

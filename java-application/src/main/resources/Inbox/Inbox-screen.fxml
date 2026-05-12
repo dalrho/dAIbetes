@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.shape.Circle?>
+<BorderPane
+        prefWidth="900" prefHeight="600"
+        minWidth="900" minHeight="600"
+        maxWidth="900" maxHeight="600"
+        xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Inbox.InboxController"
+            style="-fx-background-color: #ffffff; -fx-font-family: 'Segoe UI', 'San Francisco', sans-serif;">
+
+    <!-- Top Navigation Bar -->
+    <top>
+        <VBox style="-fx-background-color: #ffffff; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+            <padding>
+                <Insets top="16" right="24" bottom="16" left="24"/>
+            </padding>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Messages" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #1f2937;">
+                    <font>
+                        <Font name="Segoe UI" size="28"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField"
+                           promptText="Search conversations..."
+                           style="-fx-padding: 8 12; -fx-font-size: 14; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e5e7eb; -fx-text-fill: #1f2937;"
+                           prefWidth="250"/>
+                <Button fx:id="newMessageBtn"
+                        text="+ New"
+                        style="-fx-padding: 10 20; -fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-background-color: #3b82f6; -fx-background-radius: 8; -fx-cursor: hand;"
+                        onAction="#handleNewMessage"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content Area -->
+    <center>
+        <HBox spacing="0">
+            <!-- Left Panel: Conversations List -->
+            <VBox prefWidth="320" style="-fx-background-color: #f9fafb; -fx-border-color: #e5e7eb; -fx-border-width: 0 1 0 0;">
+                <padding>
+                    <Insets top="16" right="0" bottom="16" left="0"/>
+                </padding>
+
+                <!-- Conversation Tabs -->
+                <HBox spacing="0" style="-fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
+                    <padding>
+                        <Insets top="0" right="12" bottom="12" left="12"/>
+                    </padding>
+                    <Button fx:id="inboxTab"
+                            text="Inbox"
+                            style="-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #3b82f6; -fx-background-color: transparent; -fx-border-color: #3b82f6; -fx-border-width: 0 0 2 0; -fx-cursor: hand;"
+                            onAction="#handleInboxTab"/>
+                    <Button fx:id="archivedTab"
+                            text="Archived"
+                            style="-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: 600; -fx-text-fill: #6b7280; -fx-background-color: transparent; -fx-border-width: 0; -fx-cursor: hand;"
+                            onAction="#handleArchivedTab"/>
+                </HBox>
+
+                <!-- Conversations ListView -->
+                <ListView fx:id="conversationList"
+                          style="-fx-control-inner-background: #f9fafb; -fx-padding: 0;"
+                          VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <!-- Right Panel: Message View -->
+            <VBox VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" style="-fx-background-color: #ffffff;">
+                <!-- Message Header -->
+                <HBox fx:id="messageHeader"
+                      spacing="16"
+                      alignment="CENTER_LEFT"
+                      style="-fx-padding: 16 24; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;"
+                      visible="false" managed="false">
+                    <Circle fx:id="userAvatar" radius="24" style="-fx-fill: #3b82f6;"/>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label fx:id="userName"
+                               text="Select a conversation"
+                               style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #1f2937;"/>
+                        <Label fx:id="lastSeenLabel"
+                               text="Online"
+                               style="-fx-font-size: 12; -fx-text-fill: #6b7280;"/>
+                    </VBox>
+                    <Button text="⋮"
+                            style="-fx-font-size: 18; -fx-padding: 4 8; -fx-background-color: transparent; -fx-text-fill: #6b7280; -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Empty State -->
+                <VBox fx:id="emptyState"
+                      spacing="16"
+                      alignment="CENTER"
+                      style="-fx-background-color: #ffffff;"
+                      VBox.vgrow="ALWAYS">
+                    <Label text="📬" style="-fx-font-size: 64;"/>
+                    <Label text="No conversation selected"
+                           style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #6b7280;"/>
+                    <Label text="Select a conversation from the list to start messaging"
+                           style="-fx-font-size: 13; -fx-text-fill: #9ca3af; -fx-text-alignment: center;"
+                           wrapText="true"
+                           maxWidth="300"/>
+                </VBox>
+
+                <!-- Messages Container -->
+                <ScrollPane fx:id="messagesScrollPane"
+                            style="-fx-control-inner-background: #ffffff; -fx-padding: 0;"
+                            VBox.vgrow="ALWAYS"
+                            visible="false" managed="false"
+                            fitToWidth="true">
+                    <VBox fx:id="messagesContainer"
+                          spacing="12"
+                          style="-fx-padding: 16 24;"
+                          fillWidth="true"/>
+                </ScrollPane>
+
+                <!-- Input Area -->
+                <HBox fx:id="inputArea"
+                      spacing="12"
+                      alignment="BOTTOM_LEFT"
+                      style="-fx-padding: 16 24; -fx-border-color: #e5e7eb; -fx-border-width: 1 0 0 0;"
+                      visible="false" managed="false">
+                    <Button text="+"
+                            style="-fx-font-size: 16; -fx-padding: 8 12; -fx-background-color: transparent; -fx-text-fill: #3b82f6; -fx-cursor: hand;"/>
+                    <TextArea fx:id="messageInput"
+                              promptText="Type a message..."
+                              wrapText="true"
+                              prefRowCount="3"
+                              maxHeight="100"
+                              style="-fx-control-inner-background: #f3f4f6; -fx-padding: 12; -fx-font-size: 14; -fx-text-fill: #1f2937; -fx-focus-color: #3b82f6; -fx-border-color: #3b82f6; -fx-border-radius: 8; -fx-background-radius: 8;"
+                              HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="sendBtn"
+                            text="Send"
+                            style="-fx-padding: 10 20; -fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-background-color: #3b82f6; -fx-background-radius: 8; -fx-cursor: hand;"
+                            onAction="#handleSendMessage"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

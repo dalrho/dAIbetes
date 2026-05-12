@@ -18,7 +18,7 @@ public class RecordsApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    Objects.requireNonNull(RecordsApplication.class.getResource("/records/records.fxml"))
+                    Objects.requireNonNull(RecordsApplication.class.getResource("/records/records-screen.fxml"))
             );
             Parent root = fxmlLoader.load();
 
@@ -34,11 +34,11 @@ public class RecordsApplication extends Application {
             primaryStage.show();
 
         } catch (IOException e) {
-            System.err.println("Failed to load FXML resource: " + "/records/records.fxml");
+            System.err.println("Failed to load FXML resource: " + "/records/records-screen.fxml");
             e.printStackTrace();
             throw e;
         } catch (NullPointerException e) {
-            System.err.println("FXML resource not found: " + "/records/records.fxml");
+            System.err.println("FXML resource not found: " + "/records/records-screen.fxml");
             e.printStackTrace();
             throw new IOException("FXML resource not found", e);
         }

@@ -139,7 +139,7 @@ public class DoctorDashboardController {
                 .getWindow();
 
         stage.setScene(
-                sceneLoader.load("records", "records.fxml", null)
+                sceneLoader.load("records", "records-screen.fxml", null)
         );
 
         stage.setTitle("dAIbetes — View Patients");
