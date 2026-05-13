@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="reviewResults.ReviewResultsController">
+    <children>
+        <!-- Header Navigation -->
+        <HBox alignment="CENTER_LEFT" prefHeight="75.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 0 30 0 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);">
+            <children>
+                <TextFlow>
+                    <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;" text="d" />
+                    <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #94A3B8;" text="AI" />
+                    <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;" text="betes" />
+                </TextFlow>
+                <Separator orientation="VERTICAL" prefHeight="35.0" />
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="FINAL DIAGNOSTIC REVIEW" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-border-color: #CBD5E1; -fx-border-radius: 5; -fx-text-fill: #1E293B;" text="Back to Dashboard" />
+                <Button onAction="#handleEditReport" style="-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-background-radius: 6;" text="EDIT REPORT" />
+                <Button onAction="#handleExportPDF" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;" text="EXPORT AS PDF" />
+            </children>
+        </HBox>
+
+        <HBox spacing="25.0" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+            </padding>
+            <children>
+                <!-- LEFT SIDE: Image and Final Assessment -->
+                <VBox prefWidth="450.0" spacing="20.0">
+                    <children>
+                        <!-- Scan Reference -->
+                        <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B; -fx-font-size: 11px;" text="SCANNED IMAGE" />
+                                <StackPane prefHeight="300.0" style="-fx-background-color: #F8FAFC; -fx-background-radius: 8; -fx-border-color: #E2E8F0; -fx-border-radius: 8;">
+                                    <children>
+                                        <ImageView fx:id="reportImageView" fitHeight="280.0" fitWidth="400.0" preserveRatio="true" />
+                                    </children>
+                                </StackPane>
+                            </children>
+                        </VBox>
+
+                        <!-- Final Assessment Card -->
+                        <VBox spacing="15.0" style="-fx-background-color: #1E293B; -fx-background-radius: 12; -fx-padding: 20;">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #94A3B8; -fx-font-size: 11px;" text="FINAL CRITICALITY ASSESSMENT" />
+                                <Label fx:id="lblFinalCriticality" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" text="URGENT" />
+                                <Separator style="-fx-opacity: 0.2;" />
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #94A3B8; -fx-font-size: 11px;" text="DOCTOR'S REASONING" />
+                                <Label fx:id="lblReasoning" style="-fx-text-fill: #CBD5E1;" text="Clinical reasoning details will appear here..." wrapText="true" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <!-- RIGHT SIDE: Scrollable Report Details -->
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;" HBox.hgrow="ALWAYS">
+                    <content>
+                        <VBox spacing="20.0">
+                            <children>
+                                <!-- PATHOLOGICAL FINDINGS SUMMARY -->
+                                <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-border-color: #E2E8F0; -fx-border-width: 1;">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT">
+                                            <Label style="-fx-font-weight: bold; -fx-text-fill: #1E293B; -fx-font-size: 18px;" text="Report Summary" />
+                                            <Region HBox.hgrow="ALWAYS" />
+                                            <Label style="-fx-text-fill: #64748B; -fx-font-style: italic;" text="Read-only View" />
+                                        </HBox>
+                                        <Separator />
+
+                                        <GridPane hgap="30.0" vgap="25.0">
+                                            <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
+                                            </columnConstraints>
+                                            <children>
+                                                <!-- Row 1 -->
+                                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="1. Microaneurysms" />
+                                                    <Label fx:id="valMA" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="2. Retinal Hemorrhages" />
+                                                    <Label fx:id="valHem" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+                                                <!-- Row 2 -->
+                                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="3. Hard Exudates" />
+                                                    <Label fx:id="valExu" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="4. Cotton-Wool Spots" />
+                                                    <Label fx:id="valCWS" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+                                                <!-- Row 3 -->
+                                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="5. Macular Edema" />
+                                                    <Label fx:id="valME" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="6. Venous Beading" />
+                                                    <Label fx:id="valVB" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+                                                <!-- Row 4 -->
+                                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="11. Final DR Grade" />
+                                                    <Label fx:id="valDRGrade" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #E11D48;" text="-" />
+                                                </VBox>
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="12. Macular Edema (DME)" />
+                                                    <Label fx:id="valDME" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #E11D48;" text="-" />
+                                                </VBox>
+                                            </children>
+                                            <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                            </rowConstraints>
+                                        </GridPane>
+                                    </children>
+                                </VBox>
+
+                                <!-- RECOMMENDATIONS SUMMARY -->
+                                <VBox spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-border-color: #E2E8F0; -fx-border-width: 1;">
+                                    <children>
+                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #1E293B;" text="RECOMMENDED ACTIONS" />
+                                        <FlowPane fx:id="recommendationsContainer" hgap="10.0" vgap="10.0">
+                                            <!-- Recommendations will be added as styled labels dynamically -->
+                                        </FlowPane>
+                                        <VBox spacing="5" style="-fx-background-color: #F8FAFC; -fx-padding: 15; -fx-background-radius: 8;">
+                                            <Label style="-fx-font-weight: bold; -fx-text-fill: #475569; -fx-font-size: 11px;" text="CLINICAL NOTES" />
+                                            <Label fx:id="lblNotes" style="-fx-text-fill: #1E293B;" text="No extra notes provided." wrapText="true" />
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </children>
+        </HBox>
+    </children>
+</VBox>
