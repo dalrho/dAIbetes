@@ -12,6 +12,12 @@ module org.example.daibetes {
     requires org.apache.httpcomponents.core5.httpcore5;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.annotation;
+
+    // Updated iText module names
+    requires kernel;
+    requires io;
+    requires layout;
+
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
@@ -45,6 +51,8 @@ module org.example.daibetes {
     opens records to javafx.fxml;
     exports records;
 
+    opens reviewResults to javafx.fxml;
+    exports reviewResults;
 
     opens doctorDashboard to javafx.fxml;
     exports doctorDashboard;
