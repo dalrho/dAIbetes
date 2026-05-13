@@ -70,4 +70,5 @@ module org.example.daibetes {
     exports org.example.daibetes.modules.detection.ui;
     exports org.example.daibetes.modules.auth.viewmodel;
     opens org.example.daibetes.modules.auth.viewmodel to javafx.fxml;
+    opens org.example.daibetes.modules.ai.dto to com.fasterxml.jackson.databind;
 }

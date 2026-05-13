@@ -5,6 +5,8 @@ public class AIResponseDTO {
     private PredictionDTO prediction;
     private String clinical_guidance;
 
+    public AIResponseDTO() {}
+
     public PredictionDTO getPrediction() {
         return prediction;
     }
