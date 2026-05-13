@@ -124,7 +124,7 @@ public class Popdiagnosiscontroller implements Initializable {
 
             // Load scene using your sceneLoader
             Scene scene = register.sceneLoader.load(
-                    "imageupload",
+                    "imageUpload",
                     "image-upload-view.fxml",
                     null // add CSS path here if you have one, e.g. "/imageupload/style.css"
             );
@@ -136,7 +136,7 @@ public class Popdiagnosiscontroller implements Initializable {
 
             // Get controller from FXMLLoader inside sceneLoader (IMPORTANT NOTE BELOW)
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/imageupload/image-upload-view.fxml")
+                    getClass().getResource("/imageUpload/image-upload-view.fxml")
             );
             Parent root = loader.load();
 
