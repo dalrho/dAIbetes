@@ -17,6 +17,7 @@ import org.example.daibetes.core.database.ReportDAO;
 import org.example.daibetes.core.database.TestDAO;
 import org.example.daibetes.modules.ai.dto.AIResponseDTO;
 import org.example.daibetes.modules.ai.service.AIInferenceService;
+import register.sceneLoader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -402,11 +403,30 @@ public class GenerateResultsController {
                     "The diagnostic report has been finalized and saved."
             );
 
+            goToDoctorDashboard();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Save Error", "Something went wrong while saving the report.");
         }
     }
+    private void goToDoctorDashboard() {
+        Stage stage = (Stage) reportImageView.getScene().getWindow();
+
+        stage.setScene(
+                sceneLoader.load(
+                        "doctorDashboard",
+                        "doctor-dashboard.fxml",
+                        "/styles/doctorDashboard.css"
+                )
+        );
+
+        stage.setTitle("Doctor Dashboard");
+        stage.show();
+    }
+
     private File imageViewToTempFile(ImageView imageView) {
         try {
             if (imageView.getImage() == null) {
