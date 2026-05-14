@@ -1,11 +1,14 @@
 package org.example.daibetes.modules.auth.viewmodel;
 
 import javafx.beans.property.*;
+import javafx.event.ActionEvent;
+import javafx.stage.Stage;
 import org.example.daibetes.core.database.RetrieveData;
 import org.example.daibetes.core.domain.Doctor;
 import org.example.daibetes.core.domain.Patient;
 import org.example.daibetes.core.domain.User;
 import org.example.daibetes.modules.auth.service.Authenticate;
+import register.sceneLoader;
 
 /**
  * ViewModel for login-screen.fxml (MVVM).
@@ -116,4 +119,17 @@ public class LoginViewModel {
     public StringProperty       errorMessageProperty() { return errorMessage; }
     public BooleanProperty      isLoadingProperty()    { return isLoading; }
     public BooleanProperty      loginSuccessProperty() { return loginSuccess; }
+
+    public void navigateToDashboard(Stage stage){
+        stage.setScene(
+                sceneLoader.load(
+                        "doctorDashboard",
+                        "doctor-dashboard.fxml",
+                        "/styles/splash.css"
+                )
+        );
+        stage.setTitle("dAIbetes - Login");
+        stage.show();
+
+    }
 }

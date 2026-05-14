@@ -60,10 +60,19 @@
                     <Label text="forgot password?"
                            maxWidth="Infinity"
                            style="-fx-font-size: 11px; -fx-text-fill: #555;" />
+
+
+                             <Label fx:id="errorLabel"
+                                           alignment="TOP_LEFT"
+                                           prefHeight="17.0" prefWidth="257.0"
+                                         text="" textFill="#ff6b6b"
+                                      GridPane.rowIndex="8" />
+
+
                 </VBox>
 
                 <!-- BUTTON -->
-                <Button text="Log-in"
+                <Button fx:id="loginButton" text="Log-in"
                         onAction="#handleLogin"
                         style="-fx-background-color: #d71919; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 25;" />
 
