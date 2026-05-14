@@ -20,7 +20,6 @@ module org.example.daibetes {
 
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
-//    requires org.example.daibetes;
     requires jbcrypt;
     requires webcam.capture;
     requires javafx.swing;
@@ -40,15 +39,15 @@ module org.example.daibetes {
     opens register to javafx.fxml;
     exports register;
 
-        exports org.example.daibetes.modules.auth.ui;
-        opens org.example.daibetes.modules.auth.ui to javafx.fxml;
-        opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
-        exports org.example.daibetes.modules.doctor.ui;
-        opens org.example.daibetes to javafx.fxml;
-        exports org.example.daibetes;
+    exports org.example.daibetes.modules.auth.ui;
+    opens org.example.daibetes.modules.auth.ui to javafx.fxml;
+    opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
+    exports org.example.daibetes.modules.doctor.ui;
+    opens org.example.daibetes to javafx.fxml;
+    exports org.example.daibetes;
 
-        opens results to javafx.fxml;
-        exports results;
+    opens results to javafx.fxml;
+    exports results;
 
     opens records to javafx.fxml;
     exports records;
@@ -71,6 +70,13 @@ module org.example.daibetes {
     opens org.example.daibetes.modules.detection.ui to javafx.fxml;
     exports org.example.daibetes.modules.detection.ui;
     exports org.example.daibetes.modules.auth.viewmodel;
+
     opens org.example.daibetes.modules.auth.viewmodel to javafx.fxml;
     opens org.example.daibetes.modules.ai.dto to com.fasterxml.jackson.databind;
+
+    opens org.example.daibetes.modules.doctor.ui.calendar to javafx.fxml;
+    exports org.example.daibetes.modules.doctor.ui.calendar;
+
+    opens org.example.daibetes.modules.patient.ui.calendar to javafx.fxml;
+    exports org.example.daibetes.modules.patient.ui.calendar;
 }
