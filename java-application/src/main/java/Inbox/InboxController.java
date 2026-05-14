@@ -8,10 +8,15 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import org.example.daibetes.app.AppContext;
+import org.example.daibetes.core.database.ConsultationRequestDAO;
+import org.example.daibetes.core.domain.Doctor;
+import org.example.daibetes.core.domain.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,102 +26,176 @@ import java.util.Optional;
 
 /**
  * InboxController manages the messaging interface with conversation list,
- * message display, and real-time messaging functionality
+ * message display, and consultation request accept/reject functionality.
+ *
+ * DB integration:
+ *   - loadSampleData() replaced by loadFromDatabase()
+ *   - Pending requests  → Inbox tab
+ *   - Responded requests → Archived tab
+ *   - Accept/Reject buttons injected into inputArea when request is selected
  */
 public class InboxController {
 
-    // FXML Components - Header
+    // ── Header ────────────────────────────────────────────────────────────────
     @FXML private TextField searchField;
-    @FXML private Button newMessageBtn;
+    @FXML private Button    newMessageBtn;
 
-    // FXML Components - Left Panel
-    @FXML private Button inboxTab;
-    @FXML private Button archivedTab;
-    @FXML private ListView<Conversation> conversationList;
+    // ── Left panel ────────────────────────────────────────────────────────────
+    @FXML private Button                    inboxTab;
+    @FXML private Button                    archivedTab;
+    @FXML private ListView<Conversation>    conversationList;
 
-    // FXML Components - Right Panel
-    @FXML private HBox messageHeader;
-    @FXML private Circle userAvatar;
-    @FXML private Label userName;
-    @FXML private Label lastSeenLabel;
-    @FXML private VBox emptyState;
+    // ── Right panel ───────────────────────────────────────────────────────────
+    @FXML private HBox       messageHeader;
+    @FXML private Circle     userAvatar;
+    @FXML private Label      userName;
+    @FXML private Label      lastSeenLabel;
+    @FXML private VBox       emptyState;
     @FXML private ScrollPane messagesScrollPane;
-    @FXML private VBox messagesContainer;
-    @FXML private HBox inputArea;
-    @FXML private TextArea messageInput;
-    @FXML private Button sendBtn;
+    @FXML private VBox       messagesContainer;
+    @FXML private HBox       inputArea;
+    @FXML private TextArea   messageInput;
+    @FXML private Button     sendBtn;
 
-    // Data Models
+    // ── State ─────────────────────────────────────────────────────────────────
     private ObservableList<Conversation> conversations;
     private ObservableList<Conversation> filteredConversations;
-    private Conversation selectedConversation;
-    private static final String[] AVATAR_COLORS = {"#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"};
+    private Conversation                 selectedConversation;
+    private boolean                      viewingInbox = true;
+
+    private static final String[] AVATAR_COLORS = {
+            "#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"
+    };
     private int avatarIndex = 0;
+
+    private final ConsultationRequestDAO requestDAO = new ConsultationRequestDAO();
+    private int doctorId;
+
+    // =========================================================================
+    // Initialize
+    // =========================================================================
 
     @FXML
     public void initialize() {
+        // Resolve doctor from session
+        User currentUser = AppContext.getInstance().getCurrentUser();
+        if (currentUser instanceof Doctor) {
+            doctorId = ((Doctor) currentUser).getDId();
+        } else {
+            System.err.println("ERROR: InboxController — current user is not a Doctor.");
+        }
+
         setupConversationList();
         setupSearch();
         setupMessageInput();
-        loadSampleData();
+        loadFromDatabase(true); // load pending requests on open
     }
 
-    @FXML
-    private void handleCloseInbox() {
-        Stage stage = (Stage) searchField.getScene().getWindow();
-        stage.close();
-    }
+    // =========================================================================
+    // DB loading
+    // =========================================================================
+
     /**
-     * Setup conversation list with custom cell rendering
+     * Replaces loadSampleData().
+     * Fetches real consultation requests and maps them to Conversation objects.
+     *
+     * @param pending true = inbox (responded_on IS NULL),
+     *                false = archived (responded_on IS NOT NULL)
      */
+    private void loadFromDatabase(boolean pending) {
+        conversations.clear();
+
+        List<String[]> rows = pending
+                ? requestDAO.getPendingRequests(doctorId)
+                : requestDAO.getRespondedRequests(doctorId);
+
+        // row: [0]=request_id [1]=test_id [2]=patient_name
+        //      [3]=requested_on [4]=p_id
+        for (String[] row : rows) {
+            String color = getAvatarColor();
+            Conversation conv = new Conversation(row[2], color, row[3]);
+
+            conv.setRequestId(Integer.parseInt(row[0]));
+            conv.setTestId(Integer.parseInt(row[1]));
+            conv.setPatientId(Integer.parseInt(row[4]));
+            conv.setResponded(!pending);
+
+            // Build the initial message bubble from request details
+            String preview = pending
+                    ? "Requesting consultation. Test ID: " + row[1]
+                    : "Request responded on: " + row[3];
+
+            conv.setLastMessage(preview);
+            conv.addMessage(new Message(preview, false, LocalDateTime.now()));
+
+            conversations.add(conv);
+        }
+
+        filteredConversations.setAll(conversations);
+
+        if (conversations.isEmpty()) {
+            String hint = pending ? "No pending requests." : "No archived requests.";
+            Conversation empty = new Conversation(hint, "#9ca3af", "");
+            filteredConversations.add(empty);
+        }
+    }
+
+    // =========================================================================
+    // Conversation list setup
+    // =========================================================================
+
     private void setupConversationList() {
-        conversations = FXCollections.observableArrayList();
+        conversations         = FXCollections.observableArrayList();
         filteredConversations = FXCollections.observableArrayList();
 
         conversationList.setItems(filteredConversations);
         conversationList.setCellFactory(param -> new ConversationCell());
+
         conversationList.setOnMouseClicked(event -> {
             if (!conversationList.getSelectionModel().isEmpty()) {
-                selectedConversation = conversationList.getSelectionModel().getSelectedItem();
-                displayConversation(selectedConversation);
+                selectedConversation =
+                        conversationList.getSelectionModel().getSelectedItem();
+                // Don't open detail for the "empty" placeholder row
+                if (selectedConversation.getRequestId() != 0) {
+                    displayConversation(selectedConversation);
+                }
             }
         });
     }
 
-    /**
-     * Setup search functionality
-     */
+    // =========================================================================
+    // Search
+    // =========================================================================
+
     private void setupSearch() {
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            filterConversations(newVal.toLowerCase());
-        });
+        searchField.textProperty().addListener((obs, oldVal, newVal) ->
+                filterConversations(newVal.toLowerCase()));
     }
 
-    /**
-     * Filter conversations based on search query
-     */
     private void filterConversations(String query) {
         if (query.isEmpty()) {
             filteredConversations.setAll(conversations);
         } else {
             filteredConversations.clear();
             conversations.stream()
-                    .filter(conv -> conv.getParticipantName().toLowerCase().contains(query))
+                    .filter(c -> c.getParticipantName().toLowerCase().contains(query))
                     .forEach(filteredConversations::add);
         }
     }
 
-    /**
-     * Setup message input area
-     */
+    // =========================================================================
+    // Message input setup
+    // =========================================================================
+
     private void setupMessageInput() {
         messageInput.setWrapText(true);
         messageInput.setPrefRowCount(3);
     }
 
-    /**
-     * Display selected conversation
-     */
+    // =========================================================================
+    // Display conversation
+    // =========================================================================
+
     private void displayConversation(Conversation conversation) {
         emptyState.setVisible(false);
         emptyState.setManaged(false);
@@ -127,52 +206,171 @@ public class InboxController {
         inputArea.setVisible(true);
         inputArea.setManaged(true);
 
-        // Update header
         userName.setText(conversation.getParticipantName());
-        lastSeenLabel.setText(conversation.getLastSeen());
+        lastSeenLabel.setText("Requested: " + conversation.getLastSeen());
         userAvatar.setStyle("-fx-fill: " + conversation.getAvatarColor() + ";");
 
-        // Clear and reload messages
         messagesContainer.getChildren().clear();
         for (Message message : conversation.getMessages()) {
             addMessageToUI(message);
         }
 
-        // Scroll to bottom
-        Platform.runLater(() -> {
-            messagesScrollPane.setVvalue(1.0);
-        });
-
+        Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
         messageInput.clear();
+
+        // Inject accept/reject for pending requests; hide for archived
+        refreshActionArea(conversation);
+    }
+
+    // =========================================================================
+    // Accept / Reject action area
+    // =========================================================================
+
+    /**
+     * Replaces the default send button area with Accept/Reject buttons
+     * when viewing a pending request, or hides actions for archived ones.
+     */
+    private void refreshActionArea(Conversation conversation) {
+        // Remove any previously injected action buttons
+        inputArea.getChildren().removeIf(n ->
+                n instanceof Button &&
+                        ("ACCEPT".equals(((Button) n).getText()) ||
+                                "REJECT".equals(((Button) n).getText())));
+
+        // Hide the default message input and send for request conversations
+        messageInput.setVisible(false);
+        messageInput.setManaged(false);
+        sendBtn.setVisible(false);
+        sendBtn.setManaged(false);
+
+        if (conversation.isResponded()) {
+            // Archived — no actions available
+            Label respondedLbl = new Label("✓  This request has already been responded to.");
+            respondedLbl.setStyle(
+                    "-fx-text-fill: #6b7280; -fx-font-size: 13px; -fx-padding: 8 0;");
+            inputArea.getChildren().add(respondedLbl);
+            return;
+        }
+
+        // Pending — show Reject + Accept
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button rejectBtn = new Button("REJECT");
+        rejectBtn.setStyle(
+                "-fx-padding: 10 28; -fx-font-size: 13px; -fx-font-weight: bold; " +
+                        "-fx-text-fill: #C0392B; -fx-background-color: transparent; " +
+                        "-fx-border-color: #C0392B; -fx-border-radius: 8; " +
+                        "-fx-background-radius: 8; -fx-cursor: hand;");
+
+        Button acceptBtn = new Button("ACCEPT");
+        acceptBtn.setStyle(
+                "-fx-padding: 10 28; -fx-font-size: 13px; -fx-font-weight: bold; " +
+                        "-fx-text-fill: white; -fx-background-color: #1f2937; " +
+                        "-fx-background-radius: 8; -fx-cursor: hand;");
+
+        rejectBtn.setOnAction(e -> handleReject(conversation, rejectBtn, acceptBtn));
+        acceptBtn.setOnAction(e -> handleAccept(conversation, rejectBtn, acceptBtn));
+
+        inputArea.getChildren().addAll(spacer, rejectBtn, acceptBtn);
+    }
+
+    private void handleAccept(Conversation conversation,
+                              Button rejectBtn, Button acceptBtn) {
+        boolean success = requestDAO.acceptRequest(conversation.getRequestId());
+        if (success) {
+            conversation.setResponded(true);
+            conversation.setAccepted(true);
+            conversation.setLastMessage("✓ Request accepted.");
+            conversation.addMessage(
+                    new Message("You accepted this consultation request.",
+                            true, LocalDateTime.now()));
+
+            filteredConversations.remove(conversation);
+            conversations.remove(conversation);
+            conversationList.refresh();
+
+            // Show confirmation in message pane then clear selection
+            addMessageToUI(conversation.getMessages()
+                    .get(conversation.getMessages().size() - 1));
+            Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
+
+            disableActionButtons(rejectBtn, acceptBtn, "Accepted");
+        } else {
+            System.err.println("Failed to accept request ID: "
+                    + conversation.getRequestId());
+        }
+    }
+
+    private void handleReject(Conversation conversation,
+                              Button rejectBtn, Button acceptBtn) {
+        boolean success = requestDAO.rejectRequest(conversation.getRequestId());
+        if (success) {
+            conversation.setResponded(true);
+            conversation.setAccepted(false);
+            conversation.setLastMessage("✗ Request rejected.");
+            conversation.addMessage(
+                    new Message("You rejected this consultation request.",
+                            true, LocalDateTime.now()));
+
+            filteredConversations.remove(conversation);
+            conversations.remove(conversation);
+            conversationList.refresh();
+
+            addMessageToUI(conversation.getMessages()
+                    .get(conversation.getMessages().size() - 1));
+            Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
+
+            disableActionButtons(rejectBtn, acceptBtn, "Rejected");
+        } else {
+            System.err.println("Failed to reject request ID: "
+                    + conversation.getRequestId());
+        }
     }
 
     /**
-     * Add message to UI
+     * Disables both buttons and shows a status label after action.
      */
+    private void disableActionButtons(Button rejectBtn, Button acceptBtn,
+                                      String status) {
+        rejectBtn.setDisable(true);
+        acceptBtn.setDisable(true);
+
+        Label done = new Label("✓  " + status);
+        done.setStyle("-fx-text-fill: #065f46; -fx-font-size: 13px; " +
+                "-fx-font-weight: bold; -fx-padding: 8 0;");
+        inputArea.getChildren().add(done);
+    }
+
+    // =========================================================================
+    // Add message bubble to UI
+    // =========================================================================
+
     private void addMessageToUI(Message message) {
         HBox messageBox = new HBox();
         messageBox.setSpacing(12);
-        messageBox.setAlignment(Pos.TOP_LEFT);
+        messageBox.setAlignment(message.isSent() ? Pos.TOP_RIGHT : Pos.TOP_LEFT);
 
-        if (message.isSent()) {
-            messageBox.setAlignment(Pos.TOP_RIGHT);
-        }
-
-        // Avatar
         Circle avatar = new Circle(18);
-        avatar.setStyle("-fx-fill: " + (message.isSent() ? "#3b82f6" : getAvatarColor()) + ";");
+        avatar.setStyle("-fx-fill: " +
+                (message.isSent() ? "#3b82f6" : getAvatarColor()) + ";");
 
-        // Message content
         VBox contentBox = new VBox(4);
-        Label senderLabel = new Label(message.isSent() ? "You" : selectedConversation.getParticipantName());
-        senderLabel.setStyle("-fx-font-size: 11; -fx-text-fill: #9ca3af; -fx-font-weight: bold;");
+
+        Label senderLabel = new Label(
+                message.isSent() ? "You" : selectedConversation.getParticipantName());
+        senderLabel.setStyle(
+                "-fx-font-size: 11; -fx-text-fill: #9ca3af; -fx-font-weight: bold;");
 
         Label messageLabel = new Label(message.getContent());
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(400);
-        messageLabel.setStyle("-fx-padding: 10; -fx-font-size: 13; -fx-text-fill: " +
-                (message.isSent() ? "#ffffff" : "#1f2937") + "; -fx-background-color: " +
-                (message.isSent() ? "#3b82f6" : "#f3f4f6") + "; -fx-background-radius: 12;");
+        messageLabel.setStyle(
+                "-fx-padding: 10; -fx-font-size: 13; -fx-text-fill: " +
+                        (message.isSent() ? "#ffffff" : "#1f2937") +
+                        "; -fx-background-color: " +
+                        (message.isSent() ? "#3b82f6" : "#f3f4f6") +
+                        "; -fx-background-radius: 12;");
 
         Label timeLabel = new Label(message.getFormattedTime());
         timeLabel.setStyle("-fx-font-size: 10; -fx-text-fill: #d1d5db;");
@@ -188,12 +386,46 @@ public class InboxController {
         messagesContainer.getChildren().add(messageBox);
     }
 
-    /**
-     * Handle new message button
-     */
+    // =========================================================================
+    // Tab handlers
+    // =========================================================================
+
+    @FXML
+    private void handleInboxTab() {
+        viewingInbox = true;
+        inboxTab.setStyle(
+                "-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: bold; " +
+                        "-fx-text-fill: #3b82f6; -fx-background-color: transparent; " +
+                        "-fx-border-color: #3b82f6; -fx-border-width: 0 0 2 0;");
+        archivedTab.setStyle(
+                "-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: 600; " +
+                        "-fx-text-fill: #6b7280; -fx-background-color: transparent; " +
+                        "-fx-border-width: 0;");
+        loadFromDatabase(true);
+        clearDetailPane();
+    }
+
+    @FXML
+    private void handleArchivedTab() {
+        viewingInbox = false;
+        archivedTab.setStyle(
+                "-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: bold; " +
+                        "-fx-text-fill: #3b82f6; -fx-background-color: transparent; " +
+                        "-fx-border-color: #3b82f6; -fx-border-width: 0 0 2 0;");
+        inboxTab.setStyle(
+                "-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: 600; " +
+                        "-fx-text-fill: #6b7280; -fx-background-color: transparent; " +
+                        "-fx-border-width: 0;");
+        loadFromDatabase(false);
+        clearDetailPane();
+    }
+
+    // =========================================================================
+    // New message — kept from original, opens dialog
+    // =========================================================================
+
     @FXML
     private void handleNewMessage() {
-        // Create simple dialog for new message
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("New Message");
         dialog.setHeaderText("Start a new conversation");
@@ -202,7 +434,8 @@ public class InboxController {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent() && !result.get().trim().isEmpty()) {
             String recipientName = result.get().trim();
-            Conversation newConv = new Conversation(recipientName, getAvatarColor(), "Now");
+            Conversation newConv = new Conversation(
+                    recipientName, getAvatarColor(), "Now");
             conversations.add(newConv);
             filteredConversations.add(0, newConv);
             conversationList.getSelectionModel().select(0);
@@ -210,123 +443,51 @@ public class InboxController {
         }
     }
 
-    /**
-     * Handle send message
-     */
+    // =========================================================================
+    // Send message — kept for future free-form messaging
+    // =========================================================================
+
     @FXML
     private void handleSendMessage() {
-        if (selectedConversation == null) {
-            showAlert("Select a conversation first!");
-            return;
-        }
-
+        if (selectedConversation == null) return;
         String content = messageInput.getText().trim();
-        if (content.isEmpty()) {
-            showAlert("Message cannot be empty!");
-            return;
-        }
+        if (content.isEmpty()) return;
 
-        // Create and add message
         Message message = new Message(content, true, LocalDateTime.now());
         selectedConversation.addMessage(message);
         addMessageToUI(message);
-
-        // Update conversation preview
         selectedConversation.setLastMessage(content);
-        selectedConversation.setLastSeen("Now");
         conversationList.refresh();
-
         messageInput.clear();
 
-        // Scroll to bottom
-        Platform.runLater(() -> {
-            messagesScrollPane.setVvalue(1.0);
-        });
-
-        // Simulate received message after 1 second
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                Platform.runLater(() -> {
-                    Message receivedMessage = new Message("Thanks for the message! 👋", false, LocalDateTime.now());
-                    selectedConversation.addMessage(receivedMessage);
-                    addMessageToUI(receivedMessage);
-                    Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
     }
 
-    /**
-     * Handle inbox tab
-     */
-    @FXML
-    private void handleInboxTab() {
-        inboxTab.setStyle("-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #3b82f6; -fx-background-color: transparent; -fx-border-color: #3b82f6; -fx-border-width: 0 0 2 0;");
-        archivedTab.setStyle("-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: 600; -fx-text-fill: #6b7280; -fx-background-color: transparent; -fx-border-width: 0;");
-        filterConversations(searchField.getText());
+    // =========================================================================
+    // Helpers
+    // =========================================================================
+
+    private void clearDetailPane() {
+        messageHeader.setVisible(false);
+        messageHeader.setManaged(false);
+        emptyState.setVisible(true);
+        emptyState.setManaged(true);
+        messagesScrollPane.setVisible(false);
+        messagesScrollPane.setManaged(false);
+        inputArea.setVisible(false);
+        inputArea.setManaged(false);
+        messagesContainer.getChildren().clear();
+        selectedConversation = null;
     }
 
-    /**
-     * Handle archived tab
-     */
-    @FXML
-    private void handleArchivedTab() {
-        archivedTab.setStyle("-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #3b82f6; -fx-background-color: transparent; -fx-border-color: #3b82f6; -fx-border-width: 0 0 2 0;");
-        inboxTab.setStyle("-fx-padding: 8 12; -fx-font-size: 12; -fx-font-weight: 600; -fx-text-fill: #6b7280; -fx-background-color: transparent; -fx-border-width: 0;");
-        filteredConversations.clear();
-    }
-
-    /**
-     * Show alert dialog
-     */
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Info");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    /**
-     * Get next avatar color
-     */
     private String getAvatarColor() {
         return AVATAR_COLORS[avatarIndex++ % AVATAR_COLORS.length];
     }
 
-    /**
-     * Load sample data
-     */
-    private void loadSampleData() {
-        String[] names = {"Sarah Chen", "Alex Morgan", "Jordan Lee", "Emma Wilson"};
-        String[] lastMessages = {
-                "That sounds great! When should we schedule...",
-                "Just sent you the files. Let me know if you need...",
-                "Thanks for your help yesterday!",
-                "Are we still on for tomorrow?"
-        };
+    // =========================================================================
+    // Custom cell renderer — kept from original with minor style alignment
+    // =========================================================================
 
-        for (int i = 0; i < names.length; i++) {
-            Conversation conv = new Conversation(names[i], getAvatarColor(), "2h ago");
-            conv.setLastMessage(lastMessages[i]);
-
-            // Add sample messages
-            conv.addMessage(new Message("Hey, how are you?", false, LocalDateTime.now().minusHours(2)));
-            conv.addMessage(new Message("I'm doing great! How about you?", true, LocalDateTime.now().minusHours(1).minusMinutes(50)));
-            conv.addMessage(new Message(lastMessages[i], false, LocalDateTime.now().minusHours(1)));
-
-            conversations.add(conv);
-        }
-
-        filteredConversations.setAll(conversations);
-    }
-
-    /**
-     * Custom cell renderer for conversations
-     */
     private class ConversationCell extends ListCell<Conversation> {
         @Override
         protected void updateItem(Conversation conversation, boolean empty) {
@@ -339,39 +500,49 @@ public class InboxController {
 
             HBox cellContent = new HBox(12);
             cellContent.setAlignment(Pos.CENTER_LEFT);
-            cellContent.setPadding(new Insets(12, 12, 12, 12));
-            cellContent.setStyle("-fx-padding: 12; -fx-border-color: #f3f4f6; -fx-border-width: 0 0 1 0;");
+            cellContent.setPadding(new Insets(12));
+            cellContent.setStyle(
+                    "-fx-border-color: #f3f4f6; -fx-border-width: 0 0 1 0;");
 
-            // Avatar
             Circle avatar = new Circle(28);
             avatar.setStyle("-fx-fill: " + conversation.getAvatarColor() + ";");
 
-            // Conversation info
             VBox infoBox = new VBox(4);
-            infoBox.setSpacing(4);
-
             Label nameLabel = new Label(conversation.getParticipantName());
-            nameLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #1f2937;");
+            nameLabel.setStyle(
+                    "-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #1f2937;");
 
             Label messageLabel = new Label(conversation.getLastMessage());
-            messageLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #6b7280;");
+            messageLabel.setStyle(
+                    "-fx-font-size: 12; -fx-text-fill: #6b7280;");
             messageLabel.setMaxWidth(200);
             messageLabel.setWrapText(true);
 
             infoBox.getChildren().addAll(nameLabel, messageLabel);
 
-            // Time and unread indicator
             VBox timeBox = new VBox();
             timeBox.setAlignment(Pos.TOP_RIGHT);
+
             Label timeLabel = new Label(conversation.getLastSeen());
             timeLabel.setStyle("-fx-font-size: 11; -fx-text-fill: #9ca3af;");
-            timeBox.getChildren().add(timeLabel);
+
+            // Status badge — Pending (amber) or Responded (green)
+            Label badge = new Label(
+                    conversation.isResponded() ? "Responded" : "Pending");
+            badge.setStyle(conversation.isResponded()
+                    ? "-fx-background-color: #d1fae5; -fx-text-fill: #065f46; " +
+                    "-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 8;"
+                    : "-fx-background-color: #fef3c7; -fx-text-fill: #d97706; " +
+                    "-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 8;");
+
+            timeBox.getChildren().addAll(timeLabel, badge);
 
             cellContent.getChildren().addAll(avatar, infoBox, new Region(), timeBox);
-            HBox.setHgrow(infoBox, javafx.scene.layout.Priority.ALWAYS);
+            HBox.setHgrow(infoBox, Priority.ALWAYS);
 
             setGraphic(cellContent);
-            setStyle("-fx-padding: 0; -fx-background-color: " + (isSelected() ? "#f0f4ff" : "#ffffff") + ";");
+            setStyle("-fx-padding: 0; -fx-background-color: " +
+                    (isSelected() ? "#f0f4ff" : "#ffffff") + ";");
         }
     }
 }
@@ -379,52 +550,5 @@ public class InboxController {
 /**
  * Conversation model
  */
-class Conversation {
-    private String participantName;
-    private String avatarColor;
-    private String lastSeen;
-    private String lastMessage;
-    private List<Message> messages;
 
-    public Conversation(String participantName, String avatarColor, String lastSeen) {
-        this.participantName = participantName;
-        this.avatarColor = avatarColor;
-        this.lastSeen = lastSeen;
-        this.messages = new ArrayList<>();
-        this.lastMessage = "Start a new conversation...";
-    }
 
-    public void addMessage(Message message) {
-        messages.add(message);
-    }
-
-    public String getParticipantName() { return participantName; }
-    public String getAvatarColor() { return avatarColor; }
-    public String getLastSeen() { return lastSeen; }
-    public void setLastSeen(String lastSeen) { this.lastSeen = lastSeen; }
-    public String getLastMessage() { return lastMessage; }
-    public void setLastMessage(String lastMessage) { this.lastMessage = lastMessage; }
-    public List<Message> getMessages() { return messages; }
-}
-
-/**
- * Message model
- */
-class Message {
-    private String content;
-    private boolean sent;
-    private LocalDateTime timestamp;
-
-    public Message(String content, boolean sent, LocalDateTime timestamp) {
-        this.content = content;
-        this.sent = sent;
-        this.timestamp = timestamp;
-    }
-
-    public String getContent() { return content; }
-    public boolean isSent() { return sent; }
-    public String getFormattedTime() {
-        return timestamp.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
-    public LocalDateTime getTimestamp() { return timestamp; }
-}
