@@ -2,8 +2,10 @@ package login;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.auth.viewmodel.LoginViewModel;
 import register.sceneLoader;
@@ -17,10 +19,8 @@ import register.sceneLoader;
  */
 public class loginController {
 
-    @FXML private TextField     emailtxtfield;
+    @FXML private TextField     nameField;
     @FXML private PasswordField passwordField;
-    @FXML private ToggleButton  doctorToggle;
-    @FXML private ToggleButton  patientToggle;
     @FXML private Button        loginButton;
     @FXML private Label         errorLabel;
     @FXML private Label         registerLabel;
@@ -30,17 +30,13 @@ public class loginController {
     @FXML
     public void initialize() {
         // Bind inputs → ViewModel
-        emailtxtfield.textProperty().bindBidirectional(viewModel.emailProperty());
+        nameField.textProperty().bindBidirectional(viewModel.emailProperty());
         passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
-
-        // Bind outputs ← ViewModel
+        viewModel.login();
+//       Bind outputs ← ViewModel
         errorLabel.textProperty().bind(viewModel.errorMessageProperty());
         loginButton.disableProperty().bind(viewModel.isLoadingProperty());
 
-        // Toggle group — only one role active at a time
-        ToggleGroup roleGroup = new ToggleGroup();
-        doctorToggle.setToggleGroup(roleGroup);
-        patientToggle.setToggleGroup(roleGroup);
 
         // Navigate after successful login
         viewModel.loginSuccessProperty().addListener((obs, wasSuccess, isSuccess) -> {
@@ -52,38 +48,14 @@ public class loginController {
     // Role toggle
     // =========================================================================
 
-    @FXML
-    private void onRoleToggled() {
-        if (doctorToggle.isSelected()) {
-            viewModel.roleProperty().set(LoginViewModel.Role.DOCTOR);
-            doctorToggle.setStyle(
-                    "-fx-background-color: white; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: black;");
-            patientToggle.setStyle(
-                    "-fx-background-color: transparent; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: #ffffff99;");
-
-        } else if (patientToggle.isSelected()) {
-            viewModel.roleProperty().set(LoginViewModel.Role.PATIENT);
-            patientToggle.setStyle(
-                    "-fx-background-color: white; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: black;");
-            doctorToggle.setStyle(
-                    "-fx-background-color: transparent; -fx-background-radius: 0; " +
-                            "-fx-border-color: white; -fx-text-fill: white;");
-
-        } else {
-            viewModel.roleProperty().set(LoginViewModel.Role.NONE);
-        }
-    }
-
     // =========================================================================
     // Login
     // =========================================================================
 
     @FXML
-    private void onLoginButtonClicked() {
+    private void handleLogin() {
         viewModel.login();
+
     }
 
     // =========================================================================
@@ -91,13 +63,17 @@ public class loginController {
     // =========================================================================
 
     @FXML
-    private void onRegisterClicked(MouseEvent event) {
-        sceneLoader.switchScene(
-                registerLabel,
-                "register",
-                "register-screen.fxml",
-                "dAIbetes — Register",
-                null
+    private void goToRegister(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load(
+                        "register",
+                        "register-screen.fxml",
+                        "/styles/splash.css"
+                )
         );
     }
 

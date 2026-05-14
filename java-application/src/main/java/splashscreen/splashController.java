@@ -5,6 +5,7 @@ import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -43,6 +44,8 @@ public class splashController {
             stage.setScene(
                     sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
             );
+
+            stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
