@@ -2,8 +2,10 @@ package login;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.auth.viewmodel.LoginViewModel;
 import register.sceneLoader;
@@ -17,7 +19,7 @@ import register.sceneLoader;
  */
 public class loginController {
 
-    @FXML private TextField     emailtxtfield;
+    @FXML private TextField     nameField;
     @FXML private PasswordField passwordField;
     @FXML private ToggleButton  doctorToggle;
     @FXML private ToggleButton  patientToggle;
@@ -30,22 +32,22 @@ public class loginController {
     @FXML
     public void initialize() {
         // Bind inputs → ViewModel
-        emailtxtfield.textProperty().bindBidirectional(viewModel.emailProperty());
-        passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
+//        nameField.textProperty().bindBidirectional(viewModel.emailProperty());
+//        passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
 
-        // Bind outputs ← ViewModel
-        errorLabel.textProperty().bind(viewModel.errorMessageProperty());
-        loginButton.disableProperty().bind(viewModel.isLoadingProperty());
+//         Bind outputs ← ViewModel
+//        errorLabel.textProperty().bind(viewModel.errorMessageProperty());
+//        loginButton.disableProperty().bind(viewModel.isLoadingProperty());
 
-        // Toggle group — only one role active at a time
-        ToggleGroup roleGroup = new ToggleGroup();
-        doctorToggle.setToggleGroup(roleGroup);
-        patientToggle.setToggleGroup(roleGroup);
+//         Toggle group — only one role active at a time
+//        ToggleGroup roleGroup = new ToggleGroup();
+//        doctorToggle.setToggleGroup(roleGroup);
+//        patientToggle.setToggleGroup(roleGroup);
 
         // Navigate after successful login
-        viewModel.loginSuccessProperty().addListener((obs, wasSuccess, isSuccess) -> {
-            if (isSuccess) Platform.runLater(this::navigateToDashboard);
-        });
+//        viewModel.loginSuccessProperty().addListener((obs, wasSuccess, isSuccess) -> {
+//            if (isSuccess) Platform.runLater(this::navigateToDashboard);
+//        });
     }
 
     // =========================================================================
@@ -82,7 +84,7 @@ public class loginController {
     // =========================================================================
 
     @FXML
-    private void onLoginButtonClicked() {
+    private void handleLogin() {
         viewModel.login();
     }
 
@@ -91,13 +93,17 @@ public class loginController {
     // =========================================================================
 
     @FXML
-    private void onRegisterClicked(MouseEvent event) {
-        sceneLoader.switchScene(
-                registerLabel,
-                "register",
-                "register-screen.fxml",
-                "dAIbetes — Register",
-                null
+    private void goToRegister(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load(
+                        "register",
+                        "register-screen.fxml",
+                        "/styles/splash.css"
+                )
         );
     }
 
