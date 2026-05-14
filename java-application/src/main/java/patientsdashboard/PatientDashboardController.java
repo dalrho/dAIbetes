@@ -262,42 +262,21 @@ public class PatientDashboardController implements Initializable {
     }
 
     @FXML
-    private void onScheduleFollowUp() {
-        Stage modal = new Stage();
-        modal.initModality(Modality.APPLICATION_MODAL);
-        modal.setTitle("Request Scan");
+    private void onScheduleFollowUp(ActionEvent event) {
+        Scene scene = sceneLoader.load(
+                "patientcalendar",
+                "patient-calendar.fxml",
+                null
+        );
 
-        VBox content = new VBox(14);
-        content.setStyle("-fx-padding: 24; -fx-background-color: #F2F2F2;");
-        content.getChildren().add(styledLabel("Request a Scan", "#111111", "18px"));
+        if (scene == null) {
+            System.out.println("Failed to load Patient Calendar screen");
+            return;
+        }
 
-        javafx.scene.control.TextField searchField = new javafx.scene.control.TextField();
-        searchField.setPromptText("Search doctor name or hospital...");
-        searchField.textProperty().bindBidirectional(viewModel.searchKeywordProperty());
-
-        VBox searchResultsBox = new VBox(8);
-
-        Button searchBtn = new Button("SEARCH");
-        searchBtn.setStyle("-fx-background-color: #1A1A1A; -fx-text-fill: white; " +
-                "-fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 6;");
-        searchBtn.setOnAction(e -> {
-            viewModel.search();
-            populateSearchResults(searchResultsBox, modal);
-        });
-
-        HBox searchRow = new HBox(10, searchField, searchBtn);
-        HBox.setHgrow(searchField, Priority.ALWAYS);
-
-        Label statusLbl = new Label();
-        statusLbl.textProperty().bind(viewModel.statusMessageProperty());
-        statusLbl.setStyle("-fx-text-fill: #C0392B; -fx-font-size: 12px;");
-
-        content.getChildren().addAll(searchRow, searchResultsBox, statusLbl);
-
-        javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(content);
-        scroll.setFitToWidth(true);
-        modal.setScene(new Scene(scroll, 560, 460));
-        modal.show();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Schedule Follow-up");
     }
 
     private void populateSearchResults(VBox container, Stage modal) {

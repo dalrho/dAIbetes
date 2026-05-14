@@ -27,7 +27,7 @@ public class sceneLoader {
             FXMLLoader loader = new FXMLLoader(xmlLocation);
             Parent root = loader.load();
 
-            Scene scene = new Scene(root, 900, 600);
+            Scene scene = new Scene(root);
 
             if (cssPath != null) {
                 URL css = sceneLoader.class.getResource(cssPath);
