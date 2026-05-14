@@ -26,6 +26,7 @@ module org.example.daibetes {
     requires javafx.swing;
     requires com.fasterxml.jackson.databind;
 //    requires org.example.daibetes;
+//    requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
