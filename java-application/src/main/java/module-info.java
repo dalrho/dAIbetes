@@ -27,6 +27,8 @@ module org.example.daibetes {
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
+//    requires org.example.daibetes;
+//    requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
     //requires org.example.daibetes;
@@ -39,12 +41,16 @@ module org.example.daibetes {
     opens register to javafx.fxml;
     exports register;
 
+     exports org.example.daibetes.modules.auth.ui;
+     opens org.example.daibetes.modules.auth.ui to javafx.fxml;
+     opens org.example.daibetes.modules.doctor.ui.patients to javafx.fxml;
+     opens org.example.daibetes to javafx.fxml;
+     exports org.example.daibetes;
+  
     exports org.example.daibetes.modules.auth.ui;
     opens org.example.daibetes.modules.auth.ui to javafx.fxml;
     opens org.example.daibetes.modules.doctor.ui to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui;
-    opens org.example.daibetes to javafx.fxml;
-    exports org.example.daibetes;
 
     opens results to javafx.fxml;
     exports results;
@@ -73,6 +79,9 @@ module org.example.daibetes {
 
     opens org.example.daibetes.modules.auth.viewmodel to javafx.fxml;
     opens org.example.daibetes.modules.ai.dto to com.fasterxml.jackson.databind;
+    exports org.example.daibetes.modules.doctor.ui.diagnosis;
+    opens org.example.daibetes.modules.doctor.ui.diagnosis to javafx.fxml;
+    exports org.example.daibetes.modules.doctor.ui.patients;
 
     opens org.example.daibetes.modules.doctor.ui.calendar to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.calendar;

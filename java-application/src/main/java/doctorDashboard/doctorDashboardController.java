@@ -264,13 +264,13 @@ public class doctorDashboardController implements Initializable {
         System.out.println("[Dashboard] View Patients");
         // TODO: navigate
         Scene scene = register.sceneLoader.load(
-                "records",
-                "records-screen.fxml",
-                null
+                "myPatients",
+                "my-patients-view.fxml",
+                "/styles/myPatient.css"
         );
 
         if (scene == null) {
-            System.out.println("Failed to load Records screen");
+            System.out.println("Failed to load My Patients screen");
             return;
         }
 
