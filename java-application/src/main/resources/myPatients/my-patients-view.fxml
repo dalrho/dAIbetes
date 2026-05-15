@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="900.0" spacing="15.0" styleClass="main-container" stylesheets="@myPatient.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.patients.MyPatientsController">
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="900.0" spacing="15.0" styleClass="main-container" stylesheets="@../styles/myPatient.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.patients.MyPatientsController">
     <padding>
         <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
     </padding>
