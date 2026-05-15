@@ -1,9 +1,11 @@
 package org.example.daibetes.app;
 
 import javafx.scene.image.Image;
+import org.example.daibetes.core.domain.Appointment;
 import org.example.daibetes.core.domain.User;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,15 @@ public class AppContext {
 
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
+    private List<Appointment> appointments = new ArrayList<>();
 
-    private AppContext() {}
+    private AppContext() {
+        // Initialize with some mock data for demonstration
+        appointments.add(new Appointment(1, 1, 1, "Harold", "Dr. Cruz", LocalDate.of(2026, 5, 18), "3:00PM", false));
+        appointments.add(new Appointment(2, 2, 1, "Alice", "Dr. Cruz", LocalDate.of(2026, 5, 19), "10:00AM", true));
+        appointments.add(new Appointment(3, 3, 1, "Bob", "Dr. Cruz", LocalDate.of(2026, 5, 20), "11:30AM", false));
+        appointments.add(new Appointment(4, 4, 1, "Charlie", "Dr. Cruz", LocalDate.of(2026, 5, 20), "2:00PM", true));
+    }
 
     public static AppContext getInstance() {
         if (instance == null) {
@@ -87,5 +96,23 @@ public class AppContext {
 
     public void setGalleryFiles(List<File> files) {
         this.galleryFiles = files;
+    }
+
+    // --- Appointments ---
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void addAppointment(Appointment appointment) {
+        this.appointments.add(appointment);
+    }
+
+    public void updateAppointmentStatus(int id, boolean accepted) {
+        for (Appointment app : appointments) {
+            if (app.getId() == id) {
+                app.setAccepted(accepted);
+                break;
+            }
+        }
     }
 }

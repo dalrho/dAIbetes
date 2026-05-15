@@ -11,12 +11,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <AnchorPane
-        prefWidth="900"
-        prefHeight="600"
-        xmlns:fx="http://javafx.com/fxml"
-        fx:controller="splashscreen.splashController">
+        prefWidth="1366"
+        prefHeight="860"
+        xmlns="http://javafx.com/javafx/17.0.2-ea"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="splashscreen.splashController"
+        style="-fx-background-color: #000000;">
 
-    <StackPane prefWidth="900" prefHeight="600" alignment="CENTER">
+    <StackPane prefWidth="1366" prefHeight="860" alignment="CENTER">
         <VBox fx:id="rootContainer"
               alignment="CENTER"
               spacing="20"
