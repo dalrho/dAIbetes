@@ -1,4 +1,4 @@
-package register;
+package org.example.daibetes.modules.auth.ui;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -19,6 +19,7 @@ import org.example.daibetes.core.domain.DoctorFactory;
 import org.example.daibetes.core.domain.User;
 import org.example.daibetes.core.domain.UserFactory;
 import org.example.daibetes.modules.auth.service.Authenticate;
+import register.sceneLoader;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -28,7 +29,8 @@ public class DoctorRegisterController {
     @FXML private VBox card;
 
     @FXML private TextField     doctorIdField;      // license number
-    @FXML private TextField     nameField;
+    @FXML private TextField     firstNameField;
+    @FXML private TextField     lastNameField;
     @FXML private TextField     emailField;
     @FXML private TextField     contactField;
     @FXML private DatePicker    birthdatePicker;
@@ -69,18 +71,24 @@ public class DoctorRegisterController {
     @FXML
     public void handleCreateAccount(ActionEvent event) {
 
-        // ── Field validation ──────────────────────────────────────────────────
-        String licenseNumber    = doctorIdField.getText().trim();
-        String fullName         = nameField.getText().trim();
-        String email            = emailField.getText().trim();
-        String contact          = contactField.getText().trim();
-        LocalDate birth         = birthdatePicker.getValue();
-        String password         = passwordField.getText();
-        String confirmPassword  = confirmPasswordField.getText();
+        String licenseNumber = doctorIdField.getText().trim();
+        String firstName = firstNameField.getText().trim();
+        String lastName = lastNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String contact = contactField.getText().trim();
+        LocalDate birth = birthdatePicker.getValue();
+        String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
 
-        if (licenseNumber.isBlank() || fullName.isBlank() || email.isBlank() ||
-                contact.isBlank() || birth == null ||
-                password.isBlank() || confirmPassword.isBlank()) {
+        if (licenseNumber.isBlank() ||
+                firstName.isBlank() ||
+                lastName.isBlank() ||
+                email.isBlank() ||
+                contact.isBlank() ||
+                birth == null ||
+                password.isBlank() ||
+                confirmPassword.isBlank()) {
+
             showAlert(Alert.AlertType.WARNING, "Incomplete Fields",
                     "Please fill in all fields.");
             return;
@@ -98,26 +106,6 @@ public class DoctorRegisterController {
             return;
         }
 
-        // ── Name split ────────────────────────────────────────────────────────
-        String[] nameParts = fullName.split("\\s+", 2);
-        String fname = nameParts[0];
-        String lname = nameParts.length > 1 ? nameParts[1] : "";
-
-        if (lname.isBlank()) {
-            showAlert(Alert.AlertType.WARNING, "Full Name Required",
-                    "Please enter both first and last name.");
-            return;
-        }
-
-        // ── Email duplicate check ─────────────────────────────────────────────
-        Authenticate auth = new Authenticate();
-        if (auth.emailExists(email)) {
-            showAlert(Alert.AlertType.ERROR, "Email Taken",
-                    "An account with this email already exists.");
-            return;
-        }
-
-        // ── Age ───────────────────────────────────────────────────────────────
         if (birth.isAfter(LocalDate.now())) {
             showAlert(Alert.AlertType.ERROR, "Invalid Birthdate",
                     "Birthdate cannot be in the future.");
@@ -125,25 +113,39 @@ public class DoctorRegisterController {
         }
 
         int age = Period.between(birth, LocalDate.now()).getYears();
+
         if (age < 18) {
             showAlert(Alert.AlertType.ERROR, "Age Requirement",
                     "Doctor must be at least 18 years old.");
             return;
         }
 
-        String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
-                .getSelectedToggle()).getText();
+        Authenticate auth = new Authenticate();
 
-        // ── Persist to DB via Factory → CreateData ────────────────────────────
-        // hospital is not yet in the FXML — defaulted to "Not specified"
-        // doctorIdImage (ID card) is not yet in the FXML — passed as null
+        if (auth.emailExists(email)) {
+            showAlert(Alert.AlertType.ERROR, "Email Taken",
+                    "An account with this email already exists.");
+            return;
+        }
+
+        String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
+                .getSelectedToggle())
+                .getText();
+
         UserFactory factory = new DoctorFactory(
-                fname, lname, email, password,
-                contact, selectedGender, birth.toString(),
-                licenseNumber, "Not specified", null
+                firstName,
+                lastName,
+                email,
+                password,
+                contact,
+                selectedGender,
+                birth.toString(),
+                licenseNumber,
+                "Not specified",
+                null
         );
 
-        User user     = factory.createUser();
+        User user = factory.createUser();
         Doctor doctor = (Doctor) user;
 
         CreateData createData = new CreateData();
@@ -153,10 +155,21 @@ public class DoctorRegisterController {
             showAlert(Alert.AlertType.INFORMATION, "Success",
                     "Doctor account created successfully!");
 
-            // Navigate to login after registration
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(sceneLoader.load("login", "login-screen.fxml",
-                    "/styles/splash.css"));
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            stage.setScene(
+                    sceneLoader.load(
+                            "login",
+                            "login-screen.fxml",
+                            "/styles/splash.css"
+                    )
+            );
+
+            stage.setTitle("dAIbetes — Login");
+            stage.show();
+
         } else {
             showAlert(Alert.AlertType.ERROR, "Registration Failed",
                     "Could not create account. Please try again.");

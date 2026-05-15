@@ -1,4 +1,4 @@
-package register;
+package org.example.daibetes.modules.auth.ui;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -19,6 +19,7 @@ import org.example.daibetes.core.domain.PatientFactory;
 import org.example.daibetes.core.domain.User;
 import org.example.daibetes.core.domain.UserFactory;
 import org.example.daibetes.modules.auth.service.Authenticate;
+import register.sceneLoader;
 
 import java.time.LocalDate;
 import java.time.Period;
