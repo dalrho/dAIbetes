@@ -1,4 +1,4 @@
-package org.example.daibetes.modules.doctor.ui;
+package org.example.daibetes.modules.doctor.ui.diagnosis;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
