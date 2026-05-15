@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.GenerateResultsController">
+<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.diagnosis.GenerateResultsController">
     <children>
         <!-- 1. Header Navigation -->
         <HBox alignment="CENTER_LEFT" prefHeight="75.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 0 30 0 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);">
