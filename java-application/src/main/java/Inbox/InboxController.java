@@ -547,8 +547,3 @@ public class InboxController {
     }
 }
 
-/**
- * Conversation model
- */
-
-

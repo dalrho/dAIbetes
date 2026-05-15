@@ -1,10 +1,9 @@
-package org.example.daibetes.modules.auth.ui;
+package register;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -20,9 +19,6 @@ import org.example.daibetes.core.domain.PatientFactory;
 import org.example.daibetes.core.domain.User;
 import org.example.daibetes.core.domain.UserFactory;
 import org.example.daibetes.modules.auth.service.Authenticate;
-import org.example.daibetes.shared.utils.ValidationUtils;
-import register.sceneLoader;
-import org.example.daibetes.shared.utils.PasswordUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -31,28 +27,23 @@ public class PatientRegisterController {
 
     @FXML private VBox card;
 
-    @FXML private TextField nameField;
-    @FXML private TextField emailField;
-    @FXML private TextField contactField;
-
-    @FXML private DatePicker birthdatePicker;
+    @FXML private TextField     nameField;
+    @FXML private TextField     emailField;
+    @FXML private TextField     contactField;
+    @FXML private DatePicker    birthdatePicker;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
-
-    @FXML private RadioButton maleBtn;
-    @FXML private RadioButton femaleBtn;
-    @FXML private HBox genderBox;
-
-    @FXML private Button createAccountBtn;
+    @FXML private RadioButton   maleBtn;
+    @FXML private RadioButton   femaleBtn;
+    @FXML private HBox          genderBox;
+    @FXML private Button        createAccountBtn;
 
     @FXML
     public void initialize() {
-        // Gender toggle group
         ToggleGroup genderGroup = new ToggleGroup();
         maleBtn.setToggleGroup(genderGroup);
         femaleBtn.setToggleGroup(genderGroup);
 
-        // Prevent radio button labels from being clipped — must be set in code, not FXML
         maleBtn.setMinWidth(Region.USE_PREF_SIZE);
         femaleBtn.setMinWidth(Region.USE_PREF_SIZE);
 
@@ -76,114 +67,96 @@ public class PatientRegisterController {
 
     @FXML
     public void handleCreateAccount(ActionEvent event) {
-        if (nameField.getText().isBlank() ||
-                emailField.getText().isBlank() ||
-                contactField.getText().isBlank() ||
-                birthdatePicker.getValue() == null ||
-                passwordField.getText().isBlank() ||
-                confirmPasswordField.getText().isBlank()) {
 
-            showAlert(Alert.AlertType.WARNING, "Incomplete Fields", "Please fill in all fields.");
-            return;
-        }
+        // ── Field validation ──────────────────────────────────────────────────
+        String fullName         = nameField.getText().trim();
+        String email            = emailField.getText().trim();
+        String contact          = contactField.getText().trim();
+        LocalDate birth         = birthdatePicker.getValue();
+        String password         = passwordField.getText();
+        String confirmPassword  = confirmPasswordField.getText();
 
-        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Password Mismatch", "Passwords do not match.");
+        if (fullName.isBlank() || email.isBlank() || contact.isBlank() ||
+                birth == null || password.isBlank() || confirmPassword.isBlank()) {
+            showAlert(Alert.AlertType.WARNING, "Incomplete Fields",
+                    "Please fill in all fields.");
             return;
         }
 
         if (maleBtn.getToggleGroup().getSelectedToggle() == null) {
-            showAlert(Alert.AlertType.WARNING, "Gender Required", "Please select a gender.");
+            showAlert(Alert.AlertType.WARNING, "Gender Required",
+                    "Please select a gender.");
             return;
         }
 
-        String fullName = nameField.getText().trim();
-        String email = emailField.getText().trim();
-        String contact = contactField.getText().trim();
-        String password = passwordField.getText();
-        String hashedPassword = PasswordUtils.hashPassword(password);
-        LocalDate birthdate = birthdatePicker.getValue();
+        if (!password.equals(confirmPassword)) {
+            showAlert(Alert.AlertType.ERROR, "Password Mismatch",
+                    "Passwords do not match.");
+            return;
+        }
+
+        // ── Name split ────────────────────────────────────────────────────────
+        String[] nameParts = fullName.split("\\s+", 2);
+        String fname = nameParts[0];
+        String lname = nameParts.length > 1 ? nameParts[1] : "";
+
+        if (lname.isBlank()) {
+            showAlert(Alert.AlertType.WARNING, "Full Name Required",
+                    "Please enter both first and last name.");
+            return;
+        }
+
+        // ── Email duplicate check ─────────────────────────────────────────────
+        Authenticate auth = new Authenticate();
+        if (auth.emailExists(email)) {
+            showAlert(Alert.AlertType.ERROR, "Email Taken",
+                    "An account with this email already exists.");
+            return;
+        }
+
+        // ── Age ───────────────────────────────────────────────────────────────
+        if (birth.isAfter(LocalDate.now())) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Birthdate",
+                    "Birthdate cannot be in the future.");
+            return;
+        }
+
+        int age = Period.between(birth, LocalDate.now()).getYears();
 
         String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
-                .getSelectedToggle())
-                .getText();
+                .getSelectedToggle()).getText();
 
-        String[] nameParts = fullName.split("\\s+", 2);
-        String firstName = nameParts[0];
-        String lastName = nameParts.length > 1 ? nameParts[1] : "";
-
-        if (lastName.isBlank()) {
-            showAlert(Alert.AlertType.WARNING, "Invalid Name", "Please enter both first name and last name.");
-            return;
-        }
-
-        if (!ValidationUtils.isValidEmail(email)) {
-            return;
-        }
-
-        if (!ValidationUtils.isValidPassword(password)) {
-            return;
-        }
-
-        if (birthdate.isAfter(LocalDate.now())) {
-            showAlert(Alert.AlertType.ERROR, "Invalid Birthdate", "Birthdate cannot be in the future.");
-            return;
-        }
-
-        int age = Period.between(birthdate, LocalDate.now()).getYears();
-
-        Authenticate auth = new Authenticate();
-
-        if (auth.emailExists(email)) {
-            showAlert(Alert.AlertType.ERROR, "Email Exists", "Email is already registered.");
-            return;
-        }
-
+        // ── Persist to DB via Factory → CreateData ────────────────────────────
         UserFactory factory = new PatientFactory(
-                firstName,
-                lastName,
-                email,
-                hashedPassword,
-                contact,
-                selectedGender,
-                birthdate.toString(),
-                age
+                fname, lname, email, password,
+                contact, selectedGender, birth.toString(), age
         );
 
-        User user = factory.createUser();
+        User user     = factory.createUser();
         Patient patient = (Patient) user;
 
         CreateData createData = new CreateData();
         boolean success = createData.createPatient(patient);
 
         if (success) {
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Patient account created successfully!");
-            goToLogin(event);
+            showAlert(Alert.AlertType.INFORMATION, "Success",
+                    "Patient account created successfully!");
+
+            // Navigate to login after registration
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(sceneLoader.load("login", "login-screen.fxml",
+                    "/styles/splash.css"));
         } else {
-            showAlert(Alert.AlertType.ERROR, "Registration Failed", "Patient account was not saved.");
+            showAlert(Alert.AlertType.ERROR, "Registration Failed",
+                    "Could not create account. Please try again.");
         }
     }
 
     @FXML
-    private void goToLogin(Event event) {
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-
-        stage.setScene(
-                sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
-        );
-
-        stage.setTitle("dAIbetes — Login");
-        stage.show();
-    }
-
-
-    private void closeWindow(Object eventSource) {
-        Node source = null;
-        if (eventSource instanceof ActionEvent ae && ae.getSource() instanceof Node n) source = n;
-        else if (eventSource instanceof MouseEvent me && me.getSource() instanceof Node n) source = n;
-        if (source != null) ((Stage) source.getScene().getWindow()).close();
+    public void goToLogin(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(sceneLoader.load("login", "login-screen.fxml",
+                "/styles/splash.css"));
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {
