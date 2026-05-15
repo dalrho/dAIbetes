@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane style="-fx-background-color: rgba(0,0,0,0.3);" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="org.example.daibetes.modules.auth.ui.PatientRegisterController">
+<StackPane style="-fx-background-color: rgba(0,0,0,0.3);" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="register.patientRegisterController">
 
     <VBox fx:id="card" alignment="CENTER" maxWidth="620" spacing="15" style="-fx-background-color: white;                  -fx-padding: 30;                  -fx-background-radius: 15;">
 

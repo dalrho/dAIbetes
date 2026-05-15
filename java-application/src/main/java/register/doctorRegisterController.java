@@ -13,34 +13,40 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.daibetes.core.database.CreateData;
+import org.example.daibetes.core.domain.Doctor;
+import org.example.daibetes.core.domain.DoctorFactory;
+import org.example.daibetes.core.domain.User;
+import org.example.daibetes.core.domain.UserFactory;
+import org.example.daibetes.modules.auth.service.Authenticate;
+import register.sceneLoader;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 public class doctorRegisterController {
 
     @FXML private VBox card;
 
-    @FXML private TextField doctorIdField;
-    @FXML private TextField nameField;
-    @FXML private TextField emailField;
-    @FXML private TextField contactField;
-
-    @FXML private DatePicker birthdatePicker;
+    @FXML private TextField     doctorIdField;      // license number
+    @FXML private TextField     firstNameField;
+    @FXML private TextField     lastNameField;
+    @FXML private TextField     emailField;
+    @FXML private TextField     contactField;
+    @FXML private DatePicker    birthdatePicker;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
-
-    @FXML private RadioButton maleBtn;
-    @FXML private RadioButton femaleBtn;
-    @FXML private HBox genderBox;
-
-    @FXML private Button createAccountBtn;
+    @FXML private RadioButton   maleBtn;
+    @FXML private RadioButton   femaleBtn;
+    @FXML private HBox          genderBox;
+    @FXML private Button        createAccountBtn;
 
     @FXML
     public void initialize() {
-        // Gender toggle group
         ToggleGroup genderGroup = new ToggleGroup();
         maleBtn.setToggleGroup(genderGroup);
         femaleBtn.setToggleGroup(genderGroup);
 
-        // Prevent radio button labels from being clipped — must be set in code, not FXML
         maleBtn.setMinWidth(Region.USE_PREF_SIZE);
         femaleBtn.setMinWidth(Region.USE_PREF_SIZE);
 
@@ -64,55 +70,117 @@ public class doctorRegisterController {
 
     @FXML
     public void handleCreateAccount(ActionEvent event) {
-        if (doctorIdField.getText().isBlank() ||
-                nameField.getText().isBlank() ||
-                emailField.getText().isBlank() ||
-                contactField.getText().isBlank() ||
-                birthdatePicker.getValue() == null ||
-                passwordField.getText().isBlank() ||
-                confirmPasswordField.getText().isBlank()) {
-            showAlert(Alert.AlertType.WARNING, "Incomplete Fields", "Please fill in all fields.");
+
+        String licenseNumber = doctorIdField.getText().trim();
+        String firstName = firstNameField.getText().trim();
+        String lastName = lastNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String contact = contactField.getText().trim();
+        LocalDate birth = birthdatePicker.getValue();
+        String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
+
+        if (licenseNumber.isBlank() ||
+                firstName.isBlank() ||
+                lastName.isBlank() ||
+                email.isBlank() ||
+                contact.isBlank() ||
+                birth == null ||
+                password.isBlank() ||
+                confirmPassword.isBlank()) {
+
+            showAlert(Alert.AlertType.WARNING, "Incomplete Fields",
+                    "Please fill in all fields.");
             return;
         }
-        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Password Mismatch", "Passwords do not match.");
-            return;
-        }
+
         if (maleBtn.getToggleGroup().getSelectedToggle() == null) {
-            showAlert(Alert.AlertType.WARNING, "Gender Required", "Please select a gender.");
+            showAlert(Alert.AlertType.WARNING, "Gender Required",
+                    "Please select a gender.");
             return;
         }
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
 
-        stage.setScene(
-                sceneLoader.load(
-                        "doctorDashboard",
-                        "doctor-dashboard.fxml",
-                        "/styles/splash.css"
-                )
+        if (!password.equals(confirmPassword)) {
+            showAlert(Alert.AlertType.ERROR, "Password Mismatch",
+                    "Passwords do not match.");
+            return;
+        }
+
+        if (birth.isAfter(LocalDate.now())) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Birthdate",
+                    "Birthdate cannot be in the future.");
+            return;
+        }
+
+        int age = Period.between(birth, LocalDate.now()).getYears();
+
+        if (age < 18) {
+            showAlert(Alert.AlertType.ERROR, "Age Requirement",
+                    "Doctor must be at least 18 years old.");
+            return;
+        }
+
+        Authenticate auth = new Authenticate();
+
+        if (auth.emailExists(email)) {
+            showAlert(Alert.AlertType.ERROR, "Email Taken",
+                    "An account with this email already exists.");
+            return;
+        }
+
+        String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
+                .getSelectedToggle())
+                .getText();
+
+        UserFactory factory = new DoctorFactory(
+                firstName,
+                lastName,
+                email,
+                password,
+                contact,
+                selectedGender,
+                birth.toString(),
+                licenseNumber,
+                "Not specified",
+                null
         );
-        // TODO: persist to database / service layer
-        showAlert(Alert.AlertType.INFORMATION, "Success", "Doctor account created successfully!");
-        closeWindow(event);
+
+        User user = factory.createUser();
+        Doctor doctor = (Doctor) user;
+
+        CreateData createData = new CreateData();
+        boolean success = createData.createDoctor(doctor);
+
+        if (success) {
+            showAlert(Alert.AlertType.INFORMATION, "Success",
+                    "Doctor account created successfully!");
+
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
+            stage.setScene(
+                    sceneLoader.load(
+                            "login",
+                            "login-screen.fxml",
+                            "/styles/splash.css"
+                    )
+            );
+
+            stage.setTitle("dAIbetes — Login");
+            stage.show();
+
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Registration Failed",
+                    "Could not create account. Please try again.");
+        }
     }
 
+    @FXML
     public void goToLogin(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-
-        stage.setScene(
-                sceneLoader.load("login", "login-screen.fxml", "/styles/splash.css")
-        );
-    }
-
-    private void closeWindow(Object eventSource) {
-        Node source = null;
-        if (eventSource instanceof ActionEvent ae && ae.getSource() instanceof Node n) source = n;
-        else if (eventSource instanceof MouseEvent me && me.getSource() instanceof Node n) source = n;
-        if (source != null) ((Stage) source.getScene().getWindow()).close();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(sceneLoader.load("login", "login-screen.fxml",
+                "/styles/splash.css"));
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {
