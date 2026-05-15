@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.image.ImageView?>
+
+<StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="org.example.daibetes.modules.patient.ui.calendar.PatientCalendarController"
+           stylesheets="@../styles/calendar.css">
+    <children>
+        <BorderPane
+                prefHeight="860.0"
+                prefWidth="1366.0"
+                style="-fx-background-color: #EBEBEB;">
+
+            <!-- ── LEFT SIDEBAR (Matching Dashboard) ── -->
+            <left>
+                <VBox prefWidth="300.0" minWidth="300.0" maxWidth="300.0" style="-fx-background-color: #F2F2F2;">
+                    <!-- Profile -->
+                    <VBox>
+                        <padding><Insets top="28" right="20" bottom="20" left="20"/></padding>
+                        <HBox spacing="14" alignment="CENTER_LEFT">
+                            <StackPane minWidth="74" minHeight="74" maxWidth="74" maxHeight="74">
+                                <Circle radius="37" style="-fx-fill: #C8C8C8; -fx-stroke: #ADADAD; -fx-stroke-width: 1.5;"/>
+                                <ImageView fx:id="profileImage" fitWidth="60" fitHeight="60" preserveRatio="true" smooth="true"/>
+                            </StackPane>
+                            <VBox spacing="1">
+                                <Label text="Good morning," style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
+                                <Label fx:id="patientNameLabel" text="Patient Name" style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                                <Label fx:id="patientIdLabel" text="ID: 12345" style="-fx-font-size: 13px; -fx-text-fill: #666666;"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Nav Buttons -->
+                    <VBox spacing="12">
+                        <padding><Insets top="40" right="20" bottom="0" left="20"/></padding>
+                        <Button maxWidth="Infinity" text="View Diagnosis" styleClass="side-btn-inactive-dash"/>
+                        <Button maxWidth="Infinity" text="Schedule Follow-up" styleClass="side-btn-active-dash"/>
+                        <Button maxWidth="Infinity" text="My Doctors" styleClass="side-btn-inactive-dash"/>
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <!-- Brand Logo -->
+                    <VBox>
+                        <padding><Insets top="0" right="20" bottom="24" left="20"/></padding>
+                        <TextFlow>
+                            <Text text="d" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
+                            <Text text="AI" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #999999;"/>
+                            <Text text="betes" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
+                        </TextFlow>
+                    </VBox>
+                </VBox>
+            </left>
+
+            <!-- ── MAIN CONTENT ── -->
+            <center>
+                <VBox spacing="20" style="-fx-background-color: #EBEBEB; -fx-padding: 30;">
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Button onAction="#goBack" text="BACK" styleClass="back-btn-dash"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <HBox alignment="CENTER" spacing="15">
+                            <Label fx:id="monthYearLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111111;" text="MAY 2026" />
+                            <HBox spacing="5">
+                                <Button onAction="#previousMonth" styleClass="nav-btn-dash" text="&lt;" />
+                                <Button onAction="#nextMonth" styleClass="nav-btn-dash" text="&gt;" />
+                            </HBox>
+                        </HBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <HBox spacing="20" VBox.vgrow="ALWAYS">
+                        <!-- Calendar Section -->
+                        <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 14; -fx-padding: 20;">
+                            <!-- Days of Week Header -->
+                            <GridPane fx:id="dayHeaderGrid" hgap="1" vgap="1">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                </columnConstraints>
+                            </GridPane>
+                            
+                            <GridPane fx:id="calendarGrid" hgap="1" vgap="1" VBox.vgrow="ALWAYS" style="-fx-background-color: #DDD;">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                    <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
+                                </columnConstraints>
+                            </GridPane>
+                        </VBox>
+
+                        <!-- Sidebar Lists -->
+                        <VBox prefWidth="300.0" spacing="20">
+                            <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 14; -fx-padding: 20;">
+                                <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="My Appointments" />
+                                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="transparent-scroll">
+                                    <VBox fx:id="appointmentList" spacing="10" />
+                                </ScrollPane>
+                            </VBox>
+                            
+                            <Button maxWidth="Infinity" onAction="#showRequestPopup"
+                                    style="-fx-background-color: #7B2528; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 15; -fx-background-radius: 8; -fx-cursor: hand;"
+                                    text="REQUEST APPOINTMENT" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </center>
+        </BorderPane>
+
+        <!-- MODAL OVERLAY -->
+        <StackPane fx:id="overlay" visible="false" styleClass="overlay-shade" alignment="CENTER">
+            <!-- Appointment Details Popup -->
+            <VBox fx:id="appointmentPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="15">
+                <Label styleClass="popup-title" text="APPOINTMENT DETAILS" />
+                <VBox spacing="8">
+                    <Label fx:id="popupDoctorLabel" styleClass="popup-text" text="Doctor: -" />
+                    <Separator />
+                    <Label fx:id="popupDateLabel" styleClass="popup-text" text="Date: -" />
+                    <Label fx:id="popupTimeLabel" styleClass="popup-text" text="Time: -" />
+                    <Label fx:id="popupStatusLabel" styleClass="popup-text" text="Status: -" />
+                </VBox>
+                <Button onAction="#closeOverlay" styleClass="btn-reschedule" text="CLOSE" />
+            </VBox>
+
+            <!-- Request Appointment Popup -->
+            <VBox fx:id="requestPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="15">
+                <Label styleClass="popup-title" text="REQUEST APPOINTMENT" />
+                
+                <VBox spacing="5">
+                    <Label text="Select Doctor" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
+                    <ComboBox fx:id="doctorComboBox" maxWidth="Infinity" promptText="Choose a doctor" />
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Select Date" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
+                    <DatePicker fx:id="requestDatePicker" maxWidth="Infinity" />
+                </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Preferred Time" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
+                    <TextField fx:id="timeField" promptText="e.g. 10:00 AM" />
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button onAction="#closeOverlay" style="-fx-background-color: #EEE; -fx-text-fill: #333; -fx-padding: 8 20; -fx-background-radius: 6;" text="CANCEL" />
+                    <Button onAction="#handleRequestSubmit" styleClass="btn-accept" text="SUBMIT REQUEST" />
+                </HBox>
+            </VBox>
+        </StackPane>
+    </children>
+</StackPane>

@@ -12,10 +12,16 @@ import register.sceneLoader;
 
 /**
  * Controller for login-screen.fxml.
- * Package: login (matches fx:controller in FXML).
+ * Package: login (matches fx:controller="login.loginController").
  *
- * Navigation uses sceneLoader exclusively — NavigationUtils is not used.
- * Authenticated user is stored in AppContext before switching scenes.
+ * fx:id mapping:
+ *   nameField     → email input   (TextField)
+ *   passwordField → password input (PasswordField)
+ *   loginButton   → triggers login (Button, onAction="#handleLogin")
+ *   errorLabel    → error display  (Label)
+ *
+ * No role toggle — role is resolved automatically from the DB after login.
+ * Navigation uses sceneLoader exclusively.
  */
 public class loginController {
 
@@ -23,20 +29,22 @@ public class loginController {
     @FXML private PasswordField passwordField;
     @FXML private Button        loginButton;
     @FXML private Label         errorLabel;
-    @FXML private Label         registerLabel;
 
     private final LoginViewModel viewModel = new LoginViewModel();
+
+    // =========================================================================
+    // Initialize — bindings only, no premature login() call
+    // =========================================================================
 
     @FXML
     public void initialize() {
         // Bind inputs → ViewModel
         nameField.textProperty().bindBidirectional(viewModel.emailProperty());
         passwordField.textProperty().bindBidirectional(viewModel.passwordProperty());
-        viewModel.login();
-//       Bind outputs ← ViewModel
+
+        // Bind outputs ← ViewModel
         errorLabel.textProperty().bind(viewModel.errorMessageProperty());
         loginButton.disableProperty().bind(viewModel.isLoadingProperty());
-
 
         // Navigate after successful login
         viewModel.loginSuccessProperty().addListener((obs, wasSuccess, isSuccess) -> {
@@ -45,17 +53,12 @@ public class loginController {
     }
 
     // =========================================================================
-    // Role toggle
-    // =========================================================================
-
-    // =========================================================================
     // Login
     // =========================================================================
 
     @FXML
     private void handleLogin() {
         viewModel.login();
-
     }
 
     // =========================================================================
@@ -78,11 +81,11 @@ public class loginController {
     }
 
     // =========================================================================
-    // Dashboard navigation
+    // Dashboard navigation — role resolved from DB, not from a toggle
     // =========================================================================
 
     private void navigateToDashboard() {
-        // Store authenticated user in session before switching screens
+        // Store authenticated user in session
         AppContext.getInstance().setCurrentUser(viewModel.getAuthenticatedUser());
 
         if (viewModel.isDoctor()) {

@@ -7,9 +7,8 @@
 
 <?import javafx.scene.shape.Circle?>
 <BorderPane
-        prefWidth="900" prefHeight="600"
-        minWidth="900" minHeight="600"
-        maxWidth="900" maxHeight="600"
+        prefWidth="1366" prefHeight="860"
+        minWidth="1366" minHeight="860"
         xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="Inbox.InboxController"
             style="-fx-background-color: #ffffff; -fx-font-family: 'Segoe UI', 'San Francisco', sans-serif;">
