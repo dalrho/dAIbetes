@@ -1,4 +1,4 @@
-package org.example.daibetes.modules.doctor.ui;
+package org.example.daibetes.modules.doctor.ui.diagnosis;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
