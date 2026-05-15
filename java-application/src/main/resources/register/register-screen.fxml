@@ -4,11 +4,11 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefWidth="900" prefHeight="600"
+<AnchorPane prefWidth="1366" prefHeight="860"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.daibetes.modules.auth.ui.RegisterController">
 
-    <StackPane prefWidth="900" prefHeight="600">
+    <StackPane prefWidth="1366" prefHeight="860">
 
         <VBox alignment="TOP_CENTER" spacing="20"
               style="-fx-padding: 70 0 0 0;"
