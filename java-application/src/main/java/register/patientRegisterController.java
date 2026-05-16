@@ -23,12 +23,14 @@ import register.sceneLoader;
 
 import java.time.LocalDate;
 import java.time.Period;
+import org.example.daibetes.shared.utils.PasswordUtils;
 
 public class patientRegisterController {
 
     @FXML private VBox card;
 
-    @FXML private TextField     nameField;
+    @FXML private TextField     firstNameField;
+    @FXML private TextField     lastNameField;
     @FXML private TextField     emailField;
     @FXML private TextField     contactField;
     @FXML private DatePicker    birthdatePicker;
@@ -70,14 +72,15 @@ public class patientRegisterController {
     public void handleCreateAccount(ActionEvent event) {
 
         // ── Field validation ──────────────────────────────────────────────────
-        String fullName         = nameField.getText().trim();
+        String fname            = firstNameField.getText().trim();
+        String lname            = lastNameField.getText().trim();
         String email            = emailField.getText().trim();
         String contact          = contactField.getText().trim();
         LocalDate birth         = birthdatePicker.getValue();
         String password         = passwordField.getText();
         String confirmPassword  = confirmPasswordField.getText();
 
-        if (fullName.isBlank() || email.isBlank() || contact.isBlank() ||
+        if (fname.isBlank() || lname.isBlank() || email.isBlank() || contact.isBlank() ||
                 birth == null || password.isBlank() || confirmPassword.isBlank()) {
             showAlert(Alert.AlertType.WARNING, "Incomplete Fields",
                     "Please fill in all fields.");
@@ -96,16 +99,6 @@ public class patientRegisterController {
             return;
         }
 
-        // ── Name split ────────────────────────────────────────────────────────
-        String[] nameParts = fullName.split("\\s+", 2);
-        String fname = nameParts[0];
-        String lname = nameParts.length > 1 ? nameParts[1] : "";
-
-        if (lname.isBlank()) {
-            showAlert(Alert.AlertType.WARNING, "Full Name Required",
-                    "Please enter both first and last name.");
-            return;
-        }
 
         // ── Email duplicate check ─────────────────────────────────────────────
         Authenticate auth = new Authenticate();
@@ -127,9 +120,12 @@ public class patientRegisterController {
         String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
                 .getSelectedToggle()).getText();
 
+        // Hash the password
+        String hashedPassword = PasswordUtils.hashPassword(password);
+
         // ── Persist to DB via Factory → CreateData ────────────────────────────
         UserFactory factory = new PatientFactory(
-                fname, lname, email, password,
+                fname, lname, email, hashedPassword,
                 contact, selectedGender, birth.toString(), age
         );
 

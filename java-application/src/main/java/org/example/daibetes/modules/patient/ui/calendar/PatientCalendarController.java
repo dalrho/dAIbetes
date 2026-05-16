@@ -99,6 +99,12 @@ public class PatientCalendarController implements Initializable {
         doctorRows.clear();
         doctorRows.addAll(dao.getAllDoctors());
 
+        if (doctorRows.isEmpty()) {
+            System.err.println("PatientCalendarController: No doctors found in database.");
+            doctorComboBox.setPromptText("No doctors available");
+            return;
+        }
+
         List<String> displayNames = doctorRows.stream()
                 .map(row -> row[1])
                 .collect(Collectors.toList());
@@ -277,6 +283,11 @@ public class PatientCalendarController implements Initializable {
 
         if (selectedDoctor == null || date == null || time.isEmpty()) {
             showAlert("Please fill in all fields.");
+            return;
+        }
+
+        if (patientId <= 0) {
+            showAlert("Session error: No valid patient ID found. Please log in again.");
             return;
         }
 

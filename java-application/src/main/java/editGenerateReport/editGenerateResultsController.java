@@ -1,4 +1,4 @@
-package EditDiagnosis;
+package editGenerateReport;
 
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
@@ -452,10 +452,10 @@ public class editGenerateResultsController {
 
             // 2. Locate the previous FXML
             // Based on your previous structure, it should be in /imageProcessing/
-            var resource = getClass().getResource("/doctorDashboard/doctor-dashboard.fxml");
+            var resource = getClass().getResource("/DoctorViewDiagnosis/doctorViewDiagnosis.fxml");
 
             if (resource == null) {
-                System.err.println("/doctorDashboard/doctor-dashboard.fxml");
+                System.err.println("/DoctorViewDiagnosis/doctorViewDiagnosis.fxml");
                 // If the folder is named differently (e.g. all lowercase), update the string above
                 return;
             }
