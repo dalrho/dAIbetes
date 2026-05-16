@@ -24,6 +24,7 @@ module org.example.daibetes {
     requires webcam.capture;
     requires javafx.swing;
     requires com.fasterxml.jackson.databind;
+    //requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
 //    requires org.example.daibetes;
@@ -87,5 +88,7 @@ module org.example.daibetes {
     opens org.example.daibetes.modules.doctor.ui.patients to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.patients;
 
+    opens org.example.daibetes.modules.doctor.ui.newdiagnosis to javafx.fxml;
+    exports org.example.daibetes.modules.doctor.ui.newdiagnosis;
 
 }

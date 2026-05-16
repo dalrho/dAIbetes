@@ -85,8 +85,8 @@
                                -fx-font-size: 14px; -fx-font-weight: bold;
                                -fx-padding: 14 20; -fx-background-radius: 7;
                                -fx-cursor: hand;"/>
-                <Button fx:id="viewReportsBtn" text="View Reports"
-                        maxWidth="Infinity" onAction="#onViewReports"
+                <Button fx:id="viewReportsBtn" text="View Consultations"
+                        maxWidth="Infinity" onAction="#onViewConsultations"
                         style="-fx-background-color: #1A1A1A; -fx-text-fill: white;
                                -fx-font-size: 14px; -fx-font-weight: bold;
                                -fx-padding: 14 20; -fx-background-radius: 7;
