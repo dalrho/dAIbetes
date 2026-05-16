@@ -97,7 +97,6 @@ public class AppContext {
     // --- Appointments (calendar) ---
     // Loaded fresh from DB by PatientCalendarController on each open.
     // Stored here so the list survives navigation back to the calendar.
-    private List<org.example.daibetes.core.domain.Appointment> appointments = new ArrayList<>();
 
     public List<org.example.daibetes.core.domain.Appointment> getAppointments() {
         return appointments;
