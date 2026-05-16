@@ -38,6 +38,7 @@ public class Popdiagnosiscontroller implements Initializable {
     @FXML private Button uploadImageBtn;
     @FXML private Button closeBtn;
     @FXML private Button openCameraBtn;
+    @FXML private Button backBtn;
 
     private static final int MAX_IMAGES = 3;
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -273,5 +274,21 @@ public class Popdiagnosiscontroller implements Initializable {
         // Write to file
         ImageIO.write(bImage, "png", tempFile);
         return tempFile;
+    }
+
+    @FXML
+    private void onBack() {
+        Stage stage = (Stage) backBtn.getScene().getWindow();
+
+        stage.setScene(
+                register.sceneLoader.load(
+                        "newdiagnosis",
+                        "new-diagnosis-popup.fxml",
+                        null
+                )
+        );
+
+        stage.setTitle("Select Patient");
+        stage.show();
     }
 }
