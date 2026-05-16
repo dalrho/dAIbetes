@@ -1,27 +1,31 @@
 package records;
 
 public class Record {
+    private int reportId;
     private String patientId;
     private String patientName;
     private String scanDate;
     private String followUp;
-    private String status;
     private String criticalityLevel;
 
     public Record(
+            int reportId,
             String patientId,
             String patientName,
             String scanDate,
             String followUp,
-            String status,
             String criticalityLevel
     ) {
+        this.reportId = reportId;
         this.patientId = patientId;
         this.patientName = patientName;
         this.scanDate = scanDate;
         this.followUp = followUp;
-        this.status = status;
         this.criticalityLevel = criticalityLevel;
+    }
+
+    public int getReportId() {
+        return reportId;
     }
 
     public String getPatientId() {
@@ -38,10 +42,6 @@ public class Record {
 
     public String getFollowUp() {
         return followUp;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public String getCriticalityLevel() {

@@ -38,6 +38,7 @@ public class AppContext {
     private int selectedRecordsPatientId;
     private String selectedRecordsPatientName;
     private int selectedRecordsDoctorId;
+    private int selectedReportId;
     private AppContext() {}
 
     public static AppContext getInstance() {
@@ -133,7 +134,7 @@ public class AppContext {
 
     public void clearSession() {
         this.currentUser = null;
-
+        this.selectedReportId = 0;
         this.selectedImage = null;
         this.selectedImageFile = null;
         this.selectedImageId = 0;
@@ -222,5 +223,12 @@ public class AppContext {
 
     public void setSelectedRecordsDoctorId(int selectedRecordsDoctorId) {
         this.selectedRecordsDoctorId = selectedRecordsDoctorId;
+    }
+    public int getSelectedReportId() {
+        return selectedReportId;
+    }
+
+    public void setSelectedReportId(int selectedReportId) {
+        this.selectedReportId = selectedReportId;
     }
 }

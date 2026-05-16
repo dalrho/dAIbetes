@@ -24,7 +24,6 @@ public class RecordsController {
     @FXML private TableColumn<Record, String> patientNameColumn;
     @FXML private TableColumn<Record, String> scanDateColumn;
     @FXML private TableColumn<Record, String> scanTypeColumn;
-    @FXML private TableColumn<Record, String> statusColumn;
     @FXML private TableColumn<Record, String> diagnosisColumn;
 
     @FXML private TableColumn<Record, Void> actionsColumn;
@@ -42,6 +41,7 @@ public class RecordsController {
     @FXML
     public void initialize() {
         setupTableColumns();
+        setupActionsColumn();
         setupFilters();
 
         int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
@@ -63,7 +63,7 @@ public class RecordsController {
         // This column is labeled Follow-up in your FXML
         scanTypeColumn.setCellValueFactory(new PropertyValueFactory<>("followUp"));
 
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
 
         // This column is labeled Criticality Level in your FXML
         diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("criticalityLevel"));
@@ -145,7 +145,7 @@ public class RecordsController {
                 }
 
             } catch (Exception ignored) {
-                // If date cannot be parsed, do not block display
+                // If date cannot be partabsed, do not block display
             }
 
             if (matchesKeyword && matchesFollowUp && matchesDate) {
@@ -184,5 +184,57 @@ public class RecordsController {
     private void updateStatus(String message) {
         statusBarLabel.setText(message);
         lastUpdatedLabel.setText(LocalDate.now().toString());
+    }
+    private void setupActionsColumn() {
+        actionsColumn.setCellFactory(column -> new TableCell<>() {
+            private final Button viewButton = new Button("View");
+
+            {
+                viewButton.setStyle(
+                        "-fx-background-color: #0066CC;" +
+                                "-fx-text-fill: white;" +
+                                "-fx-font-size: 11;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-background-radius: 6;" +
+                                "-fx-cursor: hand;"
+                );
+
+                viewButton.setOnAction(event -> {
+                    Record record = getTableView().getItems().get(getIndex());
+                    openDetailedReport(record);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(viewButton);
+                }
+            }
+        });
+    }
+    private void openDetailedReport(Record record) {
+        AppContext.getInstance().setSelectedReportId(record.getReportId());
+
+        Stage stage = (Stage) recordsTable.getScene().getWindow();
+
+        Scene scene = sceneLoader.load(
+                "reviewResults",
+                "doctor-view-diagnosis.fxml",
+                null
+        );
+
+        if (scene == null) {
+            updateStatus("Could not open detailed report.");
+            return;
+        }
+
+        stage.setScene(scene);
+        stage.setTitle("Detailed Report");
+        stage.show();
     }
 }

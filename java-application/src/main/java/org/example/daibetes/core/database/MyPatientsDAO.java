@@ -215,6 +215,7 @@ public class MyPatientsDAO {
 
         String sql = """
         SELECT
+            r.report_id,
             t.p_id,
             CONCAT(u.firstname, ' ', u.lastname) AS patient_name,
             DATE_FORMAT(r.saved_on, '%Y-%m-%d %h:%i %p') AS scan_date,
@@ -254,11 +255,11 @@ public class MyPatientsDAO {
 
                 while (rs.next()) {
                     records.add(new Record(
+                            rs.getInt("report_id"),
                             String.valueOf(rs.getInt("p_id")),
                             rs.getString("patient_name"),
                             rs.getString("scan_date"),
                             rs.getString("follow_up"),
-                            "Saved",
                             rs.getString("criticality_lvl")
                     ));
                 }

@@ -76,21 +76,17 @@
                 <TableView fx:id="recordsTable">
 
                     <columns>
+                            <TableColumn fx:id="patientIdColumn" prefWidth="140" text="Patient ID" />
 
-                        <!-- FIXED: Patient ID replaces Record ID -->
-                        <TableColumn fx:id="patientIdColumn" prefWidth="140" text="Patient ID" />
+                            <TableColumn fx:id="patientNameColumn" prefWidth="160" text="Patient Name" />
 
-                        <TableColumn fx:id="patientNameColumn" prefWidth="160" text="Patient Name" />
+                            <TableColumn fx:id="scanDateColumn" prefWidth="130" text="Scan Date" />
 
-                        <TableColumn fx:id="scanDateColumn" prefWidth="130" text="Scan Date" />
+                            <TableColumn fx:id="scanTypeColumn" prefWidth="120" text="Follow-up" />
 
-                        <TableColumn fx:id="scanTypeColumn" prefWidth="120" text="Follow-up" />
+                            <TableColumn fx:id="diagnosisColumn" prefWidth="160" text="Criticality Level" />
 
-                        <TableColumn fx:id="statusColumn" prefWidth="110" text="Status" />
-
-                        <TableColumn fx:id="diagnosisColumn" prefWidth="160" text="Criticality Level" />
-
-                        <TableColumn fx:id="actionsColumn" prefWidth="120" sortable="false" text="Actions" />
+                            <TableColumn fx:id="actionsColumn" prefWidth="120" sortable="false" text="Actions" />
 
                     </columns>
 
