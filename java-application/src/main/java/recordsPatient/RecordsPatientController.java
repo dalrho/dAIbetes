@@ -146,6 +146,19 @@ public class RecordsPatientController {
 
     @FXML
     private void handleBack() {
-        System.out.println("Navigating back to Patient Dashboard...");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/patientsdashboard/patients-dashboard.fxml")
+            );
+
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Patient Dashboard");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
