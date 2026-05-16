@@ -1,9 +1,13 @@
 package records;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 import reviewResults.ReportData;
 
 public class ViewDiagnosisController {
@@ -51,6 +55,20 @@ public class ViewDiagnosisController {
     @FXML
     private void handleBack() {
         // Use your scene loader to go back to records screen
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/patientDashboard/patients-dashboard.fxml")
+            );
+
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Patient Dashboard");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

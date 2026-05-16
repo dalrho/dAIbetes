@@ -2,8 +2,10 @@ package patientsdashboard;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -240,26 +242,22 @@ public class PatientDashboardController implements Initializable {
 
     @FXML
     private void onViewDiagnosis() {
-        Stage modal = new Stage();
-        modal.initModality(Modality.APPLICATION_MODAL);
-        modal.setTitle("My Diagnoses");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/recordsPatient/records-screen-patient.fxml")
+            );
 
-        VBox content = new VBox(14);
-        content.setStyle("-fx-padding: 24; -fx-background-color: #F2F2F2;");
-        content.getChildren().add(styledLabel("Diagnosis Records", "#111111", "18px"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("View Diagnosis");
+            stage.setScene(new Scene(root));
+            stage.show();
 
-        List<String[]> diagnoses = viewModel.getDiagnoses();
-        if (diagnoses.isEmpty()) {
-            content.getChildren().add(styledLabel("No records found.", "#888888", "13px"));
-        } else {
-            for (String[] row : diagnoses) content.getChildren().add(buildDetailCard(row));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(content);
-        scroll.setFitToWidth(true);
-        modal.setScene(new Scene(scroll, 600, 500));
-        modal.show();
     }
+
 
     @FXML
     private void onScheduleFollowUp(ActionEvent event) {

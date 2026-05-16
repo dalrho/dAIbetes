@@ -8,6 +8,7 @@ import javafx.stage.StageStyle;
 
 public class InboxLauncher {
 
+
     private static Stage inboxStage;
 
     public static void toggleInbox(Stage parentStage) {

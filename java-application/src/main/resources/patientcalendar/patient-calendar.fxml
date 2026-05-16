@@ -52,7 +52,7 @@
                     <!-- Nav Buttons -->
                     <VBox spacing="12">
                         <padding><Insets top="40" right="20" bottom="0" left="20"/></padding>
-                        <Button maxWidth="Infinity" text="View Diagnosis" styleClass="side-btn-inactive-dash"/>
+                        <Button fx:id="viewDiagnosisBtn"  onAction="#handleDiagnosis" maxWidth="Infinity" text="View Diagnosis" styleClass="side-btn-inactive-dash"/>
                         <Button maxWidth="Infinity" text="Schedule Follow-up" styleClass="side-btn-active-dash"/>
                         <Button maxWidth="Infinity" text="My Doctors" styleClass="side-btn-inactive-dash"/>
                     </VBox>

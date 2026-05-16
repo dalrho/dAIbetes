@@ -55,6 +55,10 @@ module org.example.daibetes {
     opens reviewResults to javafx.fxml;
     exports reviewResults;
 
+
+    opens recordsPatient to javafx.fxml;
+    exports recordsPatient;
+
     opens doctorDashboard to javafx.fxml;
     exports doctorDashboard;
 
