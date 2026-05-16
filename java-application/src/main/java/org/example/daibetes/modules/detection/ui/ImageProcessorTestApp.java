@@ -20,7 +20,7 @@ public class ImageProcessorTestApp extends Application {
         AppContext.getInstance().setSelectedImage(testImage);
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                ImageProcessorTestApp.class.getResource("/imageProcessing/image-processing.fxml")
+                ImageProcessorTestApp.class.getResource("/org/example/daibetes/modules/detection/ui/image-processing.fxml")
         );
 
         Scene scene = new Scene(fxmlLoader.load(), 900, 600);

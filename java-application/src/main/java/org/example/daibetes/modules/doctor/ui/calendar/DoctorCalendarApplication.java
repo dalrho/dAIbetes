@@ -21,7 +21,7 @@ public class DoctorCalendarApplication extends Application {
         // injects all @FXML-annotated fields automatically.
         FXMLLoader loader = new FXMLLoader(
 //                getClass().getResource("/src/main/resources/doctorcalendar/doctor-calendar.fxml")
-                getClass().getResource("/doctorcalendar/doctor-calendar.fxml")
+                getClass().getResource("/org/example/daibetes/modules/doctor/ui/calendar/doctor-calendar.fxml")
         );
         // Uncomment the line below if you ever need to access the controller
         // programmatically after loading:

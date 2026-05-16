@@ -1,4 +1,4 @@
-package imageUpload;
+package org.example.daibetes.modules.detection.camera.ui;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamResolution;

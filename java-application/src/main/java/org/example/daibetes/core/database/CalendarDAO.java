@@ -1,6 +1,6 @@
 package org.example.daibetes.core.database;
 
-import org.example.daibetes.core.domain.Appointment;
+import org.example.daibetes.shared.models.Appointment;
 
 import java.sql.*;
 import java.time.LocalDate;

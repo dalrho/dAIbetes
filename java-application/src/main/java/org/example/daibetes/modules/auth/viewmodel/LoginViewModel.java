@@ -2,9 +2,9 @@ package org.example.daibetes.modules.auth.viewmodel;
 
 import javafx.beans.property.*;
 import org.example.daibetes.core.database.RetrieveData;
-import org.example.daibetes.core.domain.Doctor;
-import org.example.daibetes.core.domain.Patient;
-import org.example.daibetes.core.domain.User;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.models.Patient;
+import org.example.daibetes.shared.models.User;
 import org.example.daibetes.modules.auth.service.Authenticate;
 
 /**

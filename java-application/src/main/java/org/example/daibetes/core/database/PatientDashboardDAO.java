@@ -1,7 +1,7 @@
 package org.example.daibetes.core.database;
 
-import org.example.daibetes.core.domain.Doctor;
-import org.example.daibetes.core.domain.Notification;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.models.Notification;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

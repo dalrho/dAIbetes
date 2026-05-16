@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import records.Record;
+import org.example.daibetes.modules.records.model.Record;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

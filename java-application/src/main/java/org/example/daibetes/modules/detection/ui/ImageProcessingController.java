@@ -103,7 +103,7 @@ public class ImageProcessingController {
     private void handleBackToGallery() {
         try {
             Stage stage = (Stage) enhancedImageView.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/imageUpload/image-upload-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml"));
             stage.setScene(new Scene(loader.load()));
         } catch (Exception e) {
             System.err.println("Navigation error: " + e.getMessage());
@@ -124,7 +124,7 @@ public class ImageProcessingController {
             Stage stage = (Stage) enhancedImageView.getScene().getWindow();
 
             // 1. Try to find the resource
-            var resource = getClass().getResource("/generateReport/generate-report.fxml");
+            var resource = getClass().getResource("/org/example/daibetes/modules/doctor/ui/diagnosis/generate-report.fxml");
 
             // 2. Debug check: if this is null, the path is wrong
             if (resource == null) {
