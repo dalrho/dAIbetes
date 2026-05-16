@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import records.Record; // Assuming Record class is in records package
 import register.sceneLoader;
 
+import javax.swing.*;
+
 public class DoctorViewDiagnosisController {
 
     @FXML private ImageView reportImageView;
@@ -44,31 +46,18 @@ public class DoctorViewDiagnosisController {
     }
 
     @FXML
-    private void handleEditDiagnosis() {
-        if (!isEditMode) {
-            enterEditMode();
-        } else {
-            saveChanges();
-        }
-    }
+    private void handleEditDiagnosis(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
 
-    private void enterEditMode() {
-        isEditMode = true;
-        editDiagnosisBtn.setText("SAVE DIAGNOSIS");
-        editDiagnosisBtn.setStyle("-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold;");
-
-        // Example logic: In a real app, you might swap Labels for TextFields
-        // or open a Dialog window here.
-        TextInputDialog dialog = new TextInputDialog(lblReasoning.getText());
-    }
-
-    private void saveChanges() {
-        isEditMode = false;
-        editDiagnosisBtn.setText("EDIT DIAGNOSIS");
-        editDiagnosisBtn.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold;");
-
-        // Logic to update database/file would go here
-        System.out.println("Diagnosis saved for " + currentRecord.getPatientId());
+        stage.setScene(
+                sceneLoader.load(
+                        "editGenerateReport",
+                        "edit-generate-report.fxml",
+                        null
+                )
+        );
     }
 
     @FXML
@@ -81,7 +70,7 @@ public class DoctorViewDiagnosisController {
     private void handleBack(ActionEvent event) {
         Scene scene = sceneLoader.load(
                 "records",
-                "/records/records-view.fxml", // Adjust path as needed
+                "records-screen.fxml", // Adjust path as needed
                 null
         );
 
