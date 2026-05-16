@@ -24,7 +24,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
-
+import org.example.daibetes.core.domain.Doctor;
+import org.example.daibetes.core.domain.User;
 public class GenerateResultsController {
 
     @FXML private ImageView reportImageView;
@@ -193,9 +194,44 @@ public class GenerateResultsController {
             int evaluationId = reportDAO.createEvaluation(drGrade, dmeGrade);
             int recommendationsId = reportDAO.createRecommendations(annualFollowupCheck.isSelected(), sixMonthCheck.isSelected(), referCheck.isSelected(), urgentCheck.isSelected(), laserCheck.isSelected(), antiVegfCheck.isSelected(), notes);
 
+            int patientId = AppContext.getInstance().getSelectedPatientId();
+
+            if (patientId == 0) {
+                showAlert("Missing Patient", "No patient was selected for this diagnosis.");
+                return;
+            }
+
+            int doctorId = 1; // fallback only
+
+            User currentUser = AppContext.getInstance().getCurrentUser();
+
+            if (currentUser instanceof Doctor doctor) {
+                doctorId = doctor.getDId();
+            }
+
             TestDAO testDAO = new TestDAO();
-            int testId = testDAO.createTest(1, 1, imageId);
-            reportDAO.createReport(testId, criticalityId, findingsId, recommendationsId, evaluationId);
+
+            int testId = testDAO.createTest(patientId, doctorId, imageId);
+
+            if (testId == -1) {
+                showAlert("Save Failed", "Test record was not saved.");
+                return;
+            }
+
+            AppContext.getInstance().setCurrentTestId(testId);
+
+            int reportId = reportDAO.createReport(
+                    testId,
+                    criticalityId,
+                    findingsId,
+                    recommendationsId,
+                    evaluationId
+            );
+
+            if (reportId == -1) {
+                showAlert("Save Failed", "Final report was not saved.");
+                return;
+            }
 
             showAlert("Report Generated", "Saved successfully.");
             goToDoctorDashboard();
