@@ -13,6 +13,7 @@ import java.time.LocalDate;
  */
 public class Appointment {
 
+
     public enum Status { PENDING, ACCEPTED, REJECTED }
 
     private int       requestId;

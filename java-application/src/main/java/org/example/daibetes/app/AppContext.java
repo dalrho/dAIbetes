@@ -13,6 +13,8 @@ public class AppContext {
     private Image selectedImage;
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
+    private File selectedImageFile;
+    private int currentTestId = -1;
 
     private AppContext() {}
 
@@ -24,6 +26,20 @@ public class AppContext {
     // --- Existing ---
     public Image getSelectedImage() { return selectedImage; }
     public void setSelectedImage(Image image) { this.selectedImage = image; }
+
+    // --- Selected image file (for AI inference — needs the raw File, not Image) ---
+    public File getSelectedImageFile() { return selectedImageFile; }
+    public void setSelectedImageFile(File file) {
+        this.selectedImageFile = file;
+        // Keep selectedImage in sync if a file is set
+        if (file != null) {
+            this.selectedImage = new Image(file.toURI().toString());
+        }
+    }
+
+    // --- Current test ID (set after tblTests insert, used by report screens) ---
+    public int  getCurrentTestId()          { return currentTestId; }
+    public void setCurrentTestId(int testId){ this.currentTestId = testId; }
 
     // --- Session ---
     public User getCurrentUser() { return currentUser; }
