@@ -21,7 +21,7 @@
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.image.ImageView?>
 
-<StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" 
+<StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.example.daibetes.modules.patient.ui.calendar.PatientCalendarController"
            stylesheets="@../styles/calendar.css">
     <children>
@@ -30,46 +30,7 @@
                 prefWidth="1366.0"
                 style="-fx-background-color: #EBEBEB;">
 
-            <!-- ── LEFT SIDEBAR (Matching Dashboard) ── -->
-            <left>
-                <VBox prefWidth="300.0" minWidth="300.0" maxWidth="300.0" style="-fx-background-color: #F2F2F2;">
-                    <!-- Profile -->
-                    <VBox>
-                        <padding><Insets top="28" right="20" bottom="20" left="20"/></padding>
-                        <HBox spacing="14" alignment="CENTER_LEFT">
-                            <StackPane minWidth="74" minHeight="74" maxWidth="74" maxHeight="74">
-                                <Circle radius="37" style="-fx-fill: #C8C8C8; -fx-stroke: #ADADAD; -fx-stroke-width: 1.5;"/>
-                                <ImageView fx:id="profileImage" fitWidth="60" fitHeight="60" preserveRatio="true" smooth="true"/>
-                            </StackPane>
-                            <VBox spacing="1">
-                                <Label text="Good morning," style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
-                                <Label fx:id="patientNameLabel" text="Patient Name" style="-fx-font-size: 19px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
-                                <Label fx:id="patientIdLabel" text="ID: 12345" style="-fx-font-size: 13px; -fx-text-fill: #666666;"/>
-                            </VBox>
-                        </HBox>
-                    </VBox>
-
-                    <!-- Nav Buttons -->
-                    <VBox spacing="12">
-                        <padding><Insets top="40" right="20" bottom="0" left="20"/></padding>
-                        <Button fx:id="viewDiagnosisBtn"  onAction="#handleDiagnosis" maxWidth="Infinity" text="View Diagnosis" styleClass="side-btn-inactive-dash"/>
-                        <Button maxWidth="Infinity" text="Schedule Follow-up" styleClass="side-btn-active-dash"/>
-                        <Button maxWidth="Infinity" text="My Doctors" styleClass="side-btn-inactive-dash"/>
-                    </VBox>
-
-                    <Region VBox.vgrow="ALWAYS"/>
-
-                    <!-- Brand Logo -->
-                    <VBox>
-                        <padding><Insets top="0" right="20" bottom="24" left="20"/></padding>
-                        <TextFlow>
-                            <Text text="d" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
-                            <Text text="AI" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #999999;"/>
-                            <Text text="betes" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-fill: #111111;"/>
-                        </TextFlow>
-                    </VBox>
-                </VBox>
-            </left>
+            <!-- LEFT SIDEBAR REMOVED -->
 
             <!-- ── MAIN CONTENT ── -->
             <center>
@@ -102,7 +63,7 @@
                                     <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
                                 </columnConstraints>
                             </GridPane>
-                            
+
                             <GridPane fx:id="calendarGrid" hgap="1" vgap="1" VBox.vgrow="ALWAYS" style="-fx-background-color: #DDD;">
                                 <columnConstraints>
                                     <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
@@ -124,7 +85,7 @@
                                     <VBox fx:id="appointmentList" spacing="10" />
                                 </ScrollPane>
                             </VBox>
-                            
+
                             <Button maxWidth="Infinity" onAction="#showRequestPopup"
                                     style="-fx-background-color: #7B2528; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 15; -fx-background-radius: 8; -fx-cursor: hand;"
                                     text="REQUEST APPOINTMENT" />
@@ -152,7 +113,7 @@
             <!-- Request Appointment Popup -->
             <VBox fx:id="requestPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="15">
                 <Label styleClass="popup-title" text="REQUEST APPOINTMENT" />
-                
+
                 <VBox spacing="5">
                     <Label text="Select Doctor" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
                     <ComboBox fx:id="doctorComboBox" maxWidth="Infinity" promptText="Choose a doctor" />
@@ -174,5 +135,13 @@
                 </HBox>
             </VBox>
         </StackPane>
+
+        <!-- HIDDEN CONTAINER: Keeps the Controller Logic and IDs active without showing the UI -->
+        <VBox visible="false" managed="false">
+            <ImageView fx:id="profileImage" />
+            <Label fx:id="patientNameLabel" />
+            <Label fx:id="patientIdLabel" />
+            <Button fx:id="viewDiagnosisBtn" onAction="#handleDiagnosis" />
+        </VBox>
     </children>
 </StackPane>
