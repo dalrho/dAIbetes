@@ -263,23 +263,17 @@ public class doctorDashboardController implements Initializable {
     @FXML private void onViewPatients(ActionEvent event) {
         System.out.println("[Dashboard] View Patients");
         // TODO: navigate
-        Scene scene = register.sceneLoader.load(
-                "myPatients",
-                "my-patients-view.fxml",
-                "/styles/myPatient.css"
-        );
-
-        if (scene == null) {
-            System.out.println("Failed to load My Patients screen");
-            return;
-        }
-
-        Stage stage = (Stage) ((javafx.scene.Node) event.getSource())
+        Stage stage = (Stage) ((Node) event.getSource())
                 .getScene()
                 .getWindow();
 
-        stage.setScene(scene);
-        stage.setTitle("Patient Records");
+        stage.setScene(
+                sceneLoader.load(
+                        "myPatients",
+                        "my-patients-view.fxml",
+                        "/styles/myPatient.css"
+                )
+        );
     }
 
     @FXML private void onViewReports() {
