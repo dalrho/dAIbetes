@@ -45,7 +45,10 @@
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                     <Label style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;" text="Search Records" />
 
-                    <TextField fx:id="searchField" promptText="Search by Patient ID..." style="-fx-font-size: 11; -fx-padding: 10; -fx-border-color: #D1D5DB; -fx-border-radius: 6; -fx-background-radius: 6;" />
+                    <TextField fx:id="searchField"
+                               promptText="Search by Criticality..."
+                               onAction="#handleSearch"
+                               style="-fx-font-size: 11; -fx-padding: 10; -fx-border-color: #D1D5DB; -fx-border-radius: 6; -fx-background-radius: 6;" />
                 </VBox>
 
                 <VBox spacing="6">
@@ -63,8 +66,12 @@
                     <DatePicker fx:id="toDatePicker" />
                 </VBox>
 
-                <VBox alignment="BOTTOM_CENTER">
-                    <Button fx:id="clearFiltersButton" onAction="#handleClearFilters" style="-fx-font-size: 11; -fx-padding: 8 16; -fx-background-color: #F3F4F6; -fx-text-fill: #6B7280;" text="Clear" />
+                <VBox alignment="CENTER" spacing="6">
+                    <Label text=" " style="-fx-font-size: 12;" />
+                    <Button fx:id="clearFiltersButton"
+                            onAction="#handleClearFilters"
+                            style="-fx-font-size: 11; -fx-padding: 8 16; -fx-background-color: #F3F4F6; -fx-text-fill: #6B7280;"
+                            text="Clear" />
                 </VBox>
             </HBox>
 
@@ -96,7 +103,7 @@
 
                             <Label style="-fx-font-size: 16; -fx-text-fill: #6B7280; -fx-font-weight: bold;" text="No Patient Records Found" />
 
-                            <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" text="Search by Patient ID or create a new record" />
+                            <Label style="-fx-font-size: 12; -fx-text-fill: #9CA3AF;" text="Search by Criticality or adjust the filters" />
                         </VBox>
                     </placeholder>
 
