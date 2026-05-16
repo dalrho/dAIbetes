@@ -35,11 +35,11 @@ public class DoctorViewDiagnosisController {
     public void setRecordData(Record record) {
         this.currentRecord = record;
 
-        // Populate UI with record data
-        lblFinalCriticality.setText(record.getStatus());
-        lblReasoning.setText(record.getDiagnosis());
-        // For sample purposes, setting some placeholders
-        valDRGrade.setText(record.getDiagnosis().equals("N/A") ? "Pending" : "Grade 2");
+        lblFinalCriticality.setText(record.getCriticalityLevel());
+        lblReasoning.setText("Criticality Level: " + record.getCriticalityLevel());
+
+        valDRGrade.setText(record.getCriticalityLevel().equals("N/A") ? "Pending" : "Grade 2");
+
         lblNotes.setText("Reviewing record for " + record.getPatientName());
     }
 
@@ -81,7 +81,7 @@ public class DoctorViewDiagnosisController {
     private void handleBack(ActionEvent event) {
         Scene scene = sceneLoader.load(
                 "records",
-                "/records/records-view.fxml", // Adjust path as needed
+                "records-screen.fxml",
                 null
         );
 

@@ -11,16 +11,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.core.database.MyPatientsDAO;
-import org.example.daibetes.modules.doctor.ui.patients.MyPatientReport;
 import register.sceneLoader;
 
-import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.List;
 
 public class RecordsController {
 
-    // ================= TABLE =================
     @FXML private TableView<Record> recordsTable;
 
     @FXML private TableColumn<Record, String> patientIdColumn;
@@ -30,28 +27,23 @@ public class RecordsController {
     @FXML private TableColumn<Record, String> statusColumn;
     @FXML private TableColumn<Record, String> diagnosisColumn;
 
-    // Updated to handle the button column
     @FXML private TableColumn<Record, Void> actionsColumn;
 
-    // ================= CONTROLS =================
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
     @FXML private DatePicker fromDatePicker;
     @FXML private DatePicker toDatePicker;
 
-    // ================= LABELS =================
     @FXML private Label statusBarLabel;
     @FXML private Label lastUpdatedLabel;
 
-    // ================= DATA =================
     private final ObservableList<Record> recordList = FXCollections.observableArrayList();
 
-    int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
-    int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
-    String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
-    // ================= INIT =================
     @FXML
     public void initialize() {
+        setupTableColumns();
+        setupFilters();
+
         int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
         int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
         String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
@@ -63,61 +55,47 @@ public class RecordsController {
         loadReports(patientId, doctorId);
     }
 
-    private void loadReports(int patientId, int doctorId) {
-        MyPatientsDAO dao = new MyPatientsDAO();
+    private void setupTableColumns() {
+        patientIdColumn.setCellValueFactory(new PropertyValueFactory<>("patientId"));
+        patientNameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
+        scanDateColumn.setCellValueFactory(new PropertyValueFactory<>("scanDate"));
 
-        List<MyPatientReport> reports = dao.getReportsByPatientAndDoctor(patientId, doctorId);
+        // This column is labeled Follow-up in your FXML
+        scanTypeColumn.setCellValueFactory(new PropertyValueFactory<>("followUp"));
 
-        for (MyPatientReport report : reports) {
-            System.out.println("Report ID: " + report.getReportId());
-            System.out.println("Date: " + report.getLastReported());
-            System.out.println("Criticality: " + report.getCriticalityLevel());
-        }
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // Later, replace the println with UI cards/table/list display.
+        // This column is labeled Criticality Level in your FXML
+        diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("criticalityLevel"));
     }
 
-    // ================= BUTTON ACTIONS =================
+    private void setupFilters() {
+        statusFilter.setItems(FXCollections.observableArrayList("All", "YES", "NO"));
+        statusFilter.setValue("All");
+    }
 
-    private void handleViewDetails() {
-        // Logic to open the diagnosis report
-        Stage stage = (Stage) recordsTable.getScene().getWindow();
-
-        Scene scene = sceneLoader.load(
-                "editGenerateReport",
-                "edit-generate-report.fxml",
-                null
-        );
-
-        if (scene == null) {
-            System.out.println("Failed to load editGenerateReport scene");
+    private void loadReports(int patientId, int doctorId) {
+        if (patientId == 0 || doctorId == 0) {
+            updateStatus("No selected patient or doctor found.");
             return;
         }
 
-        stage.setScene(scene);
-        stage.setTitle("dAIbetes — Generate Report");
-        stage.show();
+        MyPatientsDAO dao = new MyPatientsDAO();
+
+        List<Record> records = dao.getRecordTableByPatientAndDoctor(patientId, doctorId);
+
+        recordList.setAll(records);
+        recordsTable.setItems(recordList);
+
+        updateStatus(records.size() + " record(s) loaded");
     }
 
     @FXML
     private void handleRefresh() {
-        recordsTable.refresh();
-        updateStatus("Table refreshed");
-    }
+        int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
+        int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
 
-    @FXML
-    private void handleAddRecord() {
-        Record newRecord = new Record(
-                "P" + (recordList.size() + 1),
-                "New Patient",
-                LocalDate.now().toString(),
-                "Scan",
-                "Pending",
-                "N/A"
-        );
-
-        recordList.add(newRecord);
-        updateStatus("New record added");
+        loadReports(patientId, doctorId);
     }
 
     @FXML
@@ -126,38 +104,79 @@ public class RecordsController {
         statusFilter.setValue("All");
         fromDatePicker.setValue(null);
         toDatePicker.setValue(null);
+
         recordsTable.setItems(recordList);
         updateStatus("Filters cleared");
     }
 
     @FXML
     private void handleSearch() {
-        String keyword = searchField.getText().toLowerCase();
-        if (keyword.isEmpty()) {
-            recordsTable.setItems(recordList);
-            return;
-        }
+        String keyword = searchField.getText() == null
+                ? ""
+                : searchField.getText().trim().toLowerCase();
+
+        String followUpFilter = statusFilter.getValue();
+
+        LocalDate fromDate = fromDatePicker.getValue();
+        LocalDate toDate = toDatePicker.getValue();
 
         ObservableList<Record> filtered = FXCollections.observableArrayList();
-        for (Record r : recordList) {
-            if (r.getPatientId().toLowerCase().contains(keyword) ||
-                    r.getPatientName().toLowerCase().contains(keyword)) {
-                filtered.add(r);
+
+        for (Record record : recordList) {
+            boolean matchesKeyword = keyword.isEmpty()
+                    || record.getPatientId().toLowerCase().contains(keyword)
+                    || record.getPatientName().toLowerCase().contains(keyword);
+
+            boolean matchesFollowUp = followUpFilter == null
+                    || followUpFilter.equals("All")
+                    || record.getFollowUp().equalsIgnoreCase(followUpFilter);
+
+            boolean matchesDate = true;
+
+            try {
+                LocalDate scanDate = LocalDate.parse(record.getScanDate().substring(0, 10));
+
+                if (fromDate != null && scanDate.isBefore(fromDate)) {
+                    matchesDate = false;
+                }
+
+                if (toDate != null && scanDate.isAfter(toDate)) {
+                    matchesDate = false;
+                }
+
+            } catch (Exception ignored) {
+                // If date cannot be parsed, do not block display
+            }
+
+            if (matchesKeyword && matchesFollowUp && matchesDate) {
+                filtered.add(record);
             }
         }
+
         recordsTable.setItems(filtered);
-        updateStatus("Searching: " + keyword);
+        updateStatus(filtered.size() + " matching record(s)");
+    }
+
+    @FXML
+    private void handleAddRecord() {
+        updateStatus("Add record is not available from this screen.");
     }
 
     @FXML
     private void handleBack(ActionEvent event) {
-        Scene scene = sceneLoader.load("doctorDashboard", "doctor-dashboard.fxml", null);
+        Scene scene = sceneLoader.load(
+                "myPatients",
+                "my-patients-view.fxml",
+                "/styles/myPatient.css"
+        );
+
         if (scene != null) {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
             stage.setScene(scene);
-            stage.setWidth(900);
-            stage.setHeight(600);
-            stage.setResizable(false);
+            stage.setTitle("My Patients");
             stage.show();
         }
     }
