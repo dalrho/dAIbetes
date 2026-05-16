@@ -146,10 +146,11 @@ public class CalendarDAO {
      * @return generated request_id, or -1 on failure
      */
     public int insertAppointmentRequest(int patientId, int doctorId,
-                                        int rawImageId, String requestedOn) {
-        // Step 1: create a test row (required by FK)
+                                        String requestedOn) {
+        // Step 1: create a test row with no image yet (raw_img_id = NULL)
+        // The doctor will attach the actual scan during the diagnosis step.
         TestDAO testDAO = new TestDAO();
-        int testId = testDAO.createTest(patientId, doctorId, rawImageId);
+        int testId = testDAO.createTest(patientId, doctorId, -1);
 
         if (testId == -1) {
             System.err.println("CalendarDAO: failed to create test row.");

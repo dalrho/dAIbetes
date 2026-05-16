@@ -21,7 +21,14 @@ public class TestDAO {
 
                 ps.setInt(1, patientId);
                 ps.setInt(2, doctorId);
-                ps.setInt(3, rawImageId);
+
+                // rawImageId = -1 means no image yet (calendar appointment flow)
+                // raw_img_id must be NULL-able in tblTests for this to work
+                if (rawImageId == -1) {
+                    ps.setNull(3, java.sql.Types.INTEGER);
+                } else {
+                    ps.setInt(3, rawImageId);
+                }
 
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected > 0) {

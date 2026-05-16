@@ -348,7 +348,7 @@ public class PatientCalendarController implements Initializable {
         // rawImageId = -1 placeholder since image upload is not part of this flow.
         // The test will have no raw image until the doctor accepts and processes it.
         int requestId = dao.insertAppointmentRequest(
-                patientId, selectedDoctorId, getOrCreatePlaceholderImageId(), requestedOn);
+                patientId, selectedDoctorId, requestedOn);
 
         if (requestId != -1) {
             // Reload from DB so the new appointment appears immediately
@@ -394,19 +394,6 @@ public class PatientCalendarController implements Initializable {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    /**
-     * Returns a placeholder image ID (1) for the tblTests row created
-     * when a calendar appointment request is submitted without an image upload.
-     * The doctor will upload the actual scan during the diagnosis step.
-     *
-     * If your project requires a real image, wire FileChooser here.
-     */
-    private int getOrCreatePlaceholderImageId() {
-        // Returns 1 as a placeholder — assumes at least one image row exists.
-        // Replace with a proper placeholder image insert if needed.
-        return 1;
     }
 
     // =========================================================================
