@@ -128,7 +128,7 @@ public class ImageProcessingController {
 
             // 2. Debug check: if this is null, the path is wrong
             if (resource == null) {
-                System.err.println("ERROR: Could not find /generateReport/generate-report.fxml");
+                System.err.println("ERROR: Could not find /generateReport/edit-generate-report.fxml");
                 System.err.println("Check if the folder is named 'generateReport' or 'generatereport'");
                 return;
             }

@@ -1,17 +1,17 @@
-package reviewResults;
+package recordsPatient;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import register.sceneLoader;
-// THIS IS FOR THE PATIENT FXML VIEW DIAGNOSIS
-public class ReportLauncher extends Application {
+
+public class startTest extends Application {
     @Override
     public void start(Stage stage) {
 
         Scene scene = sceneLoader.load(
-                "reviewResults",                  // folder inside resources
-                "review_results.fxml",     // fxml file
+                "recordsPatient",                  // folder inside resources
+                "records-screen-patient.fxml",     // fxml file
                 null                       // css path (add later if needed)
         );
 
