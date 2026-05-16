@@ -271,4 +271,28 @@ public class CalendarDAO {
 
         return -1;
     }
+
+
+    // =========================================================================
+    // NEW: REMOVE — Delete rejected request
+    // =========================================================================
+
+    /**
+     * Removes an appointment request from the database.
+     * Typically used by patients to clear rejected appointments from view.
+     */
+    public boolean deleteAppointmentRequest(int requestId) {
+        String sql = "DELETE FROM tblconsultationrequest WHERE request_id = ?";
+
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, requestId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
