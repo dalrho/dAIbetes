@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import register.sceneLoader;
 
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
 public class RecordsController {
@@ -60,8 +61,7 @@ public class RecordsController {
                 viewBtn.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; " +
                         "-fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 5; -fx-cursor: hand;");
                 viewBtn.setOnAction(event -> {
-                    Record data = getTableView().getItems().get(getIndex());
-                    handleViewDetails(data);
+                    handleViewDetails();
                 });
             }
 
@@ -92,17 +92,24 @@ public class RecordsController {
 
     // ================= BUTTON ACTIONS =================
 
-    private void handleViewDetails(Record record) {
+    private void handleViewDetails() {
         // Logic to open the diagnosis report
-        System.out.println("Viewing details for: " + record.getPatientName());
-        updateStatus("Viewing diagnosis for " + record.getPatientId());
+        Stage stage = (Stage) recordsTable.getScene().getWindow();
 
-        // Example: logic to open a new window or alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Diagnosis Report");
-        alert.setHeaderText("Patient: " + record.getPatientName());
-        alert.setContentText("Diagnosis: " + record.getDiagnosis());
-        alert.showAndWait();
+        Scene scene = sceneLoader.load(
+                "editGenerateReport",
+                "edit-generate-report.fxml",
+                null
+        );
+
+        if (scene == null) {
+            System.out.println("Failed to load editGenerateReport scene");
+            return;
+        }
+
+        stage.setScene(scene);
+        stage.setTitle("dAIbetes — Generate Report");
+        stage.show();
     }
 
     @FXML
