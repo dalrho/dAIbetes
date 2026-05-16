@@ -20,7 +20,6 @@ public class AppContext {
     private String selectedPatientName;
     private String diagnosisNotes;
 
-
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
     private List<Appointment> appointments = new ArrayList<>();
@@ -97,7 +96,7 @@ public class AppContext {
     // --- Appointments (calendar) ---
     // Loaded fresh from DB by PatientCalendarController on each open.
     // Stored here so the list survives navigation back to the calendar.
-    private List<org.example.daibetes.core.domain.Appointment> appointments = new ArrayList<>();
+
 
     public List<org.example.daibetes.core.domain.Appointment> getAppointments() {
         return appointments;
@@ -157,7 +156,5 @@ public class AppContext {
     public void setDiagnosisNotes(String diagnosisNotes) {
         this.diagnosisNotes = diagnosisNotes;
     }
-
-
 
 }
