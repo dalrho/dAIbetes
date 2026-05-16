@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import register.sceneLoader;
-
+// THIS IS FOR THE PATIENT FXML VIEW DIAGNOSIS
 public class ReportLauncher extends Application {
     @Override
     public void start(Stage stage) {

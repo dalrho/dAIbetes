@@ -124,6 +124,7 @@
 
                         <TableColumn fx:id="actionsColumn"
                                      text="Actions"
+                                     sortable="false"
                                      prefWidth="120"/>
 
                     </columns>
