@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import register.sceneLoader;
 
+import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
 public class RecordsController {
@@ -25,11 +26,15 @@ public class RecordsController {
     @FXML private TableColumn<Record, String> statusColumn;
     @FXML private TableColumn<Record, String> diagnosisColumn;
 
+    // Updated to handle the button column
+    @FXML private TableColumn<Record, Void> actionsColumn;
+
     // ================= CONTROLS =================
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
     @FXML private DatePicker fromDatePicker;
     @FXML private DatePicker toDatePicker;
+
     // ================= LABELS =================
     @FXML private Label statusBarLabel;
     @FXML private Label lastUpdatedLabel;
@@ -41,13 +46,35 @@ public class RecordsController {
     @FXML
     public void initialize() {
 
-        // table bindings (simple + safe)
+        // table column bindings
         patientIdColumn.setCellValueFactory(new PropertyValueFactory<>("patientId"));
         patientNameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
         scanDateColumn.setCellValueFactory(new PropertyValueFactory<>("scanDate"));
         scanTypeColumn.setCellValueFactory(new PropertyValueFactory<>("scanType"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosis"));
+
+        // ADDING THE VIEW BUTTON TO THE ACTIONS COLUMN
+        actionsColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button viewBtn = new Button("View Diagnosis");
+            {
+                viewBtn.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; " +
+                        "-fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 5; -fx-cursor: hand;");
+                viewBtn.setOnAction(event -> {
+                    handleViewDetails();
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(viewBtn);
+                }
+            }
+        });
 
         // sample data
         recordList.add(new Record("P001", "Juan Dela Cruz", "2026-05-08", "X-Ray", "Pending", "N/A"));
@@ -65,6 +92,26 @@ public class RecordsController {
 
     // ================= BUTTON ACTIONS =================
 
+    private void handleViewDetails() {
+        // Logic to open the diagnosis report
+        Stage stage = (Stage) recordsTable.getScene().getWindow();
+
+        Scene scene = sceneLoader.load(
+                "editGenerateReport",
+                "edit-generate-report.fxml",
+                null
+        );
+
+        if (scene == null) {
+            System.out.println("Failed to load editGenerateReport scene");
+            return;
+        }
+
+        stage.setScene(scene);
+        stage.setTitle("dAIbetes — Generate Report");
+        stage.show();
+    }
+
     @FXML
     private void handleRefresh() {
         recordsTable.refresh();
@@ -73,7 +120,6 @@ public class RecordsController {
 
     @FXML
     private void handleAddRecord() {
-
         Record newRecord = new Record(
                 "P" + (recordList.size() + 1),
                 "New Patient",
@@ -89,63 +135,46 @@ public class RecordsController {
 
     @FXML
     private void handleClearFilters() {
-
         searchField.clear();
         statusFilter.setValue("All");
         fromDatePicker.setValue(null);
         toDatePicker.setValue(null);
-
         recordsTable.setItems(recordList);
-
         updateStatus("Filters cleared");
     }
 
-    // ================= OPTIONAL SEARCH (BASIC) =================
     @FXML
     private void handleSearch() {
-
         String keyword = searchField.getText().toLowerCase();
-
         if (keyword.isEmpty()) {
             recordsTable.setItems(recordList);
             return;
         }
 
         ObservableList<Record> filtered = FXCollections.observableArrayList();
-
         for (Record r : recordList) {
             if (r.getPatientId().toLowerCase().contains(keyword) ||
                     r.getPatientName().toLowerCase().contains(keyword)) {
                 filtered.add(r);
             }
         }
-
         recordsTable.setItems(filtered);
         updateStatus("Searching: " + keyword);
     }
 
     @FXML
     private void handleBack(ActionEvent event) {
-
-        Scene scene = sceneLoader.load(
-                "doctorDashboard",
-                "doctor-dashboard.fxml",
-                null
-        );
-
+        Scene scene = sceneLoader.load("doctorDashboard", "doctor-dashboard.fxml", null);
         if (scene != null) {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
             stage.setScene(scene);
-
-            // 🔥 IMPORTANT: preserve dashboard size
             stage.setWidth(900);
             stage.setHeight(600);
             stage.setResizable(false);
             stage.show();
         }
     }
-    // ================= STATUS BAR =================
+
     private void updateStatus(String message) {
         statusBarLabel.setText(message);
         lastUpdatedLabel.setText(LocalDate.now().toString());

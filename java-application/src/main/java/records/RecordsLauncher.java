@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import register.sceneLoader;
 
 public class RecordsLauncher extends Application {
-
+    //DOCTOR LAUNCHER CONTAINS EDIT DAIGNOSIS
     @Override
     public void start(Stage stage) {
 

@@ -8,7 +8,7 @@
 
 <VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;"
       xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="reviewResults.ReviewResultsController">
+      fx:controller="reviewResults.DoctorViewDiagnosisController">
     <children>
         <!-- Header Navigation -->
         <HBox alignment="CENTER_LEFT" prefHeight="75.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 0 30 0 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);">
@@ -19,11 +19,20 @@
                     <Text style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #1E293B;" text="betes" />
                 </TextFlow>
                 <Separator orientation="VERTICAL" prefHeight="35.0" />
-                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="MY DIAGNOSTIC REPORT" />
+
+                <!-- CHANGED: Label for Doctor context -->
+                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B;" text="PATIENT DIAGNOSTIC REPORT" />
+
                 <Region HBox.hgrow="ALWAYS" />
-                <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-border-color: #CBD5E1; -fx-border-radius: 5; -fx-text-fill: #1E293B;" text="Back to Records" />
-                <Button onAction="#handleExportPDF" style="-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 10 20;" text="EXPORT PDF" />
-                <Button onAction="#handleScheduleFollowUp" prefHeight="40.0" prefWidth="220.0" style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;" text="SCHEDULE FOLLOW-UP" />
+
+                <Button onAction="#handleBack" style="-fx-background-color: transparent; -fx-border-color: #CBD5E1; -fx-border-radius: 5; -fx-text-fill: #1E293B; -fx-cursor: hand;" text="Back to Records" />
+
+                <Button onAction="#handleExportPDF" style="-fx-background-color: #F1F5F9; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 10 20; -fx-cursor: hand;" text="EXPORT PDF" />
+
+                <!-- CHANGED: "SCHEDULE FOLLOW-UP" replaced with "EDIT DIAGNOSIS" -->
+                <Button fx:id="editDiagnosisBtn" onAction="#handleEditDiagnosis" prefHeight="40.0" prefWidth="220.0"
+                        style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"
+                        text="EDIT DIAGNOSIS" />
             </children>
         </HBox>
 
@@ -35,7 +44,6 @@
                 <!-- LEFT SIDE -->
                 <VBox prefWidth="450.0" spacing="20.0">
                     <children>
-                        <!-- Scan Card -->
                         <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4);">
                             <children>
                                 <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B; -fx-font-size: 11px;" text="REFERENCE SCAN" />
@@ -47,7 +55,6 @@
                             </children>
                         </VBox>
 
-                        <!-- Final Assessment Card -->
                         <VBox spacing="15.0" style="-fx-background-color: #1E293B; -fx-background-radius: 12; -fx-padding: 20;">
                             <children>
                                 <Label style="-fx-font-weight: bold; -fx-text-fill: #94A3B8; -fx-font-size: 11px;" text="FINAL CRITICALITY" />
@@ -65,7 +72,6 @@
                     <content>
                         <VBox spacing="20.0">
                             <children>
-                                <!-- Summary Table -->
                                 <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-border-color: #E2E8F0; -fx-border-width: 1;">
                                     <children>
                                         <HBox alignment="CENTER_LEFT">
@@ -115,7 +121,6 @@
                                     </children>
                                 </VBox>
 
-                                <!-- Recommendations Section -->
                                 <VBox spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 25; -fx-border-color: #E2E8F0; -fx-border-width: 1;">
                                     <children>
                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #1E293B;" text="RECOMMENDED STEPS" />
