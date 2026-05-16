@@ -85,14 +85,7 @@
                                -fx-font-size: 14px; -fx-font-weight: bold;
                                -fx-padding: 14 20; -fx-background-radius: 7;
                                -fx-cursor: hand;"/>
-                <Button fx:id="myDoctorsBtn" text="My Doctors"
-                        maxWidth="Infinity" onAction="#onMyDoctors"
-                        style="-fx-background-color: #1A1A1A; -fx-text-fill: white;
-                               -fx-font-size: 14px; -fx-font-weight: bold;
-                               -fx-padding: 14 20; -fx-background-radius: 7;
-                               -fx-cursor: hand;"/>
             </VBox>
-
             <!-- Spacer -->
             <Region VBox.vgrow="ALWAYS"/>
 
