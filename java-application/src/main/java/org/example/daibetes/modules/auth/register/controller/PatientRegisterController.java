@@ -139,10 +139,14 @@ public class PatientRegisterController {
             showAlert(Alert.AlertType.INFORMATION, "Success",
                     "Patient account created successfully!");
 
-            // Navigate to login after registration
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(SceneLoader.load("org/example/daibetes/modules/auth/login", "login-screen.fxml",
-                    "/org/example/daibetes/styles/splash.css"));
+            // Updated: Navigate using SceneLoader to maintain Kiosk Mode
+            SceneLoader.switchScene(
+                    (Node) event.getSource(),
+                    "org/example/daibetes/modules/auth/login",
+                    "login-screen.fxml",
+                    "Login - dAIbetes",
+                    "/org/example/daibetes/styles/splash.css"
+            );
         } else {
             showAlert(Alert.AlertType.ERROR, "Registration Failed",
                     "Could not create account. Please try again.");
@@ -151,9 +155,14 @@ public class PatientRegisterController {
 
     @FXML
     public void goToLogin(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(SceneLoader.load("org/example/daibetes/modules/auth/login", "login-screen.fxml",
-                "/org/example/daibetes/styles/splash.css"));
+        // Updated: Navigate using SceneLoader to maintain Kiosk Mode
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/auth/login",
+                "login-screen.fxml",
+                "Login - dAIbetes",
+                "/org/example/daibetes/styles/splash.css"
+        );
     }
 
     private void showAlert(Alert.AlertType type, String title, String message) {

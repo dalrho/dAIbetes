@@ -1,23 +1,30 @@
 package org.example.daibetes.modules.splash.app;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Screen;
+import javafx.geometry.Rectangle2D;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 public class splashApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/org/example/daibetes/modules/splash/controller/splash-screen.fxml")
+        // Use your SceneLoader to keep logic consistent
+        Scene scene = SceneLoader.load(
+                "org/example/daibetes/modules/splash/controller",
+                "splash-screen.fxml",
+                "/org/example/daibetes/styles/splash.css"
         );
 
-        Scene scene = new Scene(loader.load(), 900, 600);
-        scene.getStylesheets().add(getClass().getResource("/org/example/daibetes/styles/splash.css").toExternalForm());
         stage.setTitle("dAIbetes");
         stage.setScene(scene);
-        stage.setResizable(false);
+
+        // Ensure the initial stage is maximized
+        stage.setFullScreenExitHint("");
+        stage.setFullScreen(true);
         stage.show();
     }
 

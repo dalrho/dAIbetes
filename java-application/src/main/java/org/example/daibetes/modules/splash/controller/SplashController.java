@@ -35,20 +35,13 @@ public class SplashController {
     // START BUTTON → GO TO LOGIN
     @FXML
     public void handleStart(ActionEvent event) {
-        try {
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene()
-                    .getWindow();
-
-            stage.setScene(
-                    SceneLoader.load("org/example/daibetes/modules/auth/login", "login-screen.fxml", "/org/example/daibetes/styles/splash.css")
-            );
-
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error switching to login screen");
-        }
+        // We use the central utility which handles the Full Screen logic for us
+        SceneLoader.switchScene(
+                (Node) event.getSource(),                         // The button clicked
+                "org/example/daibetes/modules/auth/login",        // Folder path
+                "login-screen.fxml",                              // FXML filename
+                "Login - dAIbetes",                               // Window Title
+                "/org/example/daibetes/styles/splash.css"         // CSS path
+        );
     }
 }
