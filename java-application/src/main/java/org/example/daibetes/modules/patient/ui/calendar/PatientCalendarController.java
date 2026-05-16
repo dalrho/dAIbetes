@@ -52,29 +52,32 @@ public class PatientCalendarController implements Initializable {
     @FXML private Label     popupDateLabel;
     @FXML private Label     popupTimeLabel;
     @FXML private Label     popupStatusLabel;
+    @FXML private Button    removeBtn; // Added for removal feature
 
-    // ── Request popup ─────────────────────────────────────────────────────────
+    // ── Request popup (UPDATED TO USE CLOCK COMBOS) ───────────────────────────
     @FXML private ComboBox<String> doctorComboBox;
     @FXML private DatePicker       requestDatePicker;
-    @FXML private TextField        timeField;
+    @FXML private ComboBox<String> hourCombo;
+    @FXML private ComboBox<String> minuteCombo;
+    @FXML private ComboBox<String> amPmCombo;
 
     // ── State ─────────────────────────────────────────────────────────────────
     private YearMonth      currentMonth;
     private int            patientId;
     private final CalendarDAO dao = new CalendarDAO();
+    private Appointment selectedAppointmentForDetail; // Tracks current selected app
 
-    // Maps ComboBox display string → d_id for DB insert
     private final List<String[]> doctorRows = new ArrayList<>();
-
-    // =========================================================================
-    // Initialize
-    // =========================================================================
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         currentMonth = YearMonth.now();
 
-        // Resolve patient from session
+        // Setup Clock Dropdowns
+        hourCombo.setItems(FXCollections.observableArrayList("01","02","03","04","05","06","07","08","09","10","11","12"));
+        minuteCombo.setItems(FXCollections.observableArrayList("00","15","30","45"));
+        amPmCombo.setItems(FXCollections.observableArrayList("AM","PM"));
+
         User currentUser = AppContext.getInstance().getCurrentUser();
         if (currentUser instanceof Patient p) {
             patientId = p.getPId();
@@ -88,24 +91,14 @@ public class PatientCalendarController implements Initializable {
         refreshUI();
     }
 
-    // =========================================================================
-    // DB loaders
-    // =========================================================================
-
     private void loadDoctorsIntoComboBox() {
         doctorRows.clear();
         doctorRows.addAll(dao.getAllDoctors());
-
         if (doctorRows.isEmpty()) {
-            System.err.println("PatientCalendarController: No doctors found in database.");
             doctorComboBox.setPromptText("No doctors available");
             return;
         }
-
-        List<String> displayNames = doctorRows.stream()
-                .map(row -> row[1])
-                .collect(Collectors.toList());
-
+        List<String> displayNames = doctorRows.stream().map(row -> row[1]).collect(Collectors.toList());
         doctorComboBox.setItems(FXCollections.observableArrayList(displayNames));
     }
 
@@ -113,10 +106,6 @@ public class PatientCalendarController implements Initializable {
         List<Appointment> appointments = dao.getAppointmentsByPatient(patientId);
         AppContext.getInstance().setAppointments(appointments);
     }
-
-    // =========================================================================
-    // Calendar rendering
-    // =========================================================================
 
     private void setupDayHeaders() {
         String[] days = {"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"};
@@ -136,19 +125,15 @@ public class PatientCalendarController implements Initializable {
 
     private void drawCalendar() {
         calendarGrid.getChildren().clear();
-
-        String monthName = currentMonth.getMonth()
-                .getDisplayName(TextStyle.FULL, Locale.ENGLISH)
-                .toUpperCase();
+        String monthName = currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH).toUpperCase();
         monthYearLabel.setText(monthName + " " + currentMonth.getYear());
 
         LocalDate firstOfMonth = currentMonth.atDay(1);
-        int offset      = firstOfMonth.getDayOfWeek().getValue() - 1;
+        int offset = firstOfMonth.getDayOfWeek().getValue() - 1;
         int daysInMonth = currentMonth.lengthOfMonth();
         int row = 0, col = offset;
 
         List<Appointment> allAppointments = AppContext.getInstance().getAppointments();
-
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate date = currentMonth.atDay(day);
             VBox cell = buildDayCell(day, date, allAppointments);
@@ -160,59 +145,38 @@ public class PatientCalendarController implements Initializable {
         }
     }
 
-    private VBox buildDayCell(int day, LocalDate date,
-                              List<Appointment> appointments) {
+    private VBox buildDayCell(int day, LocalDate date, List<Appointment> appointments) {
         VBox cell = new VBox(5);
         cell.getStyleClass().add("calendar-cell");
         cell.setAlignment(Pos.TOP_LEFT);
-
         Label dayLabel = new Label(String.valueOf(day));
-        dayLabel.setStyle(date.equals(LocalDate.now())
-                ? "-fx-text-fill: #7B2528; -fx-font-weight: bold; -fx-font-size: 11px;"
-                : "-fx-text-fill: #888; -fx-font-size: 11px;");
+        dayLabel.setStyle(date.equals(LocalDate.now()) ? "-fx-text-fill: #7B2528; -fx-font-weight: bold; -fx-font-size: 11px;" : "-fx-text-fill: #888; -fx-font-size: 11px;");
         cell.getChildren().add(dayLabel);
 
-        List<Appointment> dayApps = appointments.stream()
-                .filter(a -> a.getDate().equals(date))
-                .collect(Collectors.toList());
-
+        List<Appointment> dayApps = appointments.stream().filter(a -> a.getDate().equals(date)).collect(Collectors.toList());
         for (Appointment app : dayApps) {
             VBox block = new VBox();
             block.setMaxWidth(Double.MAX_VALUE);
-            block.setStyle("-fx-background-color: " + app.getStatusColor() +
-                    "; -fx-background-radius: 4; -fx-padding: 2 4;");
-
+            block.setStyle("-fx-background-color: " + app.getStatusColor() + "; -fx-background-radius: 4; -fx-padding: 2 4;");
             Label nameLabel = new Label(app.getDoctorName());
             nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 10px;");
             nameLabel.setMaxWidth(Double.MAX_VALUE);
-
             block.getChildren().add(nameLabel);
             block.setOnMouseClicked(e -> handleAppointmentClick(app));
             cell.getChildren().add(block);
         }
-
         return cell;
     }
-
-    // =========================================================================
-    // Appointment list sidebar
-    // =========================================================================
 
     private void refreshAppointmentList() {
         appointmentList.getChildren().clear();
         LocalDate today = LocalDate.now();
-
-        List<Appointment> future = AppContext.getInstance().getAppointments()
-                .stream()
-                .filter(a -> !a.getDate().isBefore(today))
-                .collect(Collectors.toList());
-
+        List<Appointment> future = AppContext.getInstance().getAppointments().stream().filter(a -> !a.getDate().isBefore(today)).collect(Collectors.toList());
         for (Appointment app : future) {
             VBox item = buildAppointmentListItem(app);
             item.setOnMouseClicked(e -> handleAppointmentClick(app));
             appointmentList.getChildren().add(item);
         }
-
         if (future.isEmpty()) {
             Label empty = new Label("No upcoming appointments.");
             empty.setStyle("-fx-text-fill: #888; -fx-font-size: 13px;");
@@ -222,49 +186,54 @@ public class PatientCalendarController implements Initializable {
 
     private VBox buildAppointmentListItem(Appointment app) {
         VBox item = new VBox(4);
-        item.setStyle("-fx-background-color: #F8F8F8; -fx-padding: 10; " +
-                "-fx-background-radius: 8; -fx-cursor: hand;");
-
+        item.setStyle("-fx-background-color: #F8F8F8; -fx-padding: 10; -fx-background-radius: 8; -fx-cursor: hand;");
         Label doctorLabel = new Label(app.getDoctorName());
-        doctorLabel.setStyle(
-                "-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;");
-
+        doctorLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;");
         Label dateLabel = new Label(app.getDate().toString() + "  " + app.getTime());
         dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
-
         Label statusLabel = new Label("● " + app.getStatusLabel().toUpperCase());
-        statusLabel.setStyle("-fx-text-fill: " + app.getStatusColor() +
-                "; -fx-font-size: 11px; -fx-font-weight: bold;");
-
+        statusLabel.setStyle("-fx-text-fill: " + app.getStatusColor() + "; -fx-font-size: 11px; -fx-font-weight: bold;");
         item.getChildren().addAll(doctorLabel, dateLabel, statusLabel);
         return item;
     }
 
-    // =========================================================================
-    // Appointment detail popup
-    // =========================================================================
-
     private void handleAppointmentClick(Appointment app) {
+        this.selectedAppointmentForDetail = app; // Save reference
         popupDoctorLabel.setText("Doctor: " + app.getDoctorName());
         popupDateLabel.setText("Date: " + app.getDate().toString());
         popupTimeLabel.setText("Time: " + app.getTime());
         popupStatusLabel.setText("Status: " + app.getStatusLabel());
-        popupStatusLabel.setStyle("-fx-text-fill: " + app.getStatusColor() +
-                "; -fx-font-weight: bold;");
+        popupStatusLabel.setStyle("-fx-text-fill: " + app.getStatusColor() + "; -fx-font-weight: bold;");
+
+        // SHOW REMOVE BUTTON ONLY IF STATUS IS REJECTED
+        boolean isRejected = "REJECTED".equalsIgnoreCase(app.getStatusLabel());
+        removeBtn.setVisible(isRejected);
+        removeBtn.setManaged(isRejected);
 
         overlay.setVisible(true);
         appointmentPopup.setVisible(true);
         requestPopup.setVisible(false);
     }
 
-    // =========================================================================
-    // Request appointment popup
-    // =========================================================================
+    @FXML
+    private void handleRemoveAppointment() {
+        if (selectedAppointmentForDetail != null) {
+            // Call DAO to delete from database (Ensure your DAO has deleteAppointmentRequest or similar)
+            dao.deleteAppointmentRequest(selectedAppointmentForDetail.getRequestId());
+
+            loadAppointmentsFromDB(); // Reload data
+            refreshUI();              // Update display
+            closeOverlay();           // Close the popup
+        }
+    }
 
     @FXML
     private void showRequestPopup() {
         requestDatePicker.setValue(null);
-        timeField.clear();
+        // Reset Time Combos
+        hourCombo.getSelectionModel().clearSelection();
+        minuteCombo.getSelectionModel().clearSelection();
+        amPmCombo.getSelectionModel().select("AM");
         doctorComboBox.getSelectionModel().clearSelection();
 
         overlay.setVisible(true);
@@ -275,13 +244,19 @@ public class PatientCalendarController implements Initializable {
     @FXML
     private void handleRequestSubmit() {
         String selectedDoctor = doctorComboBox.getValue();
-        LocalDate date        = requestDatePicker.getValue();
-        String time           = timeField.getText().trim();
+        LocalDate date = requestDatePicker.getValue();
 
-        if (selectedDoctor == null || date == null || time.isEmpty()) {
-            showAlert("Please fill in all fields.");
+        // COMBINE CLOCK VALUES INTO A STRING FOR PARSING
+        String h = hourCombo.getValue();
+        String m = minuteCombo.getValue();
+        String ap = amPmCombo.getValue();
+
+        if (selectedDoctor == null || date == null || h == null || m == null) {
+            showAlert("Please fill in all fields (including time).");
             return;
         }
+
+        String timeStr = h + ":" + m + " " + ap;
 
         if (patientId <= 0) {
             showAlert("Session error: No valid patient ID found. Please log in again.");
@@ -293,7 +268,6 @@ public class PatientCalendarController implements Initializable {
             return;
         }
 
-        // Resolve d_id from selected display name
         int selectedDoctorId = doctorRows.stream()
                 .filter(row -> row[1].equals(selectedDoctor))
                 .findFirst()
@@ -301,117 +275,65 @@ public class PatientCalendarController implements Initializable {
                 .orElse(-1);
 
         if (selectedDoctorId == -1) {
-            showAlert("Could not resolve selected doctor. Please try again.");
+            showAlert("Could not resolve selected doctor.");
             return;
         }
 
-        // Build requested_on datetime: "YYYY-MM-DD HH:MM:SS"
-        String requestedOn = buildRequestedOn(date, time);
-        if (requestedOn == null) {
-            showAlert("Invalid time format. Please use e.g. 10:00 AM or 14:00.");
-            return;
-        }
+        // We use the existing parsing logic which now receives "10:00 AM" format
+        String requestedOn = buildRequestedOn(date, timeStr);
 
-        int requestId = dao.insertAppointmentRequest(
-                patientId, selectedDoctorId, requestedOn);
+        int requestId = dao.insertAppointmentRequest(patientId, selectedDoctorId, requestedOn);
 
         if (requestId != -1) {
-            loadAppointmentsFromDB(); // reload from DB — no manual Appointment construction
+            loadAppointmentsFromDB();
             refreshUI();
             closeOverlay();
         } else {
-            showAlert("Failed to submit request. Please try again.");
+            showAlert("Failed to submit request.");
         }
     }
 
-    // =========================================================================
-    // Navigation handlers
-    // =========================================================================
-
-    @FXML
-    private void previousMonth() {
-        currentMonth = currentMonth.minusMonths(1);
-        refreshUI();
-    }
-
-    @FXML
-    private void nextMonth() {
-        currentMonth = currentMonth.plusMonths(1);
-        refreshUI();
-    }
-
-    @FXML
-    private void closeOverlay() {
-        overlay.setVisible(false);
-        appointmentPopup.setVisible(false);
-        requestPopup.setVisible(false);
-    }
+    @FXML private void previousMonth() { currentMonth = currentMonth.minusMonths(1); refreshUI(); }
+    @FXML private void nextMonth() { currentMonth = currentMonth.plusMonths(1); refreshUI(); }
+    @FXML private void closeOverlay() { overlay.setVisible(false); appointmentPopup.setVisible(false); requestPopup.setVisible(false); }
 
     @FXML
     private void goBack(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(SceneLoader.load(
-                "org/example/daibetes/modules/patient/dashboard", "patients-dashboard.fxml", null));
+        stage.setScene(SceneLoader.load("org/example/daibetes/modules/patient/dashboard", "patients-dashboard.fxml", null));
     }
 
-    // =========================================================================
-    // Helpers
-    // =========================================================================
-
-    /**
-     * Parses free-text time input into "HH:MM:SS" suffix for the datetime string.
-     * Supports: "10:00 AM", "14:00", "2pm", "2:30pm"
-     */
     private String buildRequestedOn(LocalDate date, String timeInput) {
         try {
-            String normalized = timeInput.trim().toUpperCase()
-                    .replaceAll("\\s+", " ");
-
+            String normalized = timeInput.trim().toUpperCase().replaceAll("\\s+", " ");
             int hour, minute;
-
             if (normalized.contains("AM") || normalized.contains("PM")) {
                 boolean pm = normalized.contains("PM");
                 String numPart = normalized.replace("AM", "").replace("PM", "").trim();
                 String[] parts = numPart.split(":");
-                hour   = Integer.parseInt(parts[0].trim());
+                hour = Integer.parseInt(parts[0].trim());
                 minute = parts.length > 1 ? Integer.parseInt(parts[1].trim()) : 0;
                 if (pm && hour != 12) hour += 12;
                 if (!pm && hour == 12) hour = 0;
             } else {
                 String[] parts = normalized.split(":");
-                hour   = Integer.parseInt(parts[0].trim());
+                hour = Integer.parseInt(parts[0].trim());
                 minute = parts.length > 1 ? Integer.parseInt(parts[1].trim()) : 0;
             }
-
             return String.format("%s %02d:%02d:00", date, hour, minute);
-
-        } catch (Exception e) {
-            return null;
-        }
+        } catch (Exception e) { return null; }
     }
 
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Notice");
-        alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
     @FXML
     private void handleDiagnosis(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/patient/dashboard",
-                        "patients-dashboard.fxml",
-                        null
-                )
-        );
-
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(SceneLoader.load("org/example/daibetes/modules/patient/dashboard", "patients-dashboard.fxml", null));
         stage.setTitle("dAIbetes — Patient Dashboard");
         stage.show();
     }
