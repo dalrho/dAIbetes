@@ -8,6 +8,7 @@ import org.example.daibetes.core.domain.Doctor;
 import org.example.daibetes.core.domain.Patient;
 import org.example.daibetes.core.domain.Notification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientDashboardViewModel {
@@ -19,10 +20,8 @@ public class PatientDashboardViewModel {
     private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
 
     private final StringProperty patientName = new SimpleStringProperty("");
-    private final StringProperty patientId = new SimpleStringProperty("");
 
-    // Observable structural nodes
-    private final ObservableList<String[]> diagnoses = FXCollections.observableArrayList();
+    // Observable data collections
     private final ObservableList<Notification> notifications = FXCollections.observableArrayList();
     private final ObservableList<String[]> acceptedSchedule = FXCollections.observableArrayList();
 
@@ -30,7 +29,6 @@ public class PatientDashboardViewModel {
     private final StringProperty followUpDetails = new SimpleStringProperty("No upcoming follow-up");
     private final StringProperty followUpDoctor = new SimpleStringProperty("");
 
-    private final ObservableList<Doctor> myDoctors = FXCollections.observableArrayList();
     private final StringProperty searchKeyword = new SimpleStringProperty("");
     private final ObservableList<Doctor> searchResults = FXCollections.observableArrayList();
     private Doctor selectedDoctor;
@@ -39,34 +37,34 @@ public class PatientDashboardViewModel {
 
     public void initData(Patient patient) {
         this.currentPatient = patient;
-        // Dynamically configure presentation bounds using non-hardcoded mapped entities
         patientName.set(patient.getFirstname() + " " + patient.getLastname());
-        patientId.set("ID: " + patient.getPId());
-
-        loadDiagnoses();
-        loadMyDoctors();
         refreshDashboardData();
-    }
-
-    public void loadDiagnoses() {
-        if (currentPatient == null) return;
-        isLoading.set(true);
-        List<String[]> rows = dao.getDiagnosesByPatient(currentPatient.getPId());
-        diagnoses.setAll(rows);
-        isLoading.set(false);
-        statusMessage.set(rows.isEmpty() ? "No diagnosis records found." : "");
     }
 
     public void refreshDashboardData() {
         if (currentPatient == null) return;
 
-        // Fetch notifications feed
-        notifications.setAll(dao.getNotificationsByPatient(currentPatient.getPId()));
+        // Process dynamic database notifications accompanied by custom runtime appends
+        List<Notification> activeFeed = new ArrayList<>(dao.getNotificationsByPatient(currentPatient.getPId()));
 
-        // Fetch filtered accepted schedules
+        // Loop through all search records to safely append dynamic programmatic reminders for tracking items
+        if (selectedDoctor != null && dao.hasPendingRequest(currentPatient.getPId(), selectedDoctor.getDId())) {
+            // Include transient programmatic status alert matching requirements
+            activeFeed.add(0, new Notification(
+                    -1,
+                    currentPatient.getPId(),
+                    -1,
+                    "Scheduled appointment still pending. Click here to view",
+                    "GO_TO_CALENDAR",
+                    false
+            ));
+        }
+        notifications.setAll(activeFeed);
+
+        // Fetch accepted schedules
         acceptedSchedule.setAll(dao.getAcceptedSchedules(currentPatient.getPId()));
 
-        // Dynamic date countdown processing parsing
+        // Date calculations countdown block
         String[] nearest = dao.getNearestUpcomingAppointment(currentPatient.getPId());
         if (nearest != null) {
             daysUntilFollowUp.set(nearest[2]);
@@ -77,12 +75,6 @@ public class PatientDashboardViewModel {
             followUpDetails.set("No upcoming appointments");
             followUpDoctor.set("");
         }
-    }
-
-    public void loadMyDoctors() {
-        if (currentPatient == null) return;
-        List<Doctor> doctors = dao.getDoctorsByPatient(currentPatient.getPId());
-        myDoctors.setAll(doctors);
     }
 
     public void search() {
@@ -126,25 +118,20 @@ public class PatientDashboardViewModel {
 
         if (testId != -1) {
             statusMessage.set("Request sent to Dr. " + selectedDoctor.getFirstname() + " " + selectedDoctor.getLastname() + ".");
-            boolean state = true;
-            requestSuccess.set(state);
+            requestSuccess.set(true);
             refreshDashboardData();
-            loadMyDoctors();
         } else {
             statusMessage.set("Failed to submit request. Please try again.");
         }
     }
 
-    // Property Bindings Accessors
+    // Structural Accessors
     public StringProperty patientNameProperty() { return patientName; }
-    public StringProperty patientIdProperty() { return patientId; }
-    public ObservableList<String[]> getDiagnoses() { return diagnoses; }
     public ObservableList<Notification> getNotifications() { return notifications; }
     public ObservableList<String[]> getAcceptedSchedule() { return acceptedSchedule; }
     public StringProperty daysUntilFollowUpProperty() { return daysUntilFollowUp; }
     public StringProperty followUpDetailsProperty() { return followUpDetails; }
     public StringProperty followUpDoctorProperty() { return followUpDoctor; }
-    public ObservableList<Doctor> getMyDoctors() { return myDoctors; }
     public StringProperty searchKeywordProperty() { return searchKeyword; }
     public ObservableList<Doctor> getSearchResults() { return searchResults; }
     public Doctor getSelectedDoctor() { return selectedDoctor; }
