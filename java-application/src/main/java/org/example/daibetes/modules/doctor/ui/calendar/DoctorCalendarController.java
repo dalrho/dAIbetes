@@ -170,13 +170,19 @@ public class DoctorCalendarController implements Initializable {
         popupDateLabel.setText("Date: " + app.getDate().toString());
         popupTimeLabel.setText("Time: " + app.getTime());
         popupStatusLabel.setText("Status: " + (app.isAccepted() ? "Confirmed" : "Awaiting Approval"));
-        
+
         if (app.isAccepted()) {
             actionButtons.setVisible(false);
+            actionButtons.setManaged(false);
+
             closePopupBtn.setVisible(true);
+            closePopupBtn.setManaged(true);
         } else {
             actionButtons.setVisible(true);
+            actionButtons.setManaged(true);
+
             closePopupBtn.setVisible(false);
+            closePopupBtn.setManaged(false);
         }
         
         overlay.setVisible(true);
