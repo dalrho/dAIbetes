@@ -23,6 +23,10 @@ public class DoctorViewDiagnosisController {
     @FXML private Label lblNotes;
     // Clinical Summary Labels
     @FXML private Label valMA, valHem, valExu, valCWS, valME, valVB, valDRGrade, valDME;
+    @FXML private Label valIRMA;
+    @FXML private Label valNV;
+    @FXML private Label valVH;
+    @FXML private Label valRD;
 
     @FXML private FlowPane recommendationsContainer;
     @FXML private Button editDiagnosisBtn;
