@@ -101,6 +101,7 @@ public class MyPatientsController {
     private void refreshGrid() {
         patientGrid.getChildren().clear();
 
+
         int totalItems = sortedData.size();
         int totalPages = (int) Math.ceil((double) totalItems / ITEMS_PER_PAGE);
 
