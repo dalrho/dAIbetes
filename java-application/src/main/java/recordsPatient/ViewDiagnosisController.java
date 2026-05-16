@@ -1,4 +1,4 @@
-package reviewResults;
+package recordsPatient;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -8,29 +8,18 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import reviewResults.ReportData;
 
-import javax.swing.*;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
-import static javafx.application.Application.launch;
-
-public class ReviewResultsController {
+public class ViewDiagnosisController {
 
     @FXML private ImageView reportImageView;
     @FXML private Label lblFinalCriticality, lblReasoning, lblNotes;
@@ -151,26 +140,8 @@ public class ReviewResultsController {
     }
 
     @FXML
-    private void handleBack(ActionEvent event) {
+    private void handleBack() {
         // Logic to return to the records/home screen
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/patientsdashboard/patients-dashboard.fxml")
-            );
-
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene()
-                    .getWindow();
-
-            stage.setTitle("Patient Dashboard");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         System.out.println("Returning to home...");
     }
 }
