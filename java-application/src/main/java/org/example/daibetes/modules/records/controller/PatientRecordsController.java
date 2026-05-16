@@ -150,7 +150,7 @@ public class PatientRecordsController {
     @FXML
     private void handleBack(ActionEvent event) {
         Scene scene = SceneLoader.load(
-                "org/example/daibetes/modules/patientsdashboard",
+                "org/example/daibetes/modules/patient/dashboard",
                 "patients-dashboard.fxml",
                 null
         );
