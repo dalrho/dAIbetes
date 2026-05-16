@@ -73,7 +73,7 @@
 
             <!-- ── MAIN CONTENT ── -->
             <center>
-                <VBox spacing="2" style="-fx-background-color: #EBEBEB; -fx-padding: 30;">
+                <VBox spacing="20" style="-fx-background-color: #EBEBEB; -fx-padding: 30;">
                     <HBox alignment="CENTER_LEFT" spacing="20">
                         <Button onAction="#goBack" text="BACK" styleClass="back-btn-dash"/>
                         <Region HBox.hgrow="ALWAYS"/>
