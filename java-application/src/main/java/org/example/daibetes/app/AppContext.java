@@ -1,8 +1,8 @@
 package org.example.daibetes.app;
 
 import javafx.scene.image.Image;
-import org.example.daibetes.core.domain.Appointment;
-import org.example.daibetes.core.domain.User;
+import org.example.daibetes.shared.models.Appointment;
+import org.example.daibetes.shared.models.User;
 
 import java.io.File;
 import java.util.ArrayList;

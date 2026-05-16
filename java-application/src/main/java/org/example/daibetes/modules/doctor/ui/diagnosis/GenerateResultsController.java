@@ -17,15 +17,15 @@ import org.example.daibetes.core.database.ReportDAO;
 import org.example.daibetes.core.database.TestDAO;
 import org.example.daibetes.modules.ai.dto.AIResponseDTO;
 import org.example.daibetes.modules.ai.service.AIInferenceService;
-import register.sceneLoader;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
-import org.example.daibetes.core.domain.Doctor;
-import org.example.daibetes.core.domain.User;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.models.User;
 public class GenerateResultsController {
 
     @FXML private ImageView reportImageView;
@@ -240,7 +240,7 @@ public class GenerateResultsController {
 
     private void goToDoctorDashboard() {
         Stage stage = (Stage) reportImageView.getScene().getWindow();
-        stage.setScene(sceneLoader.load("doctorDashboard", "doctor-dashboard.fxml", "/styles/doctorDashboard.css"));
+        stage.setScene(SceneLoader.load("org/example/daibetes/modules/doctor/dashboard", "doctor-dashboard.fxml", "/org/example/daibetes/styles/doctor-dashboard.css"));
         stage.show();
     }
 
@@ -264,7 +264,7 @@ public class GenerateResultsController {
     private void handleBack() {
         try {
             Stage stage = (Stage) notesArea.getScene().getWindow();
-            var resource = getClass().getResource("/imageProcessing/image-processing.fxml");
+            var resource = getClass().getResource("/org/example/daibetes/modules/detection/ui/image-processing.fxml");
             FXMLLoader loader = new FXMLLoader(resource);
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);

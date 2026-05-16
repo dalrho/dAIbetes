@@ -1,8 +1,8 @@
 package org.example.daibetes.core.database;
 
-import org.example.daibetes.core.domain.Doctor;
-import org.example.daibetes.core.domain.Patient;
-import org.example.daibetes.core.domain.User;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.models.Patient;
+import org.example.daibetes.shared.models.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -12,9 +12,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.core.database.MyPatientsDAO;
-import org.example.daibetes.core.domain.Doctor;
-import org.example.daibetes.core.domain.User;
-import register.sceneLoader;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.models.User;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -157,8 +157,8 @@ public class MyPatientsController {
 
         Stage stage = (Stage) patientGrid.getScene().getWindow();
 
-        Scene scene = sceneLoader.load(
-                "records",
+        Scene scene = SceneLoader.load(
+                "org/example/daibetes/modules/records/controller",
                 "records-screen.fxml",
                 null
         );
@@ -195,10 +195,10 @@ public class MyPatientsController {
     private void handleBack() {
         Stage stage = (Stage) paginationLabel.getScene().getWindow();
 
-        Scene scene = sceneLoader.load(
-                "doctorDashboard",
+        Scene scene = SceneLoader.load(
+                "org/example/daibetes/modules/doctor/dashboard",
                 "doctor-dashboard.fxml",
-                "/styles/doctorDashboard.css"
+                "/org/example/daibetes/styles/doctor-dashboard.css"
         );
 
         if (scene == null) {

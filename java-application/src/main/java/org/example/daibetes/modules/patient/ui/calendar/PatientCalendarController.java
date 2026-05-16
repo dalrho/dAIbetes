@@ -3,22 +3,19 @@ package org.example.daibetes.modules.patient.ui.calendar;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.core.database.CalendarDAO;
-import org.example.daibetes.core.domain.Appointment;
-import org.example.daibetes.core.domain.Patient;
-import org.example.daibetes.core.domain.User;
-import register.sceneLoader;
+import org.example.daibetes.shared.models.Appointment;
+import org.example.daibetes.shared.models.Patient;
+import org.example.daibetes.shared.models.User;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -353,8 +350,8 @@ public class PatientCalendarController implements Initializable {
     @FXML
     private void goBack(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(sceneLoader.load(
-                "patientsdashboard", "patients-dashboard.fxml", null));
+        stage.setScene(SceneLoader.load(
+                "org/example/daibetes/modules/patient/dashboard", "patients-dashboard.fxml", null));
     }
 
     // =========================================================================
@@ -408,8 +405,8 @@ public class PatientCalendarController implements Initializable {
                 .getWindow();
 
         stage.setScene(
-                sceneLoader.load(
-                        "patientsdashboard",
+                SceneLoader.load(
+                        "org/example/daibetes/modules/patient/dashboard",
                         "patients-dashboard.fxml",
                         null
                 )

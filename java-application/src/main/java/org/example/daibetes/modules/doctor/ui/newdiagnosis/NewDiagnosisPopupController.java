@@ -6,7 +6,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.core.database.PatientSelectionDAO;
-import register.sceneLoader;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,10 +72,10 @@ public class NewDiagnosisPopupController {
 
         Stage stage = (Stage) patientNameBox.getScene().getWindow();
 
-        Scene scene = sceneLoader.load(
-                "popdiagnosis",
+        Scene scene = SceneLoader.load(
+                "org/example/daibetes/modules/doctor/ui/popup",
                 "popdiagnosis-screen.fxml",
-                "/styles/newdiagnosis.css"
+                "/org/example/daibetes/styles/new-diagnosis.css"
         );
 
         if (scene == null) {
