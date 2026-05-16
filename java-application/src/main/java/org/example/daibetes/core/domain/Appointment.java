@@ -27,7 +27,7 @@ public class Appointment {
 
     public Appointment(int requestId, int patientId, int doctorId,
                        String patientName, String doctorName,
-                       LocalDate date, String time, boolean status) {
+                       LocalDate date, String time, Status status) {
         this.requestId   = requestId;
         this.patientId   = patientId;
         this.doctorId    = doctorId;
