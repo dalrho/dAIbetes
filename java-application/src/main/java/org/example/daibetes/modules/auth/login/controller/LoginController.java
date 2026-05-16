@@ -64,19 +64,15 @@ public class LoginController {
     // =========================================================================
     // Register navigation
     // =========================================================================
-
     @FXML
     private void goToRegister(MouseEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/auth/register",
-                        "register-screen.fxml",
-                        "/org/example/daibetes/styles/splash.css"
-                )
+        // We use the switchScene method you already have in SceneLoader
+        SceneLoader.switchScene(
+                (Node) event.getSource(),                   // The node clicked
+                "org/example/daibetes/modules/auth/register", // Folder
+                "register-screen.fxml",                     // FXML file
+                "Register - dAIbetes",                      // Window Title
+                "/org/example/daibetes/styles/splash.css"   // CSS
         );
     }
 
