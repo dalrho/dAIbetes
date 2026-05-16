@@ -279,6 +279,16 @@ public class Popdiagnosiscontroller implements Initializable {
     @FXML
     private void onBack() {
         Stage stage = (Stage) backBtn.getScene().getWindow();
-        stage.close();
+
+        stage.setScene(
+                register.sceneLoader.load(
+                        "newdiagnosis",
+                        "new-diagnosis-popup.fxml",
+                        null
+                )
+        );
+
+        stage.setTitle("Select Patient");
+        stage.show();
     }
 }
