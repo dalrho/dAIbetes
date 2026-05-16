@@ -86,7 +86,6 @@
                                -fx-padding: 14 20; -fx-background-radius: 7;
                                -fx-cursor: hand;"/>
             </VBox>
-
             <!-- Spacer -->
             <Region VBox.vgrow="ALWAYS"/>
 
