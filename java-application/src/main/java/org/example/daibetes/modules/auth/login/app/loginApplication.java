@@ -16,6 +16,8 @@ public class loginApplication extends Application {
                 )
         );
         stage.setTitle("dAIbetes - Login");
+        stage.setFullScreenExitHint("");
+        stage.setFullScreen(true);
         stage.show();
     }
 
