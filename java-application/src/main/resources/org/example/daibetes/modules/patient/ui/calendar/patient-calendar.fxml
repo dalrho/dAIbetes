@@ -20,17 +20,14 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <StackPane alignment="CENTER" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="org.example.daibetes.modules.patient.ui.calendar.PatientCalendarController"
            stylesheets="@../../../../styles/calendar.css">
     <children>
-        <BorderPane
-                prefHeight="860.0"
-                prefWidth="1366.0"
-                style="-fx-background-color: #EBEBEB;">
-
-            <!-- LEFT SIDEBAR REMOVED -->
+        <BorderPane prefHeight="860.0" prefWidth="1366.0" style="-fx-background-color: #EBEBEB;">
 
             <!-- ── MAIN CONTENT ── -->
             <center>
@@ -49,9 +46,7 @@
                     </HBox>
 
                     <HBox spacing="20" VBox.vgrow="ALWAYS">
-                        <!-- Calendar Section -->
                         <VBox spacing="10" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 14; -fx-padding: 20;">
-                            <!-- Days of Week Header -->
                             <GridPane fx:id="dayHeaderGrid" hgap="1" vgap="1">
                                 <columnConstraints>
                                     <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28" />
@@ -77,7 +72,6 @@
                             </GridPane>
                         </VBox>
 
-                        <!-- Sidebar Lists -->
                         <VBox prefWidth="300.0" spacing="20">
                             <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 14; -fx-padding: 20;">
                                 <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="My Appointments" />
@@ -98,45 +92,67 @@
         <!-- MODAL OVERLAY -->
         <StackPane fx:id="overlay" visible="false" styleClass="overlay-shade" alignment="CENTER">
             <!-- Appointment Details Popup -->
-            <VBox fx:id="appointmentPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="15">
+            <VBox fx:id="appointmentPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="25"
+                  maxWidth="450.0" maxHeight="-Infinity" style="-fx-padding: 35;">
                 <Label styleClass="popup-title" text="APPOINTMENT DETAILS" />
-                <VBox spacing="8">
-                    <Label fx:id="popupDoctorLabel" styleClass="popup-text" text="Doctor: -" />
-                    <Separator />
-                    <Label fx:id="popupDateLabel" styleClass="popup-text" text="Date: -" />
-                    <Label fx:id="popupTimeLabel" styleClass="popup-text" text="Time: -" />
-                    <Label fx:id="popupStatusLabel" styleClass="popup-text" text="Status: -" />
+                <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="-Infinity">
+                    <children>
+                        <Label fx:id="popupDoctorLabel" styleClass="popup-text" text="Doctor: -" />
+                        <Separator prefWidth="300.0" style="-fx-padding: 5 0;" />
+                        <Label fx:id="popupDateLabel" styleClass="popup-text" text="Date: -" />
+                        <Label fx:id="popupTimeLabel" styleClass="popup-text" text="Time: -" />
+                        <Label fx:id="popupStatusLabel" styleClass="popup-text" text="Status: -" />
+                    </children>
                 </VBox>
-                <Button onAction="#closeOverlay" styleClass="btn-reschedule" text="CLOSE" />
+
+                <HBox spacing="20" alignment="CENTER">
+                    <children>
+                        <Button onAction="#closeOverlay" styleClass="btn-reschedule" text="CLOSE"
+                                style="-fx-background-color: #EEE; -fx-text-fill: #333; -fx-background-radius: 6; -fx-font-weight: bold;"
+                                minWidth="160" prefWidth="160" maxWidth="160" minHeight="40" prefHeight="40" maxHeight="40" />
+                        <Button fx:id="removeBtn" onAction="#handleRemoveAppointment"
+                                style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-background-radius: 6; -fx-font-weight: bold;"
+                                text="REMOVE" minWidth="160" prefWidth="160" maxWidth="160" minHeight="40" prefHeight="40" maxHeight="40"
+                                visible="false" managed="false"/>
+                    </children>
+                </HBox>
             </VBox>
 
             <!-- Request Appointment Popup -->
-            <VBox fx:id="requestPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="15">
+            <VBox fx:id="requestPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="15"
+                  maxWidth="450.0" maxHeight="-Infinity" style="-fx-padding: 30;">
                 <Label styleClass="popup-title" text="REQUEST APPOINTMENT" />
-
                 <VBox spacing="5">
                     <Label text="Select Doctor" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
                     <ComboBox fx:id="doctorComboBox" maxWidth="Infinity" promptText="Choose a doctor" />
                 </VBox>
-
                 <VBox spacing="5">
                     <Label text="Select Date" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
                     <DatePicker fx:id="requestDatePicker" maxWidth="Infinity" />
                 </VBox>
-
                 <VBox spacing="5">
                     <Label text="Preferred Time" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
-                    <TextField fx:id="timeField" promptText="e.g. 10:00 AM" />
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <ComboBox fx:id="hourCombo" prefWidth="80" promptText="Hr"/>
+                        <Label text=":" style="-fx-font-weight: bold;"/>
+                        <ComboBox fx:id="minuteCombo" prefWidth="85" promptText="Min"/>
+                        <ComboBox fx:id="amPmCombo" prefWidth="80"/>
+                    </HBox>
                 </VBox>
 
-                <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button onAction="#closeOverlay" style="-fx-background-color: #EEE; -fx-text-fill: #333; -fx-padding: 8 20; -fx-background-radius: 6;" text="CANCEL" />
-                    <Button onAction="#handleRequestSubmit" styleClass="btn-accept" text="SUBMIT REQUEST" />
+                <!-- CHANGED ALIGNMENT TO CENTER -->
+                <HBox spacing="20" alignment="CENTER" style="-fx-padding: 15 0 0 0;">
+                    <children>
+                        <Button onAction="#closeOverlay" text="CANCEL"
+                                style="-fx-background-color: #EEE; -fx-text-fill: #333; -fx-background-radius: 6; -fx-font-weight: bold;"
+                                minWidth="160" prefWidth="160" maxWidth="160" minHeight="40" prefHeight="40" maxHeight="40" />
+                        <Button onAction="#handleRequestSubmit" styleClass="btn-accept"
+                                text="SUBMIT" minWidth="160" prefWidth="160" maxWidth="160" minHeight="40" prefHeight="40" maxHeight="40" />
+                    </children>
                 </HBox>
             </VBox>
         </StackPane>
 
-        <!-- HIDDEN CONTAINER: Keeps the Controller Logic and IDs active without showing the UI -->
         <VBox visible="false" managed="false">
             <ImageView fx:id="profileImage" />
             <Label fx:id="patientNameLabel" />
