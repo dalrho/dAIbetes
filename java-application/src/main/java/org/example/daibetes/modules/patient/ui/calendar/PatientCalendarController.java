@@ -411,4 +411,22 @@ public class PatientCalendarController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    @FXML
+    private void handleDiagnosis(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load(
+                        "patientsdashboard",
+                        "patients-dashboard.fxml",
+                        null
+                )
+        );
+
+        stage.setTitle("dAIbetes — Patient Dashboard");
+        stage.show();
+    }
 }
