@@ -10,7 +10,7 @@ public class MyPatientsApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         stage.setScene(
-                SceneLoader.load("org/example/daibetes/modules/doctor/ui/patients", "my-patients-view.fxml", "/org/example/daibetes/styles/my-patient.css")
+                SceneLoader.load("/org/example/daibetes/modules/doctor/ui/patients", "my-patients-view.fxml", "/org/example/daibetes/styles/my-patient.css")
         );
 
         stage.setTitle("dAIbetes — Generate Report");

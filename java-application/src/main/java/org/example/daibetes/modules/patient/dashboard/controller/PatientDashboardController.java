@@ -151,7 +151,9 @@ public class PatientDashboardController implements Initializable {
     }
 
     private void routeToCalendarScreen(Stage stage) {
-        Scene s = SceneLoader.load("org/example/daibetes/modules/patient/ui/calendar", "patient-calendar.fxml", null);
+        Scene s = SceneLoader.load("org/example/daibetes/modules/patient/ui/calendar",
+                "patient-calendar.fxml",
+                null);
         if (s != null) {
             stage.setScene(s);
             stage.setTitle("dAIbetes — Consultation Calendar");
