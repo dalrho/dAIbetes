@@ -60,16 +60,6 @@
                -fx-background-radius: 10;
                -fx-padding: 8 18; -fx-cursor: hand;"/>
 
-
-
-        <!-- CLOSE -->
-        <Button fx:id="closeBtn"
-                text="Close"
-                onAction="#onClose"
-                prefWidth="110"
-                style="-fx-background-color: red;
-                       -fx-text-fill: white;
-                       -fx-background-radius: 10;"/>
     </VBox>
 
 </StackPane>

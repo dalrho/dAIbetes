@@ -47,7 +47,7 @@ public class Popdiagnosiscontroller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupButtonHover(uploadImageBtn);
-        setupButtonHover(closeBtn);
+
     }
 
 
@@ -194,11 +194,6 @@ public class Popdiagnosiscontroller implements Initializable {
                 btn.setStyle(style));
     }
 
-    @FXML
-    private void onClose() {
-        Stage stage = (Stage) closeBtn.getScene().getWindow();
-        stage.close();
-    }
 
     // =========================
     // ALERTS
