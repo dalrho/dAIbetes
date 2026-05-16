@@ -60,6 +60,17 @@
                -fx-background-radius: 10;
                -fx-padding: 8 18; -fx-cursor: hand;"/>
 
+        <!-- BACK -->
+        <Button fx:id="backBtn"
+                text="Back"
+                onAction="#onBack"
+                prefWidth="260"
+                style="-fx-background-color: #E5E7EB;
+               -fx-text-fill: black;
+               -fx-background-radius: 10;
+               -fx-padding: 8 18;
+               -fx-cursor: hand;" />
+
     </VBox>
 
 </StackPane>
