@@ -23,6 +23,7 @@ import register.sceneLoader;
 
 import java.time.LocalDate;
 import java.time.Period;
+import org.example.daibetes.shared.utils.PasswordUtils;
 
 public class doctorRegisterController {
 
@@ -128,6 +129,8 @@ public class doctorRegisterController {
             return;
         }
 
+        String hashedPassword = PasswordUtils.hashPassword(password);
+
         String selectedGender = ((RadioButton) maleBtn.getToggleGroup()
                 .getSelectedToggle())
                 .getText();
@@ -136,7 +139,7 @@ public class doctorRegisterController {
                 firstName,
                 lastName,
                 email,
-                password,
+                hashedPassword,
                 contact,
                 selectedGender,
                 birth.toString(),
