@@ -73,7 +73,7 @@
             <!-- Nav Buttons -->
             <VBox spacing="12">
                 <padding><Insets top="6" right="20" bottom="0" left="20"/></padding>
-                <Button fx:id="viewDiagnosisBtn" text="View Diagnosis"
+                <Button fx:id="viewDiagnosisBtn" text="View Records"
                         maxWidth="Infinity" onAction="#onViewDiagnosis"
                         style="-fx-background-color: #1A1A1A; -fx-text-fill: white;
                                -fx-font-size: 14px; -fx-font-weight: bold;
@@ -81,6 +81,12 @@
                                -fx-cursor: hand;"/>
                 <Button fx:id="scheduleFollowUpBtn" text="Schedule Follow-up"
                         maxWidth="Infinity" onAction="#onScheduleFollowUp"
+                        style="-fx-background-color: #1A1A1A; -fx-text-fill: white;
+                               -fx-font-size: 14px; -fx-font-weight: bold;
+                               -fx-padding: 14 20; -fx-background-radius: 7;
+                               -fx-cursor: hand;"/>
+                <Button fx:id="myDoctorsBtn" text="My Doctors"
+                        maxWidth="Infinity" onAction="#onMyDoctors"
                         style="-fx-background-color: #1A1A1A; -fx-text-fill: white;
                                -fx-font-size: 14px; -fx-font-weight: bold;
                                -fx-padding: 14 20; -fx-background-radius: 7;

@@ -3,9 +3,12 @@ package org.example.daibetes.modules.patient.ui.calendar;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -95,6 +98,12 @@ public class PatientCalendarController implements Initializable {
     private void loadDoctorsIntoComboBox() {
         doctorRows.clear();
         doctorRows.addAll(dao.getAllDoctors());
+
+        if (doctorRows.isEmpty()) {
+            System.err.println("PatientCalendarController: No doctors found in database.");
+            doctorComboBox.setPromptText("No doctors available");
+            return;
+        }
 
         List<String> displayNames = doctorRows.stream()
                 .map(row -> row[1])
@@ -274,6 +283,11 @@ public class PatientCalendarController implements Initializable {
 
         if (selectedDoctor == null || date == null || time.isEmpty()) {
             showAlert("Please fill in all fields.");
+            return;
+        }
+
+        if (patientId <= 0) {
+            showAlert("Session error: No valid patient ID found. Please log in again.");
             return;
         }
 

@@ -1,4 +1,4 @@
-package EditDiagnosis;
+package editGenerateReport;
 
 import javafx.application.Application;
 

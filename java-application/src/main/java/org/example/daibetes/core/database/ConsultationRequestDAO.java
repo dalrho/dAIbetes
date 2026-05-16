@@ -33,9 +33,9 @@ public class ConsultationRequestDAO {
                    CONCAT(u.firstname, ' ', u.lastname) AS patient_name,
                    DATE_FORMAT(cr.requested_on, '%b %d, %Y %h:%i %p') AS requested_on,
                    cr.p_id
-            FROM tblConsultationRequest cr
-            JOIN tblPatient pat ON cr.p_id  = pat.p_id
-            JOIN tblUser    u   ON pat.user_id = u.user_id
+            FROM tblconsultationrequest cr
+            JOIN tblpatient pat ON cr.p_id  = pat.p_id
+            JOIN tbluser    u   ON pat.user_id = u.user_id
             WHERE cr.d_id = ?
               AND cr.responded_on IS NULL
             ORDER BY cr.requested_on DESC
@@ -74,7 +74,7 @@ public class ConsultationRequestDAO {
      */
     public boolean acceptRequest(int requestId) {
         String sql = """
-            UPDATE tblConsultationRequest
+            UPDATE tblconsultationrequest
             SET is_accepted  = true,
                 responded_on = NOW()
             WHERE request_id = ?
@@ -103,7 +103,7 @@ public class ConsultationRequestDAO {
      */
     public boolean rejectRequest(int requestId) {
         String sql = """
-            UPDATE tblConsultationRequest
+            UPDATE tblconsultationrequest
             SET is_accepted  = false,
                 responded_on = NOW()
             WHERE request_id = ?
@@ -141,9 +141,9 @@ public class ConsultationRequestDAO {
                    CONCAT(u.firstname, ' ', u.lastname) AS patient_name,
                    DATE_FORMAT(cr.requested_on, '%b %d, %Y %h:%i %p') AS requested_on,
                    cr.p_id
-            FROM tblConsultationRequest cr
-            JOIN tblPatient pat ON cr.p_id    = pat.p_id
-            JOIN tblUser    u   ON pat.user_id = u.user_id
+            FROM tblconsultationrequest cr
+            JOIN tblpatient pat ON cr.p_id    = pat.p_id
+            JOIN tbluser    u   ON pat.user_id = u.user_id
             WHERE cr.d_id = ?
               AND cr.responded_on IS NOT NULL
             ORDER BY cr.responded_on DESC
@@ -184,7 +184,7 @@ public class ConsultationRequestDAO {
      */
     public int createRequest(int testId, int patientId, int doctorId) {
         String sql = """
-            INSERT INTO tblConsultationRequest
+            INSERT INTO tblconsultationrequest
                 (test_id, p_id, d_id, is_accepted, requested_on)
             VALUES (?, ?, ?, false, NOW())
         """;
@@ -218,7 +218,7 @@ public class ConsultationRequestDAO {
      */
     public int getPendingRequestCount(int doctorId) {
         String sql = """
-            SELECT COUNT(*) FROM tblConsultationRequest
+            SELECT COUNT(*) FROM tblconsultationrequest
             WHERE d_id = ? AND responded_on IS NULL
         """;
 

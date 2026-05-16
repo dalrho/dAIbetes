@@ -69,7 +69,9 @@ CREATE TABLE `tbldoctor` (
 
 INSERT INTO `tbldoctor` (`d_id`, `user_id`, `doctor_idcard_id`, `license_number`, `hospital`) VALUES
 (1, 1, 1, 'LIC-2026-001', 'Cebu City Medical Center'),
-(2, 2, 2, 'LIC-2026-002', 'Chong Hua Hospital');
+(2, 2, 2, 'LIC-2026-002', 'Chong Hua Hospital'),
+(3, 8, 1, 'LIC-2026-003', 'Sotto Hospital'),
+(4, 9, 1, 'LIC-2026-004', 'UC Med');
 
 -- --------------------------------------------------------
 
@@ -161,7 +163,8 @@ INSERT INTO `tblpatient` (`p_id`, `user_id`, `age`) VALUES
 (2, 4, 25),
 (3, 5, 23),
 (4, 6, 26),
-(5, 7, 27);
+(5, 7, 27),
+(6, 10, 30);
 
 -- --------------------------------------------------------
 
@@ -239,7 +242,10 @@ INSERT INTO `tbluser` (`user_id`, `firstname`, `lastname`, `email`, `password`, 
 (4, 'Mark', 'Dela Cruz', 'patient2@gmail.com', 'Password123', '09222222222', 'Male', '2001-06-10', '2026-05-06 04:11:47'),
 (5, 'Jessa', 'Lim', 'patient3@gmail.com', 'Password123', '09333333333', 'Female', '2003-09-25', '2026-05-06 04:11:47'),
 (6, 'Carlo', 'Garcia', 'patient4@gmail.com', 'Password123', '09444444444', 'Male', '2000-03-18', '2026-05-06 04:11:47'),
-(7, 'Mika', 'Tan', 'patient5@gmail.com', 'Password123', '09555555555', 'Female', '1999-12-05', '2026-05-06 04:11:47');
+(7, 'Mika', 'Tan', 'patient5@gmail.com', 'Password123', '09555555555', 'Female', '1999-12-05', '2026-05-06 04:11:47'),
+(8, 'Test', 'Doctor', 'testdoctor@gmail.com', 'Password123', '09123456780', 'Male', '1980-01-01', '2026-05-06 04:11:47'),
+(9, 'Demo', 'Doctor', 'demodoctor@gmail.com', 'Password123', '09123456781', 'Female', '1982-02-02', '2026-05-06 04:11:47'),
+(10, 'Test', 'Patient', 'testpatient@gmail.com', 'Password123', '09123456782', 'Male', '1995-05-05', '2026-05-06 04:11:47');
 
 --
 -- Indexes for dumped tables

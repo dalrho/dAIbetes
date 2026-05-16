@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
 /**
  * JavaFX Application entry point for the Patient Dashboard.
  * In production this screen is reached via loginController after login —

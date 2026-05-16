@@ -24,8 +24,13 @@
                             <Button onAction="#goBack" text="BACK" styleClass="back-btn-dash"/>
 
                             <Separator orientation="VERTICAL" prefHeight="40.0" />
-
-
+                            
+                            <VBox alignment="CENTER_LEFT" spacing="2">
+                                <children>
+                                    <Label fx:id="doctorNameLabel" text="Doctor Name" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #111111;" />
+                                    <Label fx:id="doctorIdLabel" text="ID: 0000" style="-fx-font-size: 12px; -fx-text-fill: #666666;" />
+                                </children>
+                            </VBox>
 
                             <Region HBox.hgrow="ALWAYS" />
 
