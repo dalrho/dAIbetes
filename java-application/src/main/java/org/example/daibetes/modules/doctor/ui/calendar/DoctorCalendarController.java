@@ -176,7 +176,7 @@ public class DoctorCalendarController implements Initializable {
     @FXML
     private void handleAccept() {
         if (selectedAppointment != null) {
-            AppContext.getInstance().updateAppointmentStatus(selectedAppointment.getId(), true);
+            AppContext.getInstance().updateAppointmentStatus(selectedAppointment.getRequestId(), true);
             closeOverlay();
             refreshUI();
         }
