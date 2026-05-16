@@ -333,28 +333,6 @@ public class PatientCalendarController implements Initializable {
     }
 
     @FXML
-    private void handleDiagnosis(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/patientsdashboard/patients-dashboard.fxml")
-            );
-
-            Parent root = loader.load();
-
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene()
-                    .getWindow();
-
-            stage.setTitle("Patient Dashboard");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     private void closeOverlay() {
         overlay.setVisible(false);
         appointmentPopup.setVisible(false);

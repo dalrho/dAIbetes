@@ -241,21 +241,21 @@ public class PatientDashboardController implements Initializable {
     // ════════════════════════════════════════════════════════════
 
     @FXML
-    private void onViewDiagnosis() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/recordsPatient/records-screen-patient.fxml")
-            );
+    private void onViewDiagnosis(ActionEvent event) {
+        Scene scene = sceneLoader.load(
+                "recordsPatient",
+                "records-screen-patient.fxml",
+                null
+        );
 
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("View Diagnosis");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (scene == null) {
+            System.out.println("Failed to load Patient Calendar screen");
+            return;
         }
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Schedule Follow-up");
     }
 
 
@@ -327,44 +327,9 @@ public class PatientDashboardController implements Initializable {
             populateSchedule();
         }
     }
-
     @FXML
-    private void onMyDoctors() {
-        Stage modal = new Stage();
-        modal.initModality(Modality.APPLICATION_MODAL);
-        modal.setTitle("My Doctors");
-
-        VBox content = new VBox(12);
-        content.setStyle("-fx-padding: 24; -fx-background-color: #F2F2F2;");
-        content.getChildren().add(styledLabel("My Doctors", "#111111", "18px"));
-
-        List<Doctor> doctors = viewModel.getMyDoctors();
-        if (doctors.isEmpty()) {
-            content.getChildren().add(styledLabel("No doctors found.", "#888888", "13px"));
-        } else {
-            for (Doctor d : doctors) {
-                HBox row = new HBox(14);
-                row.setStyle("-fx-background-color: white; -fx-padding: 14; -fx-background-radius: 8;");
-                VBox info = new VBox(3);
-                info.getChildren().addAll(
-                        styledLabel("Dr. " + d.getFirstname() + " " + d.getLastname(), "#111111", "14px"),
-                        styledLabel(d.getHospital(), "#666666", "12px"),
-                        styledLabel("License: " + d.getLicenseNumber(), "#999999", "11px")
-                );
-                row.getChildren().add(info);
-                content.getChildren().add(row);
-            }
-        }
-
-        javafx.scene.control.ScrollPane scroll = new javafx.scene.control.ScrollPane(content);
-        scroll.setFitToWidth(true);
-        modal.setScene(new Scene(scroll, 480, 400));
-        modal.show();
-    }
-
-    @FXML
-    private void onViewAllVisits() {
-        onViewDiagnosis();
+    private void onViewAllVisits(ActionEvent event) {
+        onViewDiagnosis(event);
     }
 
     @FXML

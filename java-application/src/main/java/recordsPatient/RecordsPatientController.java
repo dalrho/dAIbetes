@@ -3,12 +3,15 @@ package recordsPatient;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import register.sceneLoader;
 import reviewResults.ReportData;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,20 +148,20 @@ public class RecordsPatientController {
     }
 
     @FXML
-    private void handleBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/patientsdashboard/patients-dashboard.fxml")
-            );
+    private void handleBack(ActionEvent event) {
+        Scene scene = sceneLoader.load(
+                "patientsdashboard",
+                "patients-dashboard.fxml",
+                null
+        );
 
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Patient Dashboard");
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (scene == null) {
+            System.out.println("Failed to load Patient Calendar screen");
+            return;
         }
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Schedule Follow-up");
     }
 }
