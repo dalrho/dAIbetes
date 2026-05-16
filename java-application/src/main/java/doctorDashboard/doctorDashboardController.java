@@ -252,10 +252,17 @@ public class doctorDashboardController implements Initializable {
     @FXML
     private void onNewDiagnosisBtn() {
 
+//        PopupManager.open(
+//                "popdiagnosis",
+//                "popdiagnosis-screen.fxml",
+//                null,
+//                "New Diagnosis"
+//        );
+
         PopupManager.open(
-                "popdiagnosis",
-                "popdiagnosis-screen.fxml",
-                null,
+                "newdiagnosis",
+                "new-diagnosis-popup.fxml",
+                "/styles/newdiagnosis.css",
                 "New Diagnosis"
         );
     }
@@ -276,9 +283,18 @@ public class doctorDashboardController implements Initializable {
         );
     }
 
-    @FXML private void onViewReports() {
-        System.out.println("[Dashboard] View Reports");
-        // TODO: navigate
+    @FXML private void onViewConsultations(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource())
+                .getScene()
+                .getWindow();
+
+        stage.setScene(
+                sceneLoader.load(
+                        "doctorcalendar",
+                        "doctor-calendar.fxml",
+                        "/doctorcalendar/style.css"
+                )
+        );
     }
 
     @FXML private void onUpdateData() {

@@ -29,10 +29,22 @@
                 <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
             </padding>
             <children>
-                <!-- LEFT SIDE: Evidence -->
-                <!-- LEFT SIDE: Image and AI Assistant -->
+                <!-- LEFT SIDE -->
                 <VBox prefWidth="450.0" spacing="20.0">
                     <children>
+                        <!-- UPDATED: PATIENT IDENTIFICATION (NAME ONLY) -->
+                        <VBox spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4); -fx-border-color: #E2E8F0; -fx-border-width: 1; -fx-border-radius: 12;">
+                            <children>
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #64748B; -fx-font-size: 11px;" text="PATIENT IDENTIFICATION" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <children>
+                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #1E293B; -fx-font-size: 18px;" text="Name:" />
+                                        <Label fx:id="patientNameLabel" style="-fx-text-fill: #0F172A; -fx-font-size: 18px; -fx-font-weight: bold;" text="-- Select Patient --" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
                         <!-- Scan Card -->
                         <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4);">
                             <children>
@@ -46,35 +58,50 @@
                             </children>
                         </VBox>
 
-                        <!-- AI ASSISTANT INSIGHTS CARD -->
-                        <VBox fx:id="aiResultBox" spacing="12.0" style="-fx-background-color: #F0F9FF; -fx-background-radius: 12; -fx-padding: 20; -fx-border-color: #BAE6FD; -fx-border-width: 1;">
+                        <!-- UPDATED AI ASSISTANT INSIGHTS (STICKY HEADER + SCROLLABLE EXPLANATION) -->
+                        <VBox fx:id="aiResultBox" spacing="0.0" style="-fx-background-color: #F0F9FF; -fx-background-radius: 12; -fx-border-color: #BAE6FD; -fx-border-width: 1; -fx-border-radius: 12;">
                             <children>
-                                <HBox alignment="CENTER_LEFT">
+                                <!-- Sticky Top Section -->
+                                <VBox spacing="12.0" style="-fx-padding: 20 20 10 20;">
                                     <children>
-                                        <Label style="-fx-font-weight: bold; -fx-text-fill: #0369A1;" text="AI ASSISTANT INSIGHTS" />
-                                        <Region HBox.hgrow="ALWAYS" />
-                                        <ProgressIndicator fx:id="aiLoader" prefHeight="20.0" prefWidth="20.0" visible="false" />
-                                    </children>
-                                </HBox>
-                                <Separator prefWidth="200.0" style="-fx-opacity: 0.3;" />
-                                <VBox spacing="5.0">
-                                    <children>
-                                        <HBox spacing="10.0">
+                                        <HBox alignment="CENTER_LEFT">
                                             <children>
-                                                <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="Suggested Criticality:" />
-                                                <Label fx:id="aiCriticalityLabel" style="-fx-text-fill: #0284C7; -fx-font-weight: bold;" text="Pending..." />
+                                                <Label style="-fx-font-weight: bold; -fx-text-fill: #0369A1;" text="AI ASSISTANT INSIGHTS" />
+                                                <Region HBox.hgrow="ALWAYS" />
+                                                <ProgressIndicator fx:id="aiLoader" prefHeight="20.0" prefWidth="20.0" visible="false" />
                                             </children>
                                         </HBox>
-                                        <HBox spacing="10.0">
+                                        <Separator prefWidth="200.0" style="-fx-opacity: 0.3;" />
+                                        <VBox spacing="5.0">
                                             <children>
-                                                <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="Confidence Score:" />
-                                                <Label fx:id="aiConfidenceLabel" style="-fx-text-fill: #0284C7;" text="--%" />
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="Suggested Criticality:" />
+                                                        <Label fx:id="aiCriticalityLabel" style="-fx-text-fill: #0284C7; -fx-font-weight: bold;" text="Pending..." />
+                                                    </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                    <children>
+                                                        <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="Confidence Score:" />
+                                                        <Label fx:id="aiConfidenceLabel" style="-fx-text-fill: #0284C7;" text="--%" />
+                                                    </children>
+                                                </HBox>
                                             </children>
-                                        </HBox>
+                                        </VBox>
                                     </children>
                                 </VBox>
-                                <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="AI Brief Explanation:" />
-                                <Label fx:id="aiExplanationLabel" style="-fx-text-fill: #334155;" text="Click the button above to begin automated analysis." wrapText="true" />
+
+                                <!-- Scrollable Bottom Section -->
+                                <VBox spacing="5.0" style="-fx-padding: 0 20 20 20;">
+                                    <children>
+                                        <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="AI Brief Explanation:" />
+                                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="80.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+                                            <content>
+                                                <Label fx:id="aiExplanationLabel" style="-fx-text-fill: #334155;" text="Click the button above to begin automated analysis." wrapText="true" />
+                                            </content>
+                                        </ScrollPane>
+                                    </children>
+                                </VBox>
                             </children>
                         </VBox>
 
@@ -88,7 +115,7 @@
                         </VBox>
                     </children>
                 </VBox>
-                <!-- RIGHT SIDE: Scrollable Checklist -->
+                <!-- RIGHT SIDE (Checklist) Remains Unchanged -->
                 <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" HBox.hgrow="ALWAYS">
                     <content>
                         <VBox spacing="25.0">
@@ -183,13 +210,13 @@
                                                     </HBox>
                                                 </VBox>
                                             </children>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                    <RowConstraints />
-                                 </rowConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                            </rowConstraints>
                                         </GridPane>
                                     </children>
                                 </VBox>
