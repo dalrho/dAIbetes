@@ -109,10 +109,31 @@
                                                     <Label fx:id="valVB" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
                                                 </VBox>
                                                 <VBox GridPane.columnIndex="0" GridPane.rowIndex="3">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="IRMA" />
+                                                    <Label fx:id="valIRMA" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="Neovascularization" />
+                                                    <Label fx:id="valNV" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+
+                                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="4">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="Vitreous Hemorrhage" />
+                                                    <Label fx:id="valVH" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                    <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="Retinal Detachment" />
+                                                    <Label fx:id="valRD" style="-fx-font-weight: bold; -fx-font-size: 14px;" text="-" />
+                                                </VBox>
+
+                                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="5">
                                                     <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="Final DR Grade" />
                                                     <Label fx:id="valDRGrade" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #3B82F6;" text="-" />
                                                 </VBox>
-                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+
+                                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                     <Label style="-fx-text-fill: #64748B; -fx-font-size: 12px;" text="Macular Edema (DME)" />
                                                     <Label fx:id="valDME" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #3B82F6;" text="-" />
                                                 </VBox>

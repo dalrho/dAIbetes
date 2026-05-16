@@ -9,128 +9,93 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.example.daibetes.app.AppContext;
+import org.example.daibetes.core.database.MyPatientsDAO;
 import register.sceneLoader;
 
-import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.List;
 
 public class RecordsController {
 
-    // ================= TABLE =================
     @FXML private TableView<Record> recordsTable;
 
     @FXML private TableColumn<Record, String> patientIdColumn;
     @FXML private TableColumn<Record, String> patientNameColumn;
     @FXML private TableColumn<Record, String> scanDateColumn;
     @FXML private TableColumn<Record, String> scanTypeColumn;
-    @FXML private TableColumn<Record, String> statusColumn;
     @FXML private TableColumn<Record, String> diagnosisColumn;
 
-    // Updated to handle the button column
     @FXML private TableColumn<Record, Void> actionsColumn;
 
-    // ================= CONTROLS =================
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
     @FXML private DatePicker fromDatePicker;
     @FXML private DatePicker toDatePicker;
 
-    // ================= LABELS =================
     @FXML private Label statusBarLabel;
     @FXML private Label lastUpdatedLabel;
 
-    // ================= DATA =================
     private final ObservableList<Record> recordList = FXCollections.observableArrayList();
 
-    // ================= INIT =================
     @FXML
     public void initialize() {
+        setupTableColumns();
+        setupActionsColumn();
+        setupFilters();
 
-        // table column bindings
+        int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
+        int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
+        String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
+
+        System.out.println("Loading records for patient ID: " + patientId);
+        System.out.println("Doctor ID: " + doctorId);
+        System.out.println("Patient Name: " + patientName);
+
+        loadReports(patientId, doctorId);
+    }
+
+    private void setupTableColumns() {
         patientIdColumn.setCellValueFactory(new PropertyValueFactory<>("patientId"));
         patientNameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
         scanDateColumn.setCellValueFactory(new PropertyValueFactory<>("scanDate"));
-        scanTypeColumn.setCellValueFactory(new PropertyValueFactory<>("scanType"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosis"));
 
-        // ADDING THE VIEW BUTTON TO THE ACTIONS COLUMN
-        actionsColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button viewBtn = new Button("View Diagnosis");
-            {
-                viewBtn.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; " +
-                        "-fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 5; -fx-cursor: hand;");
-                viewBtn.setOnAction(event -> {
-                    handleViewDetails();
-                });
-            }
+        // This column is labeled Follow-up in your FXML
+        scanTypeColumn.setCellValueFactory(new PropertyValueFactory<>("followUp"));
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(viewBtn);
-                }
-            }
-        });
 
-        // sample data
-        recordList.add(new Record("P001", "Juan Dela Cruz", "2026-05-08", "X-Ray", "Pending", "N/A"));
-        recordList.add(new Record("P002", "Maria Santos", "2026-05-07", "MRI", "Completed", "Normal"));
-        recordList.add(new Record("P003", "Pedro Reyes", "2026-05-06", "CT Scan", "Pending", "N/A"));
 
-        recordsTable.setItems(recordList);
-
-        // status filter setup
-        statusFilter.setItems(FXCollections.observableArrayList("All", "Pending", "Completed"));
-        statusFilter.setValue("All");
-
-        updateStatus("System Ready");
+        // This column is labeled Criticality Level in your FXML
+        diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("criticalityLevel"));
     }
 
-    // ================= BUTTON ACTIONS =================
+    private void setupFilters() {
+        statusFilter.setItems(FXCollections.observableArrayList("All", "YES", "NO"));
+        statusFilter.setValue("All");
+    }
 
-    private void handleViewDetails() {
-        // Logic to open the diagnosis report
-        Stage stage = (Stage) recordsTable.getScene().getWindow();
-
-        Scene scene = sceneLoader.load(
-                "editGenerateReport",
-                "edit-generate-report.fxml",
-                null
-        );
-
-        if (scene == null) {
-            System.out.println("Failed to load editGenerateReport scene");
+    private void loadReports(int patientId, int doctorId) {
+        if (patientId == 0 || doctorId == 0) {
+            updateStatus("No selected patient or doctor found.");
             return;
         }
 
-        stage.setScene(scene);
-        stage.setTitle("dAIbetes — Generate Report");
-        stage.show();
+        MyPatientsDAO dao = new MyPatientsDAO();
+
+        List<Record> records = dao.getRecordTableByPatientAndDoctor(patientId, doctorId);
+
+        recordList.setAll(records);
+        recordsTable.setItems(recordList);
+
+        updateStatus(records.size() + " record(s) loaded");
     }
 
     @FXML
     private void handleRefresh() {
-        recordsTable.refresh();
-        updateStatus("Table refreshed");
-    }
+        int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
+        int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
 
-    @FXML
-    private void handleAddRecord() {
-        Record newRecord = new Record(
-                "P" + (recordList.size() + 1),
-                "New Patient",
-                LocalDate.now().toString(),
-                "Scan",
-                "Pending",
-                "N/A"
-        );
-
-        recordList.add(newRecord);
-        updateStatus("New record added");
+        loadReports(patientId, doctorId);
     }
 
     @FXML
@@ -139,38 +104,79 @@ public class RecordsController {
         statusFilter.setValue("All");
         fromDatePicker.setValue(null);
         toDatePicker.setValue(null);
+
         recordsTable.setItems(recordList);
         updateStatus("Filters cleared");
     }
 
     @FXML
     private void handleSearch() {
-        String keyword = searchField.getText().toLowerCase();
-        if (keyword.isEmpty()) {
-            recordsTable.setItems(recordList);
-            return;
-        }
+        String keyword = searchField.getText() == null
+                ? ""
+                : searchField.getText().trim().toLowerCase();
+
+        String followUpFilter = statusFilter.getValue();
+
+        LocalDate fromDate = fromDatePicker.getValue();
+        LocalDate toDate = toDatePicker.getValue();
 
         ObservableList<Record> filtered = FXCollections.observableArrayList();
-        for (Record r : recordList) {
-            if (r.getPatientId().toLowerCase().contains(keyword) ||
-                    r.getPatientName().toLowerCase().contains(keyword)) {
-                filtered.add(r);
+
+        for (Record record : recordList) {
+            boolean matchesKeyword = keyword.isEmpty()
+                    || record.getPatientId().toLowerCase().contains(keyword)
+                    || record.getPatientName().toLowerCase().contains(keyword);
+
+            boolean matchesFollowUp = followUpFilter == null
+                    || followUpFilter.equals("All")
+                    || record.getFollowUp().equalsIgnoreCase(followUpFilter);
+
+            boolean matchesDate = true;
+
+            try {
+                LocalDate scanDate = LocalDate.parse(record.getScanDate().substring(0, 10));
+
+                if (fromDate != null && scanDate.isBefore(fromDate)) {
+                    matchesDate = false;
+                }
+
+                if (toDate != null && scanDate.isAfter(toDate)) {
+                    matchesDate = false;
+                }
+
+            } catch (Exception ignored) {
+                // If date cannot be partabsed, do not block display
+            }
+
+            if (matchesKeyword && matchesFollowUp && matchesDate) {
+                filtered.add(record);
             }
         }
+
         recordsTable.setItems(filtered);
-        updateStatus("Searching: " + keyword);
+        updateStatus(filtered.size() + " matching record(s)");
+    }
+
+    @FXML
+    private void handleAddRecord() {
+        updateStatus("Add record is not available from this screen.");
     }
 
     @FXML
     private void handleBack(ActionEvent event) {
-        Scene scene = sceneLoader.load("doctorDashboard", "doctor-dashboard.fxml", null);
+        Scene scene = sceneLoader.load(
+                "myPatients",
+                "my-patients-view.fxml",
+                "/styles/myPatient.css"
+        );
+
         if (scene != null) {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource())
+                    .getScene()
+                    .getWindow();
+
             stage.setScene(scene);
-            stage.setWidth(900);
-            stage.setHeight(600);
-            stage.setResizable(false);
+            stage.setTitle("My Patients");
             stage.show();
         }
     }
@@ -178,5 +184,57 @@ public class RecordsController {
     private void updateStatus(String message) {
         statusBarLabel.setText(message);
         lastUpdatedLabel.setText(LocalDate.now().toString());
+    }
+    private void setupActionsColumn() {
+        actionsColumn.setCellFactory(column -> new TableCell<>() {
+            private final Button viewButton = new Button("View");
+
+            {
+                viewButton.setStyle(
+                        "-fx-background-color: #0066CC;" +
+                                "-fx-text-fill: white;" +
+                                "-fx-font-size: 11;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-background-radius: 6;" +
+                                "-fx-cursor: hand;"
+                );
+
+                viewButton.setOnAction(event -> {
+                    Record record = getTableView().getItems().get(getIndex());
+                    openDetailedReport(record);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(viewButton);
+                }
+            }
+        });
+    }
+    private void openDetailedReport(Record record) {
+        AppContext.getInstance().setSelectedReportId(record.getReportId());
+
+        Stage stage = (Stage) recordsTable.getScene().getWindow();
+
+        Scene scene = sceneLoader.load(
+                "DoctorViewDiagnosis",
+                "doctorViewDiagnosis.fxml",
+                null
+        );
+
+        if (scene == null) {
+            updateStatus("Could not open detailed report.");
+            return;
+        }
+
+        stage.setScene(scene);
+        stage.setTitle("Detailed Report");
+        stage.show();
     }
 }
