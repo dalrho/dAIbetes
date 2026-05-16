@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+        <?import javafx.scene.layout.StackPane?>
+        <?import javafx.scene.layout.VBox?>
+        <?import javafx.scene.text.TextFlow?>
+        <?import javafx.scene.text.Text?>
+        <?import javafx.scene.control.Label?>
+        <?import javafx.scene.control.Button?>
+
+<StackPane fx:id="rootPane"
+           prefWidth="1366"
+           prefHeight="860"
+           xmlns="http://javafx.com/javafx/17.0.2-ea"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.example.daibetes.modules.splash.controller.SplashController"
+           style="-fx-background-color: #000000;"
+           styleClass="root"
+           stylesheets="@../../../styles/splash.css"> <!-- Apply CSS class here -->
+
+    <VBox fx:id="rootContainer"
+          alignment="CENTER"
+          spacing="20"
+          maxWidth="500">
+
+        <!-- TITLE -->
+        <TextFlow textAlignment="CENTER">
+
+            <Text text="d"
+                  style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: black;" />
+
+            <Text text="AI"
+                  style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: #9e9e9e;" />
+
+            <Text text="betes"
+                  style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: black;" />
+
+        </TextFlow>
+
+        <!-- SUBTITLE -->
+        <Label text="Diabetes risk screening and early detection system"
+               wrapText="true"
+               textAlignment="CENTER"
+               style="-fx-font-size: 15px; -fx-text-fill: #666;" />
+
+        <!-- BUTTON -->
+        <Button text="Start Now"
+                onAction="#handleStart"
+                style="
+                        -fx-background-color: black;
+                        -fx-text-fill: white;
+                        -fx-padding: 12 30;
+                        -fx-background-radius: 12;
+                        -fx-font-size: 14px;
+                    "/>
+
+    </VBox>
+</StackPane>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="900.0" spacing="15.0" styleClass="main-container" stylesheets="@../../../../styles/my-patient.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.patients.MyPatientsController">
+    <padding>
+        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+    </padding>
+
+    <!-- Header (Condensed) -->
+    <HBox alignment="CENTER_LEFT">
+        <Label styleClass="header-title" text="My Patients" />
+    </HBox>
+
+    <!-- Controls Row (Condensed Spacing) -->
+    <HBox alignment="CENTER" spacing="25.0">
+        <TextField fx:id="searchField" prefHeight="35.0" prefWidth="220.0" promptText="Search patients..." styleClass="search-field" />
+        <HBox alignment="CENTER" spacing="8.0">
+            <ToggleButton selected="true" styleClass="filter-pill" text="RECENT">
+                <toggleGroup><ToggleGroup fx:id="filterGroup" /></toggleGroup>
+            </ToggleButton>
+            <ToggleButton styleClass="filter-pill" text="OLDEST" toggleGroup="$filterGroup" />
+            <ToggleButton styleClass="filter-pill" text="MOST CRITICAL" toggleGroup="$filterGroup" />
+            <ToggleButton styleClass="filter-pill" text="LEAST CRITICAL" toggleGroup="$filterGroup" />
+        </HBox>
+    </HBox>
+
+    <!-- Patient Grid (Height Adjusted for 3 rows) -->
+    <VBox alignment="CENTER" VBox.vgrow="ALWAYS">
+        <GridPane fx:id="patientGrid" alignment="CENTER" hgap="15.0" vgap="15.0" />
+    </VBox>
+
+    <!-- Pagination -->
+    <HBox alignment="CENTER" spacing="15.0">
+        <Button onAction="#handlePrev" prefWidth="70.0" styleClass="nav-btn" text="Prev" />
+        <Label fx:id="paginationLabel" styleClass="pagination-text" text="1 out of 4" />
+        <Button onAction="#handleNext" prefWidth="70.0" styleClass="nav-btn" text="Next" />
+    </HBox>
+
+    <!-- Back Button -->
+    <HBox alignment="CENTER_LEFT">
+        <Button onAction="#handleBack" prefWidth="100.0" styleClass="back-btn" text="BACK" />
+    </HBox>
+</VBox>

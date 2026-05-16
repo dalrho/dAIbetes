@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefWidth="1366" prefHeight="860"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.daibetes.modules.auth.register.controller.RegisterController">
+
+    <StackPane prefWidth="1366" prefHeight="860">
+
+        <VBox alignment="TOP_CENTER" spacing="20"
+              style="-fx-padding: 70 0 0 0;"
+        >
+
+            <!-- SAME LOGO -->
+            <VBox alignment="CENTER" spacing="5">
+
+                <TextFlow textAlignment="CENTER">
+                    <Text text="d"
+                          style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: black;" />
+                    <Text text="AI"
+                          style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: #9e9e9e;" />
+                    <Text text="betes"
+                          style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: black;" />
+                </TextFlow>
+
+                <Label text="Diabetes risk screening and early detection system"
+                       wrapText="true"
+                       textAlignment="CENTER"
+                       style="-fx-font-size: 15px; -fx-text-fill: #666;" />
+            </VBox>
+
+            <!-- CARD -->
+            <VBox spacing="20"
+                  alignment="CENTER"
+                  maxWidth="400"
+                  style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15;">
+
+                <Label text="Create an Account"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+
+                <Label text="You can only register as either a Doctor or a Patient"
+                       wrapText="true"
+                       textAlignment="CENTER"
+                       style="-fx-text-fill: #555;" />
+
+                <!-- ROLE BUTTONS -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Button text="Patient"
+                            onAction="#selectPatient"
+                            style="-fx-background-color: #7b3b3b; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 20;" />
+
+                    <Button text="Doctor"
+                            onAction="#selectDoctor"
+                            style="-fx-background-color: #7b3b3b; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 8 20;" />
+                </HBox>
+
+                <!-- LOGIN LINK -->
+                <HBox alignment="CENTER">
+                    <Label text="have an account? "/>
+                    <Label text="Log-in instead"
+                           onMouseClicked="#goToLogin"
+                           style="-fx-text-fill: #8B0000; -fx-font-weight: bold;" />
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </StackPane>
+</AnchorPane>

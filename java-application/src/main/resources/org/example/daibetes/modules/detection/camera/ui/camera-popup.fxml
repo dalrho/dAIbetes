@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="15" prefWidth="640" prefHeight="550"
+      style="-fx-background-color: #1E293B; -fx-padding: 20;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.daibetes.modules.patient.ui.upload.controller.CameraController">
+
+    <Label text="LIVE CAMERA FEED" style="-fx-text-fill: white; -fx-font-weight: bold;" />
+
+    <StackPane style="-fx-background-color: black; -fx-border-color: #334155; -fx-border-width: 2;">
+        <ImageView fx:id="cameraView" fitWidth="600" fitHeight="400" preserveRatio="true" />
+    </StackPane>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button text="CAPTURE" onAction="#handleCapture"
+                style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30;" />
+        <Button text="CLOSE" onAction="#handleClose"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 10 30;" />
+    </HBox>
+</VBox>
