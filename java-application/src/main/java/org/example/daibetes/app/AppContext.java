@@ -6,13 +6,15 @@ import org.example.daibetes.core.domain.User;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 public class AppContext {
     private static AppContext instance;
-
+    private File selectedImageFile;
     private Image selectedImage;
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
+    private int currentTestId;
 
     private AppContext() {}
 
@@ -80,5 +82,20 @@ public class AppContext {
                 break;
             }
         }
+    }
+
+    public File getSelectedImageFile() {
+        return selectedImageFile;
+    }
+
+    public void setSelectedImageFile(File selectedImageFile) {
+        this.selectedImageFile = selectedImageFile;
+    }
+    public int getCurrentTestId() {
+        return currentTestId;
+    }
+
+    public void setCurrentTestId(int currentTestId) {
+        this.currentTestId = currentTestId;
     }
 }
