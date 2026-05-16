@@ -32,8 +32,8 @@ public class CalendarDAO {
             SELECT d.d_id,
                    CONCAT('Dr. ', u.firstname, ' ', u.lastname) AS display_name,
                    d.hospital
-            FROM tblDoctor d
-            JOIN tblUser u ON d.user_id = u.user_id
+            FROM tbldoctor d
+            JOIN tbluser u ON d.user_id = u.user_id
             ORDER BY u.lastname ASC
         """;
 
@@ -84,11 +84,11 @@ public class CalendarDAO {
                    TIME_FORMAT(TIME(cr.requested_on), '%h:%i %p') AS appt_time,
                    cr.is_accepted,
                    cr.responded_on
-            FROM tblConsultationRequest cr
-            JOIN tblPatient pat ON cr.p_id    = pat.p_id
-            JOIN tblUser    u   ON pat.user_id = u.user_id
-            JOIN tblDoctor  doc ON cr.d_id     = doc.d_id
-            JOIN tblUser    du  ON doc.user_id  = du.user_id
+            FROM tblconsultationrequest cr
+            JOIN tblpatient pat ON cr.p_id    = pat.p_id
+            JOIN tbluser    u   ON pat.user_id = u.user_id
+            JOIN tbldoctor  doc ON cr.d_id     = doc.d_id
+            JOIN tbluser    du  ON doc.user_id  = du.user_id
             WHERE cr.p_id = ?
             ORDER BY cr.requested_on DESC
         """;
@@ -131,6 +131,93 @@ public class CalendarDAO {
         return results;
     }
 
+    /**
+     * Fetches all consultation requests for a doctor as Appointment objects.
+     */
+    public List<Appointment> getAppointmentsByDoctor(int doctorId) {
+        List<Appointment> results = new ArrayList<>();
+
+        String sql = """
+            SELECT cr.request_id,
+                   cr.p_id,
+                   cr.d_id,
+                   CONCAT(u.firstname, ' ', u.lastname) AS patient_name,
+                   CONCAT('Dr. ', du.firstname, ' ', du.lastname) AS doctor_name,
+                   DATE(cr.requested_on)   AS appt_date,
+                   TIME_FORMAT(TIME(cr.requested_on), '%h:%i %p') AS appt_time,
+                   cr.is_accepted,
+                   cr.responded_on
+            FROM tblconsultationrequest cr
+            JOIN tblpatient pat ON cr.p_id    = pat.p_id
+            JOIN tbluser    u   ON pat.user_id = u.user_id
+            JOIN tbldoctor  doc ON cr.d_id     = doc.d_id
+            JOIN tbluser    du  ON doc.user_id  = du.user_id
+            WHERE cr.d_id = ?
+            ORDER BY cr.requested_on DESC
+        """;
+
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, doctorId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Appointment.Status status;
+
+                if (rs.getTimestamp("responded_on") == null) {
+                    status = Appointment.Status.PENDING;
+                } else if (rs.getBoolean("is_accepted")) {
+                    status = Appointment.Status.ACCEPTED;
+                } else {
+                    status = Appointment.Status.REJECTED;
+                }
+
+                LocalDate date = rs.getDate("appt_date").toLocalDate();
+
+                results.add(new Appointment(
+                        rs.getInt("request_id"),
+                        rs.getInt("p_id"),
+                        rs.getInt("d_id"),
+                        rs.getString("patient_name"),
+                        rs.getString("doctor_name"),
+                        date,
+                        rs.getString("appt_time"),
+                        status
+                ));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    /**
+     * Updates appointment status in the database.
+     */
+    public boolean updateAppointmentStatus(int requestId, boolean accepted) {
+        String sql = """
+            UPDATE tblconsultationrequest
+            SET is_accepted  = ?,
+                responded_on = NOW()
+            WHERE request_id = ?
+        """;
+
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setBoolean(1, accepted);
+            ps.setInt(2, requestId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // =========================================================================
     // INSERT — new appointment request
     // =========================================================================
@@ -159,9 +246,9 @@ public class CalendarDAO {
 
         // Step 2: insert consultation request with the patient's chosen datetime
         String sql = """
-            INSERT INTO tblConsultationRequest
+            INSERT INTO tblconsultationrequest
                 (test_id, p_id, d_id, is_accepted, requested_on)
-            VALUES (?, ?, ?, NULL, ?)
+            VALUES (?, ?, ?, 0, ?)
         """;
 
         try (Connection conn = MySQLConnection.getConnection();

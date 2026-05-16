@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
+import org.example.daibetes.core.database.CalendarDAO;
 import org.example.daibetes.core.domain.Appointment;
 import org.example.daibetes.core.domain.Doctor;
 import org.example.daibetes.core.domain.User;
@@ -56,20 +57,30 @@ public class DoctorCalendarController implements Initializable {
 
     private YearMonth currentMonth;
     private Appointment selectedAppointment;
+    private int doctorId;
+    private final CalendarDAO dao = new CalendarDAO();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         currentMonth = YearMonth.now();
         
         User currentUser = AppContext.getInstance().getCurrentUser();
-        if (currentUser instanceof Doctor) {
-            Doctor doc = (Doctor) currentUser;
+        if (currentUser instanceof Doctor doc) {
+            doctorId = doc.getDId();
             doctorNameLabel.setText("Doc. " + doc.getFirstname() + " " + doc.getLastname());
-            doctorIdLabel.setText("ID: " + doc.getDId());
+            doctorIdLabel.setText("ID: " + doctorId);
         }
 
+        loadAppointmentsFromDB();
         setupDayHeaders();
         refreshUI();
+    }
+
+    private void loadAppointmentsFromDB() {
+        if (doctorId > 0) {
+            List<Appointment> appointments = dao.getAppointmentsByDoctor(doctorId);
+            AppContext.getInstance().setAppointments(appointments);
+        }
     }
 
     private void setupDayHeaders() {
@@ -135,6 +146,8 @@ public class DoctorCalendarController implements Initializable {
                 .collect(Collectors.toList());
 
         for (Appointment app : dayApps) {
+            if (app.isRejected()) continue; // Skip rejected ones on the calendar grid
+
             VBox block = new VBox();
             block.getStyleClass().add(app.isAccepted() ? "appointment-block" : "appointment-block-pending");
             block.setMaxWidth(Double.MAX_VALUE);
@@ -176,17 +189,25 @@ public class DoctorCalendarController implements Initializable {
     @FXML
     private void handleAccept() {
         if (selectedAppointment != null) {
-            AppContext.getInstance().updateAppointmentStatus(selectedAppointment.getRequestId(), true);
-            closeOverlay();
-            refreshUI();
+            boolean success = dao.updateAppointmentStatus(selectedAppointment.getRequestId(), true);
+            if (success) {
+                loadAppointmentsFromDB();
+                closeOverlay();
+                refreshUI();
+            }
         }
     }
 
     @FXML
     private void handleReschedule() {
-        // Mock reschedule logic
-        closeOverlay();
-        refreshUI();
+        if (selectedAppointment != null) {
+            boolean success = dao.updateAppointmentStatus(selectedAppointment.getRequestId(), false);
+            if (success) {
+                loadAppointmentsFromDB();
+                closeOverlay();
+                refreshUI();
+            }
+        }
     }
 
     @FXML
@@ -219,7 +240,7 @@ public class DoctorCalendarController implements Initializable {
         }
 
         List<Appointment> pending = allAppointments.stream()
-                .filter(a -> !a.isAccepted())
+                .filter(Appointment::isPending)
                 .collect(Collectors.toList());
 
         for (Appointment app : pending) {

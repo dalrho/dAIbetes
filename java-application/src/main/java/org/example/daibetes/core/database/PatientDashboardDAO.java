@@ -27,9 +27,9 @@ public class PatientDashboardDAO {
             SELECT DISTINCT d.d_id, u.firstname, u.lastname, u.email,
                             u.contact_number, u.gender, u.birthdate,
                             d.license_number, d.hospital
-            FROM tblTests t
-            JOIN tblDoctor d ON t.d_id     = d.d_id
-            JOIN tblUser   u ON d.user_id  = u.user_id
+            FROM tbltests t
+            JOIN tbldoctor d ON t.d_id     = d.d_id
+            JOIN tbluser   u ON d.user_id  = u.user_id
             WHERE t.p_id = ?
         """;
 
@@ -75,8 +75,8 @@ public class PatientDashboardDAO {
             SELECT d.d_id, u.firstname, u.lastname, u.email,
                    u.contact_number, u.gender, u.birthdate,
                    d.license_number, d.hospital
-            FROM tblDoctor d
-            JOIN tblUser u ON d.user_id = u.user_id
+            FROM tbldoctor d
+            JOIN tbluser u ON d.user_id = u.user_id
             WHERE u.firstname LIKE ?
                OR u.lastname  LIKE ?
                OR d.hospital  LIKE ?
@@ -133,9 +133,9 @@ public class PatientDashboardDAO {
                    diag.diagnosis_text,
                    diag.recommendation,
                    DATE_FORMAT(diag.diagnosis_date, '%b %d, %Y') AS diagnosis_date
-            FROM tblDiagnosis diag
-            JOIN tblDoctor doc ON diag.d_id   = doc.d_id
-            JOIN tblUser   u   ON doc.user_id  = u.user_id
+            FROM tbldiagnosis diag
+            JOIN tbldoctor doc ON diag.d_id   = doc.d_id
+            JOIN tbluser   u   ON doc.user_id  = u.user_id
             WHERE diag.p_id = ?
             ORDER BY diag.diagnosis_date DESC
         """;
@@ -173,7 +173,7 @@ public class PatientDashboardDAO {
      */
     public int requestTest(int patientId, int doctorId, int rawImageId) {
         String sql = """
-            INSERT INTO tblTests (p_id, d_id, raw_img_id, tested_on)
+            INSERT INTO tbltests (p_id, d_id, raw_img_id, tested_on)
             VALUES (?, ?, ?, NOW())
         """;
 
@@ -200,8 +200,8 @@ public class PatientDashboardDAO {
      */
     public boolean hasPendingRequest(int patientId, int doctorId) {
         String sql = """
-            SELECT COUNT(*) FROM tblTests t
-            LEFT JOIN tblDiagnosis d ON t.test_id = d.detection_id
+            SELECT COUNT(*) FROM tbltests t
+            LEFT JOIN tbldiagnosis d ON t.test_id = d.detection_id
             WHERE t.p_id = ? AND t.d_id = ? AND d.diagnosis_id IS NULL
         """;
 
@@ -238,10 +238,10 @@ public class PatientDashboardDAO {
                    CASE WHEN d.diagnosis_id IS NOT NULL THEN 'Completed'
                         ELSE 'Pending'
                    END AS status
-            FROM tblTests t
-            JOIN tblDoctor    doc ON t.d_id     = doc.d_id
-            JOIN tblUser      u   ON doc.user_id = u.user_id
-            LEFT JOIN tblDiagnosis d ON t.test_id = d.detection_id
+            FROM tbltests t
+            JOIN tbldoctor    doc ON t.d_id     = doc.d_id
+            JOIN tbluser      u   ON doc.user_id = u.user_id
+            LEFT JOIN tbldiagnosis d ON t.test_id = d.detection_id
                                      AND d.p_id   = t.p_id
             WHERE t.p_id = ?
             ORDER BY t.tested_on DESC
@@ -278,10 +278,10 @@ public class PatientDashboardDAO {
         String sql = """
             SELECT CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
                    DATE_FORMAT(t.tested_on, '%b %d, %Y')  AS tested_on
-            FROM tblTests t
-            JOIN tblDoctor    doc ON t.d_id     = doc.d_id
-            JOIN tblUser      u   ON doc.user_id = u.user_id
-            LEFT JOIN tblDiagnosis d ON t.test_id = d.detection_id
+            FROM tbltests t
+            JOIN tbldoctor    doc ON t.d_id     = doc.d_id
+            JOIN tbluser      u   ON doc.user_id = u.user_id
+            LEFT JOIN tbldiagnosis d ON t.test_id = d.detection_id
                                      AND d.p_id   = t.p_id
             WHERE t.p_id = ? AND d.diagnosis_id IS NULL
             ORDER BY t.tested_on ASC
