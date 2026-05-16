@@ -149,23 +149,28 @@ public class MyPatientsController {
     }
 
     private void openPatientRecords(MyPatientCard patient) {
-        System.out.println("Opening records for patient ID: " + patient.getPatientId());
+        AppContext context = AppContext.getInstance();
 
-        for (MyPatientReport report : patient.getReports()) {
-            System.out.println(
-                    "Report ID: " + report.getReportId()
-                            + " | Test ID: " + report.getTestId()
-                            + " | Date: " + report.getLastReported()
-                            + " | Criticality: " + report.getCriticalityLevel()
-            );
+        context.setSelectedRecordsPatientId(patient.getPatientId());
+        context.setSelectedRecordsPatientName(patient.getPatientName());
+        context.setSelectedRecordsDoctorId(loggedInDoctorId);
+
+        Stage stage = (Stage) patientGrid.getScene().getWindow();
+
+        Scene scene = sceneLoader.load(
+                "records",
+                "records-screen.fxml",
+                null
+        );
+
+        if (scene == null) {
+            showAlert("Navigation Error", "Could not load patient records.");
+            return;
         }
 
-        /*
-         * Later, this is where the next screen should be opened.
-         * The patient object already contains multiple reports:
-         *
-         * patient.getReports()
-         */
+        stage.setScene(scene);
+        stage.setTitle("Patient Records - " + patient.getPatientName());
+        stage.show();
     }
 
     @FXML

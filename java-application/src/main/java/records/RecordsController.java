@@ -9,10 +9,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.example.daibetes.app.AppContext;
+import org.example.daibetes.core.database.MyPatientsDAO;
+import org.example.daibetes.modules.doctor.ui.patients.MyPatientReport;
 import register.sceneLoader;
 
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.List;
 
 public class RecordsController {
 
@@ -42,52 +46,35 @@ public class RecordsController {
     // ================= DATA =================
     private final ObservableList<Record> recordList = FXCollections.observableArrayList();
 
+    int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
+    int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
+    String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
     // ================= INIT =================
     @FXML
     public void initialize() {
+        int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
+        int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
+        String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
 
-        // table column bindings
-        patientIdColumn.setCellValueFactory(new PropertyValueFactory<>("patientId"));
-        patientNameColumn.setCellValueFactory(new PropertyValueFactory<>("patientName"));
-        scanDateColumn.setCellValueFactory(new PropertyValueFactory<>("scanDate"));
-        scanTypeColumn.setCellValueFactory(new PropertyValueFactory<>("scanType"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosis"));
+        System.out.println("Loading records for patient ID: " + patientId);
+        System.out.println("Doctor ID: " + doctorId);
+        System.out.println("Patient Name: " + patientName);
 
-        // ADDING THE VIEW BUTTON TO THE ACTIONS COLUMN
-        actionsColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button viewBtn = new Button("View Diagnosis");
-            {
-                viewBtn.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; " +
-                        "-fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 5; -fx-cursor: hand;");
-                viewBtn.setOnAction(event -> {
-                    handleViewDetails();
-                });
-            }
+        loadReports(patientId, doctorId);
+    }
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(viewBtn);
-                }
-            }
-        });
+    private void loadReports(int patientId, int doctorId) {
+        MyPatientsDAO dao = new MyPatientsDAO();
 
-        // sample data
-        recordList.add(new Record("P001", "Juan Dela Cruz", "2026-05-08", "X-Ray", "Pending", "N/A"));
-        recordList.add(new Record("P002", "Maria Santos", "2026-05-07", "MRI", "Completed", "Normal"));
-        recordList.add(new Record("P003", "Pedro Reyes", "2026-05-06", "CT Scan", "Pending", "N/A"));
+        List<MyPatientReport> reports = dao.getReportsByPatientAndDoctor(patientId, doctorId);
 
-        recordsTable.setItems(recordList);
+        for (MyPatientReport report : reports) {
+            System.out.println("Report ID: " + report.getReportId());
+            System.out.println("Date: " + report.getLastReported());
+            System.out.println("Criticality: " + report.getCriticalityLevel());
+        }
 
-        // status filter setup
-        statusFilter.setItems(FXCollections.observableArrayList("All", "Pending", "Completed"));
-        statusFilter.setValue("All");
-
-        updateStatus("System Ready");
+        // Later, replace the println with UI cards/table/list display.
     }
 
     // ================= BUTTON ACTIONS =================
