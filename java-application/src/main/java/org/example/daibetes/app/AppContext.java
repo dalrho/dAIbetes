@@ -16,7 +16,8 @@ public class AppContext {
     private int selectedImageId;
     private int currentTestId;
     private File selectedImageFile;
-
+    private String selectedPatientName;
+    private String diagnosisNotes;
     private User currentUser;
     private List<File> galleryFiles = new ArrayList<>();
     private List<Appointment> appointments = new ArrayList<>();
@@ -80,12 +81,15 @@ public class AppContext {
         this.currentUser = user;
     }
 
+
     public void clearSession() {
         this.currentUser = null;
         this.selectedImage = null;
         this.selectedImageFile = null;
         this.selectedImageId = 0;
         this.currentTestId = 0;
+        this.selectedPatientName = null; // Clear diagnosis data
+        this.diagnosisNotes = null;      // Clear diagnosis data
         this.galleryFiles.clear();
     }
 
@@ -115,4 +119,26 @@ public class AppContext {
             }
         }
     }
+
+
+
+
+    public String getSelectedPatientName() {
+        return selectedPatientName;
+    }
+
+    public void setSelectedPatientName(String selectedPatientName) {
+        this.selectedPatientName = selectedPatientName;
+    }
+
+    public String getDiagnosisNotes() {
+        return diagnosisNotes;
+    }
+
+    public void setDiagnosisNotes(String diagnosisNotes) {
+        this.diagnosisNotes = diagnosisNotes;
+    }
+
+
+
 }
