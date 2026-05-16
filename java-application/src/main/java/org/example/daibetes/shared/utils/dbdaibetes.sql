@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 11, 2026 at 02:33 PM
+-- Generation Time: May 16, 2026 at 07:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,7 +32,7 @@ CREATE TABLE `tblconsultationrequest` (
   `test_id` int(11) NOT NULL,
   `p_id` int(11) NOT NULL,
   `d_id` int(11) NOT NULL,
-  `is_accepted` tinyint(1) NOT NULL DEFAULT 0,
+  `is_accepted` tinyint(1) DEFAULT 0,
   `requested_on` datetime NOT NULL DEFAULT current_timestamp(),
   `responded_on` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -192,7 +192,8 @@ CREATE TABLE `tblreport` (
   `criticality_id` int(11) NOT NULL COMMENT 'criticality lvl',
   `findings_id` int(11) NOT NULL COMMENT 'pathological findings',
   `recommendations_id` int(11) NOT NULL COMMENT 'management and recommendations',
-  `evaluation_id` int(11) NOT NULL COMMENT 'evaluation'
+  `evaluation_id` int(11) NOT NULL COMMENT 'evaluation',
+  `saved_on` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='diagnostic report generator';
 
 -- --------------------------------------------------------
@@ -340,31 +341,31 @@ ALTER TABLE `tblconsultationrequest`
 -- AUTO_INCREMENT for table `tblcriticality`
 --
 ALTER TABLE `tblcriticality`
-  MODIFY `criticality_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `criticality_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbldoctor`
 --
 ALTER TABLE `tbldoctor`
-  MODIFY `d_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `d_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tblfindings`
 --
 ALTER TABLE `tblfindings`
-  MODIFY `evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tblimage`
 --
 ALTER TABLE `tblimage`
-  MODIFY `img_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `img_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `tblpathological`
 --
 ALTER TABLE `tblpathological`
-  MODIFY `findings_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `findings_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tblpatient`
@@ -376,25 +377,25 @@ ALTER TABLE `tblpatient`
 -- AUTO_INCREMENT for table `tblrecommendations`
 --
 ALTER TABLE `tblrecommendations`
-  MODIFY `recommendation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `recommendation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tblreport`
 --
 ALTER TABLE `tblreport`
-  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tbltests`
 --
 ALTER TABLE `tbltests`
-  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `tbluser`
 --
 ALTER TABLE `tbluser`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
