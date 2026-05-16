@@ -40,14 +40,8 @@ module org.example.daibetes {
     opens register to javafx.fxml;
     exports register;
 
-    opens org.example.daibetes.modules.auth.ui to javafx.fxml;
-    exports org.example.daibetes.modules.auth.ui;
-
-
     opens org.example.daibetes.modules.doctor.ui.diagnosis to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.diagnosis;
-
-
 
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;

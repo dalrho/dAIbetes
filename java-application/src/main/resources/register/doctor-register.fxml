@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane style="-fx-background-color: rgba(0,0,0,0.3);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.auth.ui.DoctorRegisterController">
+<StackPane style="-fx-background-color: rgba(0,0,0,0.3);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="register.doctorRegisterController">
 
     <VBox fx:id="card" alignment="CENTER" maxWidth="620" spacing="15" style="-fx-background-color: white;                  -fx-padding: 30;                  -fx-background-radius: 15;">
 
@@ -28,10 +28,14 @@
                 </VBox>
 
                 <VBox alignment="CENTER_LEFT" spacing="5">
-                    <Label text="Name:" />
-                    <TextField fx:id="nameField" maxWidth="Infinity" style="-fx-background-radius: 8;                                       -fx-background-color: black;                                       -fx-text-fill: white;" />
+                    <Label text="First Name:" />
+                    <TextField fx:id="firstNameField" maxWidth="Infinity" style="-fx-background-radius: 8;                                       -fx-background-color: black;                                       -fx-text-fill: white;" />
                 </VBox>
 
+                <VBox alignment="CENTER_LEFT" spacing="5">
+                    <Label text="Last Name:" />
+                    <TextField fx:id="lastNameField" maxWidth="Infinity" style="-fx-background-radius: 8;                                       -fx-background-color: black;                                       -fx-text-fill: white;" />
+                </VBox>
                 <VBox alignment="CENTER_LEFT" spacing="5">
                     <Label text="Email:" />
                     <TextField fx:id="emailField" maxWidth="Infinity" style="-fx-background-radius: 8;                                       -fx-background-color: black;                                       -fx-text-fill: white;" />
