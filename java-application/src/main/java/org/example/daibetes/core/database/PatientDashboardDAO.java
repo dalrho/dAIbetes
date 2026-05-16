@@ -1,17 +1,99 @@
 package org.example.daibetes.core.database;
 
 import org.example.daibetes.core.domain.Doctor;
-
+import org.example.daibetes.core.domain.Notification;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO for all Patient Dashboard queries.
- * Covers: Search (My Doctors), View (Diagnosis), Request, and Schedule.
- */
 public class PatientDashboardDAO {
 
+    // 1. RECENT ACTIVITY: Fetch notifications for the specific patient
+    public List<Notification> getNotificationsByPatient(int patientId) {
+        List<Notification> results = new ArrayList<>();
+        String sql = "SELECT * FROM tblnotifications WHERE p_id = ? ORDER BY created_at DESC LIMIT 10";
+
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, patientId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                results.add(new Notification(
+                        rs.getInt("notification_id"),
+                        rs.getInt("p_id"),
+                        rs.getInt("request_id"),
+                        rs.getString("message"),
+                        rs.getString("action_type"),
+                        rs.getBoolean("is_read")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    // 2. SCHEDULE: Fetch ONLY accepted consultations mapped with doctor details
+    public List<String[]> getAcceptedSchedules(int patientId) {
+        List<String[]> results = new ArrayList<>();
+        String sql = """
+            SELECT cr.request_id, 
+                   CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
+                   DATE_FORMAT(cr.requested_on, '%b %d, %Y %h:%i %p') AS appointment_date
+            FROM tblconsultationrequest cr
+            JOIN tbldoctor d ON cr.d_id = d.d_id
+            JOIN tbluser u ON d.user_id = u.user_id
+            WHERE cr.p_id = ? AND cr.is_accepted = 1 AND cr.requested_on >= NOW()
+            ORDER BY cr.requested_on ASC
+        """;
+
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, patientId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                results.add(new String[]{
+                        String.valueOf(rs.getInt("request_id")),
+                        rs.getString("doctor_name"),
+                        rs.getString("appointment_date")
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    // 3. DAYS UNTIL FOLLOW-UP: Compute exact days from nearest upcoming appointment
+    public String[] getNearestUpcomingAppointment(int patientId) {
+        String sql = """
+            SELECT CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
+                   DATE_FORMAT(cr.requested_on, '%b %d, %Y') AS date_string,
+                   DATEDIFF(cr.requested_on, NOW()) AS days_left
+            FROM tblconsultationrequest cr
+            JOIN tbldoctor d ON cr.d_id = d.d_id
+            JOIN tbluser u ON d.user_id = u.user_id
+            WHERE cr.p_id = ? AND cr.is_accepted = 1 AND cr.requested_on >= NOW()
+            ORDER BY cr.requested_on ASC
+            LIMIT 1
+        """;
+
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, patientId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new String[]{
+                        rs.getString("doctor_name"),
+                        rs.getString("date_string"),
+                        String.valueOf(rs.getInt("days_left"))
+                };
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     // =========================================================================
     // SEARCH — doctors linked to this patient via tblTests
     // =========================================================================
