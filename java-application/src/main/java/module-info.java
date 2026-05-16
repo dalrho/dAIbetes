@@ -51,9 +51,6 @@ module org.example.daibetes {
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;
 
-    opens results to javafx.fxml;
-    exports results;
-
     opens records to javafx.fxml;
     exports records;
 
@@ -94,5 +91,6 @@ module org.example.daibetes {
 
     opens org.example.daibetes.modules.doctor.ui.newdiagnosis to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.newdiagnosis;
+
 
 }
