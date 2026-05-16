@@ -223,8 +223,8 @@ public class RecordsController {
         Stage stage = (Stage) recordsTable.getScene().getWindow();
 
         Scene scene = sceneLoader.load(
-                "reviewResults",
-                "doctor-view-diagnosis.fxml",
+                "DoctorViewDiagnosis",
+                "doctorViewDiagnosis.fxml",
                 null
         );
 
