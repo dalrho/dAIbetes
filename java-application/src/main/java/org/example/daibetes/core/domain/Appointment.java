@@ -2,54 +2,69 @@ package org.example.daibetes.core.domain;
 
 import java.time.LocalDate;
 
+/**
+ * Domain model for a consultation request viewed as a calendar appointment.
+ * Backed by tblConsultationRequest joined with tblTests and tblDoctor/tblUser.
+ *
+ * Status logic:
+ *   responded_on = NULL                        → PENDING  (gray)
+ *   responded_on NOT NULL + is_accepted = true  → ACCEPTED (green)
+ *   responded_on NOT NULL + is_accepted = false → REJECTED (red)
+ */
 public class Appointment {
-    private int id;
-    private int patientId;
-    private int doctorId;
-    private String patientName;
-    private String doctorName;
-    private LocalDate date;
-    private String time;
-    private boolean accepted;
 
-    public Appointment(int id, int patientId, int doctorId, String patientName, String doctorName, LocalDate date, String time, boolean accepted) {
-        this.id = id;
-        this.patientId = patientId;
-        this.doctorId = doctorId;
+    public enum Status { PENDING, ACCEPTED, REJECTED }
+
+    private int       requestId;
+    private int       patientId;
+    private int       doctorId;
+    private String    patientName;
+    private String    doctorName;
+    private LocalDate date;
+    private String    time;
+    private Status    status;
+
+    public Appointment(int requestId, int patientId, int doctorId,
+                       String patientName, String doctorName,
+                       LocalDate date, String time, Status status) {
+        this.requestId   = requestId;
+        this.patientId   = patientId;
+        this.doctorId    = doctorId;
         this.patientName = patientName;
-        this.doctorName = doctorName;
-        this.date = date;
-        this.time = time;
-        this.accepted = accepted;
+        this.doctorName  = doctorName;
+        this.date        = date;
+        this.time        = time;
+        this.status      = status;
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // ── Getters ──────────────────────────────────────────────────────────────
+    public int       getRequestId()   { return requestId; }
+    public int       getPatientId()   { return patientId; }
+    public int       getDoctorId()    { return doctorId; }
+    public String    getPatientName() { return patientName; }
+    public String    getDoctorName()  { return doctorName; }
+    public LocalDate getDate()        { return date; }
+    public String    getTime()        { return time; }
+    public Status    getStatus()      { return status; }
 
-    public int getPatientId() { return patientId; }
-    public void setPatientId(int patientId) { this.patientId = patientId; }
+    // Convenience helpers used by the controller
+    public boolean   isAccepted()     { return status == Status.ACCEPTED; }
+    public boolean   isPending()      { return status == Status.PENDING; }
+    public boolean   isRejected()     { return status == Status.REJECTED; }
 
-    public int getDoctorId() { return doctorId; }
-    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
+    public String    getStatusLabel() {
+        return switch (status) {
+            case ACCEPTED -> "Accepted";
+            case REJECTED -> "Rejected";
+            default       -> "Pending";
+        };
+    }
 
-    public String getPatientName() { return patientName; }
-    public void setPatientName(String patientName) { this.patientName = patientName; }
-
-    public String getDoctorName() { return doctorName; }
-    public void setDoctorName(String doctorName) { this.doctorName = doctorName; }
-
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
-
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
-
-    public boolean isAccepted() { return accepted; }
-    public void setAccepted(boolean accepted) { this.accepted = accepted; }
-
-    @Override
-    public String toString() {
-        return date.getDayOfWeek().name() + " - " + patientName + " - " + time;
+    public String    getStatusColor() {
+        return switch (status) {
+            case ACCEPTED -> "#27AE60";
+            case REJECTED -> "#E74C3C";
+            default       -> "#888888";
+        };
     }
 }
