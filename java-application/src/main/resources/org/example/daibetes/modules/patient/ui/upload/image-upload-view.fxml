@@ -15,6 +15,7 @@
     <VBox spacing="15"
           alignment="CENTER"
           maxWidth="750"
+          maxHeight="-Infinity"
           style="-fx-background-color: white;
                  -fx-background-radius: 15;
                  -fx-padding: 20;">
@@ -45,7 +46,6 @@
         <!-- IMAGE PREVIEW -->
         <HBox spacing="15" alignment="CENTER">
 
-            <!-- Added fx:id, onMouseClicked, and cursor hand for Selection -->
             <VBox fx:id="box1" onMouseClicked="#onSelect1" alignment="CENTER" spacing="10" style="-fx-cursor: hand;">
                 <ImageView fx:id="img1"
                            fitWidth="180"
@@ -78,30 +78,31 @@
         <Separator/>
 
         <!-- ACTION BUTTONS -->
-        <!-- ACTION BUTTONS -->
         <HBox spacing="15" alignment="CENTER">
+
             <Button text="Upload Images"
                     onAction="#onUpload"
                     style="-fx-background-color: black;
-                   -fx-text-fill: white;
-                   -fx-background-radius: 10;
-                   -fx-padding: 8 20; -fx-cursor: hand;"/>
+                           -fx-text-fill: white;
+                           -fx-background-radius: 10;
+                           -fx-padding: 8 20; -fx-cursor: hand;"/>
 
-            <!-- NEW CAMERA BUTTON -->
             <Button text="Capture Photo"
                     onAction="#onCapturePhoto"
                     style="-fx-background-color: #3B82F6;
-                   -fx-text-fill: white;
-                   -fx-background-radius: 10;
-                   -fx-padding: 8 20; -fx-cursor: hand;"/>
+                           -fx-text-fill: white;
+                           -fx-background-radius: 10;
+                           -fx-padding: 8 20; -fx-cursor: hand;"/>
 
             <Button text="Next"
                     onAction="#onNext"
                     style="-fx-background-color: #2ecc71;
-                   -fx-text-fill: white;
-                   -fx-background-radius: 10;
-                   -fx-padding: 8 20; -fx-cursor: hand;"/>
+                           -fx-text-fill: white;
+                           -fx-background-radius: 10;
+                           -fx-padding: 8 20; -fx-cursor: hand;"/>
 
         </HBox>
+
     </VBox>
+
 </StackPane>

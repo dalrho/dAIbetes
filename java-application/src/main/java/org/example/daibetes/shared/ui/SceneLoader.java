@@ -141,7 +141,7 @@ public class SceneLoader {
 
             // KEEP FULLSCREEN / MAXIMIZED
             stage.setMaximized(true);
-
+            stage.setFullScreen(false);
             stage.show();
 
             // SOFT SMOOTH TRANSITION

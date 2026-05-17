@@ -124,49 +124,94 @@ public class PopDiagnosisController implements Initializable {
             openUploadScreen(validImages);
         }
     }
+//        ORIGINAL CODE
+//    private void openUploadScreen(List<File> images) {
+//
+//        try {
+//
+//            // Load scene using your sceneLoader
+//            Scene scene = SceneLoader.load(
+//                    "org/example/daibetes/modules/patient/ui/upload",
+//                    "image-upload-view.fxml",
+//                    null // add CSS path here if you have one, e.g. "/imageupload/style.css"
+//            );
+//
+//            if (scene == null) {
+//                showError("Error", "Failed to load upload screen");
+//                return;
+//            }
+//
+//            // Get controller from FXMLLoader inside sceneLoader (IMPORTANT NOTE BELOW)
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml")
+//            );
+//            Parent root = loader.load();
+//
+//            ImageUploadController controller = loader.getController();
+//
+//            // Pass images
+//            controller.setImages(images);
+//
+//            Stage stage = new Stage();
+//            stage.setTitle("Uploaded Images");
+//            stage.setScene(new Scene(root));
+//
+//            stage.show();
+//
+//            // Close current window
+//            Stage current = (Stage) uploadImageBtn.getScene().getWindow();
+//            current.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            showError("Error", e.getMessage());
+//        }
+//    }
+private void openUploadScreen(List<File> images) {
 
-    private void openUploadScreen(List<File> images) {
+    try {
 
-        try {
+        // Load controller FIRST (so we keep your logic unchanged)
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml")
+        );
 
-            // Load scene using your sceneLoader
-            Scene scene = SceneLoader.load(
-                    "org/example/daibetes/modules/patient/ui/upload",
-                    "image-upload-view.fxml",
-                    null // add CSS path here if you have one, e.g. "/imageupload/style.css"
-            );
+        Parent root = loader.load();
 
-            if (scene == null) {
-                showError("Error", "Failed to load upload screen");
-                return;
-            }
+        ImageUploadController controller = loader.getController();
 
-            // Get controller from FXMLLoader inside sceneLoader (IMPORTANT NOTE BELOW)
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml")
-            );
-            Parent root = loader.load();
+        // Pass images (UNCHANGED LOGIC)
+        controller.setImages(images);
 
-            ImageUploadController controller = loader.getController();
+        // Now switch scene using SceneLoader (instead of manual Stage creation)
+        Scene scene = SceneLoader.load(
+                "org/example/daibetes/modules/patient/ui/upload",
+                "image-upload-view.fxml",
+                "/org/example/daibetes/styles/new-diagnosis.css"
+        );
 
-            // Pass images
-            controller.setImages(images);
-
-            Stage stage = new Stage();
-            stage.setTitle("Uploaded Images");
-            stage.setScene(new Scene(root));
-
-            stage.show();
-
-            // Close current window
-            Stage current = (Stage) uploadImageBtn.getScene().getWindow();
-            current.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Error", e.getMessage());
+        if (scene == null) {
+            showError("Error", "Failed to load upload screen");
+            return;
         }
+
+        Stage stage = (Stage) uploadImageBtn.getScene().getWindow();
+
+        stage.setScene(new Scene(root));
+        stage.setTitle("Uploaded Images");
+        stage.show();
+
+        // Close current window (UNCHANGED LOGIC)
+        Stage current = (Stage) uploadImageBtn.getScene().getWindow();
+        if (current != null) {
+            current.close();
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        showError("Error", e.getMessage());
     }
+}
 
     // =========================
     // IMAGE VALIDATION
