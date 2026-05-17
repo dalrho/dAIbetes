@@ -10,6 +10,7 @@ public class ReportData {
     private String criticality;
     private String criticalityReasoning;
     private String clinicalNotes;
+    private String clientNotes; // Added missing field to store custom text/dates
 
     // Pathological Findings (Original)
     private String microaneurysms;
@@ -48,6 +49,10 @@ public class ReportData {
 
     public String getClinicalNotes() { return clinicalNotes; }
     public void setClinicalNotes(String clinicalNotes) { this.clinicalNotes = clinicalNotes; }
+
+    // Added missing Getter and Setter for clientNotes
+    public String getClientNotes() { return clientNotes; }
+    public void setClientNotes(String clientNotes) { this.clientNotes = clientNotes; }
 
     public String getMicroaneurysms() { return microaneurysms; }
     public void setMicroaneurysms(String microaneurysms) { this.microaneurysms = microaneurysms; }
@@ -88,4 +93,4 @@ public class ReportData {
 
     public List<String> getRecommendations() { return recommendations; }
     public void setRecommendations(List<String> recommendations) { this.recommendations = recommendations; }
-}
+} // Removed rogue extra closing brace here
