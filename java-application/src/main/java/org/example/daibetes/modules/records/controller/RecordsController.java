@@ -31,7 +31,7 @@
         @FXML private TableColumn<Record, String> scanDateColumn;
         @FXML private TableColumn<Record, String> scanTypeColumn;
         @FXML private TableColumn<Record, String> diagnosisColumn;
-
+        @FXML private Button backBtn;
         @FXML private TableColumn<Record, Void> actionsColumn;
 
         @FXML private TextField searchField;
@@ -209,8 +209,10 @@
             updateStatus(filtered.size() + " matching record(s)");
         }
 
+
+        //fix this
         @FXML
-        private void handleAddRecord() {
+        private void handleDeleteRecord(ActionEvent event) {
             int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
             int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
             String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
@@ -237,15 +239,15 @@
              * Clear old report selection because this is a NEW diagnosis.
              */
             AppContext.getInstance().setSelectedReportId(0);
-            AppContext.getInstance().setShowDiagnosisBackButton(false);
+            AppContext.getInstance().setShowDiagnosisBackButton(true);
 
-            PopupManager.open(
+            SceneLoader.switchScene(
+                    (Node) event.getSource(), // or any UI node in THIS controller
                     "org/example/daibetes/modules/doctor/ui/popup",
-                    "popdiagnosis-screen.fxml",
-                    "/org/example/daibetes/styles/new-diagnosis.css",
-                    "New Diagnosis"
+                    "pop2.fxml",
+                    "Add Diagnosis",
+                    "/org/example/daibetes/styles/new-diagnosis.css"
             );
-
             updateStatus("Opening new diagnosis for " + patientName);
         }
 

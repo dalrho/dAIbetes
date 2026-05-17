@@ -104,9 +104,13 @@ public class ImageProcessingController {
     @FXML
     private void handleBackToGallery() {
         try {
-            Stage stage = (Stage) enhancedImageView.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml"));
-            stage.setScene(new Scene(loader.load()));
+            SceneLoader.switchScene(
+                    enhancedImageView, // source node (same window reference)
+                    "org/example/daibetes/modules/patient/ui/upload",
+                    "image-upload-view.fxml",
+                    "Image Gallery",
+                    "/org/example/daibetes/styles/new-diagnosis.css"
+            );
         } catch (Exception e) {
             System.err.println("Navigation error: " + e.getMessage());
         }
