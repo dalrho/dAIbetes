@@ -2,10 +2,15 @@ package org.example.daibetes.modules.auth.login.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.auth.viewmodel.LoginViewModel;
 import org.example.daibetes.shared.ui.SceneLoader;
@@ -100,6 +105,26 @@ public class LoginController {
                     "dAIbetes — Patient Dashboard",
                     null
             );
+        }
+    }
+
+    @FXML
+    private void showForgotPasswordPopup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/daibetes/modules/auth/login/forgot-password-popup.fxml"));
+            Parent root = loader.load();
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL); // Blocks interaction with login screen
+            popupStage.initStyle(StageStyle.UTILITY); // Removes minimize/maximize buttons
+            popupStage.setTitle("Reset Password");
+
+            Scene scene = new Scene(root);
+            popupStage.setScene(scene);
+            popupStage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

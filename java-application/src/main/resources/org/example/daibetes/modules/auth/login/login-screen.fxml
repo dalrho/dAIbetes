@@ -63,9 +63,10 @@
                                    maxWidth="300"
                                    style="-fx-background-radius: 8; -fx-background-color: black; -fx-text-fill: white;" />
 
-                    <Label text="forgot password?"
+                    <Label text="Forgot password?"
+                           onMouseClicked="#showForgotPasswordPopup"
                            maxWidth="Infinity"
-                           style="-fx-font-size: 11px; -fx-text-fill: #555;" />
+                           style="-fx-font-size: 11px; -fx-text-fill: #555; -fx-cursor: hand;" />
 
                     <Label fx:id="errorLabel"
                            alignment="TOP_LEFT"
