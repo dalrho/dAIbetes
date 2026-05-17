@@ -32,19 +32,21 @@ public class SceneLoader {
             FXMLLoader loader = new FXMLLoader(xmlLocation);
             Parent root = loader.load();
 
-            // INITIAL FADE IN
-            root.setOpacity(0.96);
+            // SUBTLE INITIAL FADE IN
+            root.setOpacity(0.95);
+
             FadeTransition fade = new FadeTransition(
-                    Duration.millis(120),
+                    Duration.millis(350),
                     root
             );
 
-            fade.setFromValue(0.96);
+            fade.setFromValue(0.95);
             fade.setToValue(1);
             fade.play();
 
             Scene scene = new Scene(root);
             scene.setFill(javafx.scene.paint.Color.BLACK);
+
             if (cssPath != null) {
 
                 URL css = SceneLoader.class.getResource(cssPath);
@@ -104,11 +106,12 @@ public class SceneLoader {
 
             Parent root = loader.load();
 
-            // START INVISIBLE
-            root.setOpacity(0);
+            // SUBTLE START OPACITY
+            root.setOpacity(0.95);
 
             Scene scene = new Scene(root);
             scene.setFill(javafx.scene.paint.Color.BLACK);
+
             if (cssPath != null) {
 
                 URL css = SceneLoader.class.getResource(cssPath);
@@ -141,13 +144,13 @@ public class SceneLoader {
 
             stage.show();
 
-            // SMOOTH FADE TRANSITION
+            // SOFT SMOOTH TRANSITION
             FadeTransition fade = new FadeTransition(
-                    Duration.millis(500),
+                    Duration.millis(850),
                     root
             );
 
-            fade.setFromValue(0);
+            fade.setFromValue(0.95);
             fade.setToValue(1);
 
             fade.play();
@@ -195,8 +198,8 @@ public class SceneLoader {
 
             Parent root = loader.load();
 
-            // START INVISIBLE
-            root.setOpacity(0);
+            // SUBTLE START OPACITY
+            root.setOpacity(0.95);
 
             Scene scene = new Scene(root);
 
@@ -232,13 +235,13 @@ public class SceneLoader {
 
             stage.show();
 
-            // SMOOTH FADE
+            // SOFT SMOOTH FADE
             FadeTransition fade = new FadeTransition(
-                    Duration.millis(500),
+                    Duration.millis(850),
                     root
             );
 
-            fade.setFromValue(0);
+            fade.setFromValue(0.95);
             fade.setToValue(1);
 
             fade.play();
