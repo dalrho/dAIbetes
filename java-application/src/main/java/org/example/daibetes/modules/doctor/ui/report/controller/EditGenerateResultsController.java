@@ -15,6 +15,7 @@ import org.example.daibetes.modules.ai.dto.AIResponseDTO;
 import org.example.daibetes.modules.ai.service.AIInferenceService;
 import org.example.daibetes.modules.doctor.ui.review.model.ReportData;
 import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.shared.utils.AppExecutor;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -189,7 +190,7 @@ public class EditGenerateResultsController {
                 return null;
             }
         };
-        new Thread(task).start();
+        AppExecutor.get().submit(task);
     }
 
     private String getSelected(ToggleGroup group) {
