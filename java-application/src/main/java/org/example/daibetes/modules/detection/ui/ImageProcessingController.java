@@ -12,6 +12,7 @@ import javafx.stage.Window;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.detection.service.ScanAnalysisService;
 import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.shared.utils.AppExecutor;
 
 public class ImageProcessingController {
     @FXML private ImageView rawImageView, enhancedImageView;
@@ -23,6 +24,7 @@ public class ImageProcessingController {
     private Image currentRawImage;
 
     private Task<Image> currentProcessingTask;
+    private javafx.animation.Timeline debounceTimeline;
 
     @FXML
     public void initialize() {
@@ -52,6 +54,18 @@ public class ImageProcessingController {
             currentProcessingTask.cancel();
         }
 
+        if (debounceTimeline != null) {
+            debounceTimeline.stop();
+        }
+
+        debounceTimeline = new javafx.animation.Timeline(new javafx.animation.KeyFrame(
+            javafx.util.Duration.millis(150),
+            event -> startProcessingTask()
+        ));
+        debounceTimeline.play();
+    }
+
+    private void startProcessingTask() {
         boolean isGray = grayscaleToggle.isSelected();
         double bright = brightnessSlider.getValue();
         double clahe = claheSlider.getValue();
@@ -68,7 +82,7 @@ public class ImageProcessingController {
         currentProcessingTask = new Task<>() {
             @Override
             protected Image call() throws Exception {
-                // This heavy lifting happens on a separate core
+                // This heavy lifting happens on a separate thread in the executor pool
                 return analysisService.applyEnhancements(
                         currentRawImage, isGray, bright, clahe, sharp, denoise, finalWidth
                 );
@@ -84,9 +98,7 @@ public class ImageProcessingController {
             if (e != null) e.printStackTrace();
         });
 
-        Thread thread = new Thread(currentProcessingTask);
-        thread.setDaemon(true);
-        thread.start();
+        AppExecutor.get().submit(currentProcessingTask);
     }
 
     @FXML
