@@ -158,7 +158,7 @@ public class MyPatientsController {
         Stage stage = (Stage) patientGrid.getScene().getWindow();
 
         Scene scene = SceneLoader.load(
-                "org/example/daibetes/modules/records/controller",
+                "org/example/daibetes/modules/doctor/ui/review",
                 "records-screen.fxml",
                 null
         );

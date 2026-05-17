@@ -430,7 +430,7 @@ public class GenerateResultsController {
         Stage stage = (Stage) reportImageView.getScene().getWindow();
 
         Scene scene = SceneLoader.load(
-                "org/example/daibetes/modules/records/controller",
+                "org/example/daibetes/modules/doctor/ui/review",
                 "records-screen.fxml",
                 null
         );
