@@ -11,11 +11,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
-import org.example.daibetes.core.database.CalendarDAO;
+import org.example.daibetes.core.database.ICalendarDAO;
 import org.example.daibetes.shared.models.Appointment;
 import org.example.daibetes.shared.models.Patient;
 import org.example.daibetes.shared.models.User;
 import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.shared.utils.ServiceRegistry;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -64,7 +65,7 @@ public class PatientCalendarController implements Initializable {
     // ── State ─────────────────────────────────────────────────────────────────
     private YearMonth      currentMonth;
     private int            patientId;
-    private final CalendarDAO dao = new CalendarDAO();
+    private final ICalendarDAO dao = ServiceRegistry.getInstance().get(ICalendarDAO.class);
     private Appointment selectedAppointmentForDetail; // Tracks current selected app
 
     private final List<String[]> doctorRows = new ArrayList<>();
