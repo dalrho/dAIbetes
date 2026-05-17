@@ -156,74 +156,73 @@
                         </rowConstraints>
 
                         <!-- System Summary Card -->
-                        <VBox spacing="14" GridPane.columnIndex="0"
+                        <VBox spacing="16" GridPane.columnIndex="0"
                               style="-fx-background-color: white;
                                      -fx-background-radius: 14;
                                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);
                                      -fx-padding: 22 22 18 22;">
 
-                            <Label text="System Summary:"
-                                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="System Summary"
+                                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                                <Pane HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="updateDataBtn" text="↻ Refresh Data"
+                                        onAction="#onUpdateData"
+                                        style="-fx-background-color: transparent; -fx-text-fill: #7B2528;
+                                               -fx-font-size: 12px; -fx-font-weight: bold;
+                                               -fx-border-color: #7B2528; -fx-border-width: 1; -fx-border-radius: 6;
+                                               -fx-padding: 6 14; -fx-background-radius: 6;
+                                               -fx-cursor: hand;"/>
+                            </HBox>
 
-                            <HBox spacing="20" alignment="TOP_LEFT">
-
+                            <HBox spacing="24" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
                                 <!-- Gauge canvas -->
                                 <Pane fx:id="gaugePane"
-                                      prefWidth="240" prefHeight="220"
-                                      minWidth="240" minHeight="220"/>
+                                      prefWidth="220" prefHeight="190"
+                                      minWidth="220" minHeight="190"/>
 
-                                <!-- Legend -->
-                                <VBox spacing="18" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
-
+                                <!-- Legend / Detailed Stats -->
+                                <VBox spacing="14" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
                                     <!-- Records -->
-                                    <VBox spacing="4">
+                                    <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
                                         <HBox spacing="8" alignment="CENTER_LEFT">
-                                            <Circle radius="7" style="-fx-fill: #E74C3C;"/>
-                                            <Label text="Records / Uploads Completed"
-                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                                            <Circle radius="5" style="-fx-fill: #E74C3C;"/>
+                                            <Label text="Records &amp; Patient Scans"
+                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
                                         </HBox>
                                         <Label fx:id="recordsStatusLabel"
-                                               text="You're up to date, make sure to take your dry cough medicine in 4 days."
+                                               text="0 scans recorded (0% of target)"
                                                wrapText="true"
-                                               style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-padding: 0 0 0 22;"/>
+                                               style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
                                     </VBox>
 
                                     <!-- Diagnoses -->
-                                    <VBox spacing="4">
+                                    <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
                                         <HBox spacing="8" alignment="CENTER_LEFT">
-                                            <Circle radius="7" style="-fx-fill: #3498DB;"/>
-                                            <Label text="Diagnoses Completed"
-                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                                            <Circle radius="5" style="-fx-fill: #3498DB;"/>
+                                            <Label text="Diagnostic Reports Completed"
+                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
                                         </HBox>
                                         <Label fx:id="diagnosesStatusLabel"
-                                               text="You're up to date, make sure to take your dry cough medicine in 4 days."
+                                               text="0 diagnoses completed out of 0 total scans (0% completion)"
                                                wrapText="true"
-                                               style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-padding: 0 0 0 22;"/>
+                                               style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
                                     </VBox>
 
                                     <!-- Patients -->
-                                    <VBox spacing="4">
+                                    <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
                                         <HBox spacing="8" alignment="CENTER_LEFT">
-                                            <Circle radius="7" style="-fx-fill: #F39C12;"/>
-                                            <Label text="Patients Handled"
-                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
+                                            <Circle radius="5" style="-fx-fill: #F39C12;"/>
+                                            <Label text="Active Patients Handled"
+                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
                                         </HBox>
                                         <Label fx:id="patientsStatusLabel"
-                                               text="You're up to date, make sure to take your dry cough medicine in 4 days."
+                                               text="0 patients under management (0% capacity)"
                                                wrapText="true"
-                                               style="-fx-font-size: 12px; -fx-text-fill: #666666; -fx-padding: 0 0 0 22;"/>
+                                               style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
                                     </VBox>
-
                                 </VBox>
                             </HBox>
-
-                            <!-- Update Data button -->
-                            <Button fx:id="updateDataBtn" text="Update Data"
-                                    onAction="#onUpdateData"
-                                    style="-fx-background-color: #7B2528; -fx-text-fill: white;
-                                           -fx-font-size: 13px; -fx-font-weight: bold;
-                                           -fx-padding: 10 26; -fx-background-radius: 8;
-                                           -fx-cursor: hand;"/>
                         </VBox>
 
                         <!-- Right: Total Scans + To Review -->
@@ -291,16 +290,7 @@
                 </VBox>
             </ScrollPane>
 
-            <!-- Inbox -->
-            <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #EBEBEB;">
-                <padding><Insets top="10" right="24" bottom="16" left="24"/></padding>
-                <Button fx:id="inboxBtn" text="Inbox"
-                        onAction="#onInbox"
-                        style="-fx-background-color: #7B2528; -fx-text-fill: white;
-                                           -fx-font-size: 13px; -fx-font-weight: bold;
-                                           -fx-padding: 10 26; -fx-background-radius: 8;
-                                           -fx-cursor: hand;"/>
-            </HBox>
+
 
         </VBox>
     </center>

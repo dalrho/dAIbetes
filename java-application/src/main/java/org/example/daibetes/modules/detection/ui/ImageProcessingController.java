@@ -137,7 +137,6 @@ public class ImageProcessingController {
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
             stage.setMaximized(true);
-            stage.centerOnScreen();
 
         } catch (Exception e) {
             System.err.println("Navigation Error: " + e.getMessage());
