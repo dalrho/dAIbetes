@@ -85,7 +85,7 @@ public class AppContext {
     public int getCurrentTestId() {
         return currentTestId;
     }
-
+    
     public void setCurrentTestId(int currentTestId) {
         this.currentTestId = currentTestId;
     }
