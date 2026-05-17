@@ -46,12 +46,39 @@ public class PatientRecordsController {
         setupTable();
         loadRealPatientData();
 
-        statusFilter.getItems().setAll("All Results", "No DR", "Mild", "Moderate", "Severe", "Urgent");
+        // UPDATED: Items match the Criticality column values
+        statusFilter.getItems().setAll("All Results", "High", "Moderate", "Absent", "Urgent");
         statusFilter.getSelectionModel().select(0);
+
+        // Listeners for real-time filtering
         statusFilter.setOnAction(e -> applyFilters());
         datePicker.setOnAction(e -> applyFilters());
     }
 
+    private void applyFilters() {
+        String selectedStatus = statusFilter.getValue();
+        java.time.LocalDate selectedDate = datePicker.getValue();
+
+        // Filter the master list
+        ObservableList<ReportData> filteredList = masterData.filtered(report -> {
+            // 1. Criticality Filter
+            boolean matchesStatus = (selectedStatus == null ||
+                    selectedStatus.equals("All Results") ||
+                    report.getCriticality().equalsIgnoreCase(selectedStatus));
+
+            // 2. Date Filter
+            boolean matchesDate = true;
+            if (selectedDate != null) {
+                // report.getClientNotes() contains "yyyy-MM-dd HH:mm:ss"
+                // selectedDate.toString() is "yyyy-MM-dd"
+                matchesDate = report.getClientNotes().startsWith(selectedDate.toString());
+            }
+
+            return matchesStatus && matchesDate;
+        });
+
+        patientRecordsTable.setItems(filteredList);
+    }
     private void setupTable() {
         // 1. Date Column
         colDate.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getClientNotes()));
@@ -114,16 +141,14 @@ public class PatientRecordsController {
         }
         patientRecordsTable.setItems(masterData);
     }
-    private void applyFilters() {
-        String s = statusFilter.getValue();
-        java.time.LocalDate d = datePicker.getValue();
-        patientRecordsTable.setItems(masterData.filtered(i ->
-                (s.equals("All Results") || i.getDrGrade().contains(s)) &&
-                        (d == null || i.getClientNotes().startsWith(d.toString()))
-        ));
-    }
+
 
     @FXML private void handleRefresh() { loadRealPatientData(); }
-    @FXML private void handleClearFilters() { datePicker.setValue(null); statusFilter.getSelectionModel().select(0); patientRecordsTable.setItems(masterData); }
-    @FXML private void handleBack(ActionEvent e) { SceneLoader.switchScene((Node) e.getSource(), "org/example/daibetes/modules/patient/dashboard", "patients-dashboard.fxml", "Dashboard", null); }
+    @FXML
+    private void handleClearFilters() {
+        datePicker.setValue(null);
+        statusFilter.getSelectionModel().select(0);
+        // Reset to the full master data list
+        patientRecordsTable.setItems(masterData);
+    }    @FXML private void handleBack(ActionEvent e) { SceneLoader.switchScene((Node) e.getSource(), "org/example/daibetes/modules/patient/dashboard", "patients-dashboard.fxml", "Dashboard", null); }
 }

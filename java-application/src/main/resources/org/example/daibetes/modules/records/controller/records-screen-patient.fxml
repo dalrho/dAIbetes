@@ -44,6 +44,7 @@
             </padding>
 
             <!-- SEARCH & FILTER (Removed Patient ID search as user only sees their own) -->
+            <!-- Updated Filter Section -->
             <HBox spacing="20" alignment="CENTER_LEFT"
                   style="-fx-background-color: FFFFFF; -fx-padding: 16; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #E8EEF5; -fx-border-width: 1;">
 
@@ -53,16 +54,16 @@
                 </VBox>
 
                 <VBox spacing="6">
-                    <Label text="Diagnosis Status" style="-fx-font-size: 11; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
+                    <!-- Changed from Diagnosis Status to Criticality -->
+                    <Label text="Criticality Status" style="-fx-font-size: 11; -fx-text-fill: #6B7280; -fx-font-weight: bold;"/>
                     <ComboBox fx:id="statusFilter" prefWidth="180" promptText="All Results"/>
                 </VBox>
 
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Button text="Clear Filters" onAction="#handleClearFilters"
-                        style="-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-size: 11;"/>
+                        style="-fx-background-color: transparent; -fx-text-fill: #6B7280; -fx-font-size: 11; -fx-cursor: hand;"/>
             </HBox>
-
             <!-- TABLE: Patient Specific -->
             <VBox spacing="12" VBox.vgrow="ALWAYS">
                 <Label text="Recent Scans" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1A2332;"/>
