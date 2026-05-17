@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
-<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.diagnosis.GenerateResultsController">
+<VBox prefHeight="900.0" prefWidth="1300.0" style="-fx-background-color: #F8FAFC;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.daibetes.modules.doctor.ui.diagnosis.GenerateResultsController">
     <children>
         <!-- 1. Header Navigation -->
         <HBox alignment="CENTER_LEFT" prefHeight="75.0" spacing="20.0" style="-fx-background-color: white; -fx-padding: 0 30 0 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);">
@@ -30,7 +47,7 @@
             </padding>
             <children>
                 <!-- LEFT SIDE -->
-                <VBox prefWidth="450.0" spacing="20.0">
+                <VBox prefHeight="879.0" prefWidth="441.0" spacing="20.0">
                     <children>
                         <!-- UPDATED: PATIENT IDENTIFICATION (NAME ONLY) -->
                         <VBox spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 4); -fx-border-color: #E2E8F0; -fx-border-width: 1; -fx-border-radius: 12;">
@@ -58,10 +75,10 @@
                             </children>
                         </VBox>
 
-                        <!-- UPDATED AI ASSISTANT INSIGHTS (STICKY HEADER + SCROLLABLE EXPLANATION) -->
-                        <VBox fx:id="aiResultBox" spacing="0.0" style="-fx-background-color: #F0F9FF; -fx-background-radius: 12; -fx-border-color: #BAE6FD; -fx-border-width: 1; -fx-border-radius: 12;">
+                        <!-- UPDATED AI ASSISTANT INSIGHTS (EXPANDED EXPLANATION AREA) -->
+                        <VBox fx:id="aiResultBox" minHeight="237.0" prefHeight="237.0" prefWidth="436.0" spacing="0.0" style="-fx-background-color: #F0F9FF; -fx-background-radius: 12; -fx-border-color: #BAE6FD; -fx-border-width: 1; -fx-border-radius: 12;">
                             <children>
-                                <!-- Sticky Top Section -->
+                                <!-- Sticky Top Section (Criticality & Confidence) -->
                                 <VBox spacing="12.0" style="-fx-padding: 20 20 10 20;">
                                     <children>
                                         <HBox alignment="CENTER_LEFT">
@@ -91,13 +108,15 @@
                                     </children>
                                 </VBox>
 
-                                <!-- Scrollable Bottom Section -->
-                                <VBox spacing="5.0" style="-fx-padding: 0 20 20 20;">
+                                <!-- SIGNIFICANTLY LONGER EXPLANATION AREA -->
+                                <VBox prefHeight="118.0" prefWidth="434.0" spacing="5.0" style="-fx-padding: 0 20 20 20;">
                                     <children>
-                                        <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold;" text="AI Brief Explanation:" />
-                                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="80.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+                                        <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold; -fx-font-size: 13px;" text="AI Brief Explanation:" />
+
+                                        <!-- Increased prefHeight to 450.0 for a much longer viewable area -->
+                                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="88.0" prefWidth="394.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
                                             <content>
-                                                <Label fx:id="aiExplanationLabel" style="-fx-text-fill: #334155;" text="Click the button above to begin automated analysis." wrapText="true" />
+                                                <Label fx:id="aiExplanationLabel" alignment="TOP_LEFT" lineSpacing="1.0" prefHeight="84.0" prefWidth="398.0" style="-fx-text-fill: #334155; -fx-font-size: 12px;" text="Click the button above to begin automated analysis..." textAlignment="CENTER" wrapText="true" />
                                             </content>
                                         </ScrollPane>
                                     </children>
