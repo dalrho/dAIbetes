@@ -14,6 +14,7 @@ public class PopupManager {
             stage.setTitle(title);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
+            stage.centerOnScreen(); // FIXED POSITION
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
