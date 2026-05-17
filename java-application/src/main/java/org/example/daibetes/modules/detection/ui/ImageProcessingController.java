@@ -8,8 +8,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.detection.service.ScanAnalysisService;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 public class ImageProcessingController {
     @FXML private ImageView rawImageView, enhancedImageView;
@@ -118,25 +120,27 @@ public class ImageProcessingController {
             return;
         }
 
-        // Save image to AppContext
         AppContext.getInstance().setSelectedImage(saveImage);
+
         try {
-            Stage stage = (Stage) enhancedImageView.getScene().getWindow();
+            Stage currentStage = (Stage) enhancedImageView.getScene().getWindow();
 
-            // 1. Try to find the resource
-            var resource = getClass().getResource("/org/example/daibetes/modules/doctor/ui/diagnosis/generate-report.fxml");
-
-            // 2. Debug check: if this is null, the path is wrong
-            if (resource == null) {
-                System.err.println("ERROR: Could not find /generateReport/edit-generate-report.fxml");
-                System.err.println("Check if the folder is named 'generateReport' or 'generatereport'");
-                return;
+            for (Window window : Window.getWindows()) {
+                if (window instanceof Stage stage && stage != currentStage) {
+                    stage.close();
+                }
             }
 
-            FXMLLoader loader = new FXMLLoader(resource);
-            Scene scene = new Scene(loader.load());
-            stage.setScene(scene);
-            stage.setMaximized(true);
+            SceneLoader.switchScene(
+                    enhancedImageView,
+                    "org/example/daibetes/modules/doctor/ui/diagnosis",
+                    "generate-report.fxml",
+                    "Generate Report",
+                    null
+
+            );
+
+            currentStage.setMaximized(true);
 
         } catch (Exception e) {
             System.err.println("Navigation Error: " + e.getMessage());
