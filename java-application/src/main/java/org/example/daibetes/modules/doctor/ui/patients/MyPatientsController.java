@@ -156,6 +156,7 @@ public class MyPatientsController {
         context.setSelectedRecordsDoctorId(loggedInDoctorId);
 
         // Use the grid as the source node for navigation
+        System.out.println("RECORD SCREEN");
         SceneLoader.switchScene(
                 patientGrid,
                 "org/example/daibetes/modules/doctor/ui/review",
