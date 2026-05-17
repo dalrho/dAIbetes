@@ -80,7 +80,7 @@ public class DoctorDashboardController implements Initializable {
             }
         });
 
-        URL imgUrl = getClass().getResource("/org/example/daibetes/images/serato.jpg");
+        URL imgUrl = getClass().getResource("/org/example/daibetes/images/profile-icon.png");
 
         if (imgUrl == null) {
             System.out.println("Image NOT FOUND in resources!");
