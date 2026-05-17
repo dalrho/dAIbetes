@@ -2,6 +2,8 @@ package org.example.daibetes.shared.utils;
 
 import org.example.daibetes.core.database.CalendarDAO;
 import org.example.daibetes.core.database.ICalendarDAO;
+import org.example.daibetes.shared.service.IReportGenerationService;
+import org.example.daibetes.shared.service.ReportGenerationService;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -19,6 +21,7 @@ public class ServiceRegistry {
         // This guarantees that dependencies are always registered regardless of which
         // entry point (Launcher.java, splashApplication.java, or HelloApplication.java) is used.
         INSTANCE.register(ICalendarDAO.class, new CalendarDAO());
+        INSTANCE.register(IReportGenerationService.class, new ReportGenerationService());
     }
 
     private ServiceRegistry() {}

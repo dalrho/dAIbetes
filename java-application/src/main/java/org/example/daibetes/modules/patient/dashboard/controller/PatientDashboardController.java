@@ -50,7 +50,7 @@ public class PatientDashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        URL imgUrl = getClass().getResource("/org/example/daibetes/images/serato.jpg");
+        URL imgUrl = getClass().getResource("/org/example/daibetes/images/profile-icon.png");
         if (imgUrl != null) {
             profileImage.setImage(new Image(imgUrl.toExternalForm()));
         }

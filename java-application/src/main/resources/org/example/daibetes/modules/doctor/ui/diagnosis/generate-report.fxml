@@ -76,7 +76,7 @@
                         </VBox>
 
                         <!-- UPDATED AI ASSISTANT INSIGHTS (EXPANDED EXPLANATION AREA) -->
-                        <VBox fx:id="aiResultBox" minHeight="237.0" prefHeight="237.0" prefWidth="436.0" spacing="0.0" style="-fx-background-color: #F0F9FF; -fx-background-radius: 12; -fx-border-color: #BAE6FD; -fx-border-width: 1; -fx-border-radius: 12;">
+                        <VBox fx:id="aiResultBox" minHeight="200.0" VBox.vgrow="ALWAYS" prefWidth="436.0" spacing="0.0" style="-fx-background-color: #F0F9FF; -fx-background-radius: 12; -fx-border-color: #BAE6FD; -fx-border-width: 1; -fx-border-radius: 12;">
                             <children>
                                 <!-- Sticky Top Section (Criticality & Confidence) -->
                                 <VBox spacing="12.0" style="-fx-padding: 20 20 10 20;">
@@ -109,14 +109,14 @@
                                 </VBox>
 
                                 <!-- SIGNIFICANTLY LONGER EXPLANATION AREA -->
-                                <VBox prefHeight="118.0" prefWidth="434.0" spacing="5.0" style="-fx-padding: 0 20 20 20;">
+                                <VBox VBox.vgrow="ALWAYS" prefWidth="434.0" spacing="5.0" style="-fx-padding: 0 20 20 20;">
                                     <children>
                                         <Label style="-fx-text-fill: #0C4A6E; -fx-font-weight: bold; -fx-font-size: 13px;" text="AI Brief Explanation:" />
 
                                         <!-- Increased prefHeight to 450.0 for a much longer viewable area -->
-                                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="88.0" prefWidth="394.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+                                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" prefWidth="394.0" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
                                             <content>
-                                                <Label fx:id="aiExplanationLabel" alignment="TOP_LEFT" lineSpacing="1.0" prefHeight="84.0" prefWidth="398.0" style="-fx-text-fill: #334155; -fx-font-size: 12px;" text="Click the button above to begin automated analysis..." textAlignment="CENTER" wrapText="true" />
+                                                <Label fx:id="aiExplanationLabel" alignment="TOP_LEFT" lineSpacing="1.0" prefWidth="398.0" style="-fx-text-fill: #334155; -fx-font-size: 12px;" text="Click the button above to begin automated analysis..." wrapText="true" />
                                             </content>
                                         </ScrollPane>
                                     </children>
