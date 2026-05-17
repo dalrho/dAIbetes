@@ -250,24 +250,13 @@
 
         @FXML
         private void handleBack(ActionEvent event) {
-            Scene scene = SceneLoader.load(
+            SceneLoader.switchScene(
+                    (Node) event.getSource(),
                     "org/example/daibetes/modules/doctor/ui/patients",
                     "my-patients-view.fxml",
-                    "/styles/myPatient.css"
+                    "My Patients",
+                    "/org/example/daibetes/styles/my-patient.css"
             );
-
-            if (scene == null) {
-                showAlert("Navigation Error", "Could not return to My Patients screen.");
-                return;
-            }
-
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene()
-                    .getWindow();
-
-            stage.setScene(scene);
-            stage.setTitle("My Patients");
-            stage.show();
         }
 
         private void updateStatus(String message) {
@@ -311,30 +300,23 @@
             });
         }
         private void openDetailedReport(Record record) {
+            // 1. Update State
             AppContext.getInstance().setSelectedReportId(record.getReportId());
 
+            // 2. Log Activity
             int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
-
             if (doctorId != 0) {
                 DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
                 dashboardDAO.logOpenedReport(doctorId, record.getReportId());
             }
 
-            Stage stage = (Stage) recordsTable.getScene().getWindow();
-
-            Scene scene = SceneLoader.load(
+            // 3. Navigate
+            SceneLoader.switchScene(
+                    recordsTable, // The TableView acts as the source node
                     "org/example/daibetes/modules/doctor/ui/review",
                     "doctorViewDiagnosis.fxml",
+                    "Detailed Report",
                     null
             );
-
-            if (scene == null) {
-                updateStatus("Could not open detailed report.");
-                return;
-            }
-
-            stage.setScene(scene);
-            stage.setTitle("Detailed Report");
-            stage.show();
         }
     }

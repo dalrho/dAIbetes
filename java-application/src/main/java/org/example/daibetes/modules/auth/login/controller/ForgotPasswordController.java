@@ -1,10 +1,12 @@
 package org.example.daibetes.modules.auth.login.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import org.example.daibetes.core.database.MySQLConnection;
 import org.example.daibetes.shared.utils.PasswordUtils;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +18,7 @@ public class ForgotPasswordController {
     @FXML private Label statusLabel;
 
     @FXML
-    private void handleReset() {
+    private void handleReset(ActionEvent event) {
         String email = emailField.getText().trim();
         String newPass = newPasswordField.getText();
 
@@ -27,9 +29,7 @@ public class ForgotPasswordController {
         }
 
         try (Connection conn = MySQLConnection.getConnection()) {
-            // Hash the new password using your utility
             String hashedPass = PasswordUtils.hashPassword(newPass);
-
             String query = "UPDATE tbluser SET password = ? WHERE email = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, hashedPass);
@@ -38,34 +38,32 @@ public class ForgotPasswordController {
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                // 1. Show success alert
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Password Reset");
+                alert.setTitle("Success");
                 alert.setHeaderText(null);
-                alert.setContentText("Your password has been updated successfully!");
-                alert.showAndWait(); // Execution pauses here until user clicks OK
+                alert.setContentText("Password updated! Returning to Login.");
+                alert.showAndWait();
 
-                // 2. Close the popup
-                closeWindow();
+                // Navigate back to login
+                handleBack(event);
             } else {
-                statusLabel.setText("Email not found in our records.");
+                statusLabel.setText("Email not found.");
                 statusLabel.setStyle("-fx-text-fill: red;");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            statusLabel.setText("Database error: Could not update password.");
-            statusLabel.setStyle("-fx-text-fill: red;");
+            statusLabel.setText("Database error.");
         }
     }
 
     @FXML
-    private void handleCancel() {
-        closeWindow();
-    }
-
-    private void closeWindow() {
-        Stage stage = (Stage) emailField.getScene().getWindow();
-        stage.close();
+    private void handleBack(ActionEvent event) {
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/auth/login",
+                "login-screen.fxml",
+                "Log-in - dAIbetes",
+                "/org/example/daibetes/styles/splash2.css"
+        );
     }
 }

@@ -413,32 +413,30 @@ public class DoctorDashboardController implements Initializable {
         );
     }
 
-    @FXML private void onViewPatients(ActionEvent event) {
+    @FXML
+    private void onViewPatients(ActionEvent event) {
         System.out.println("[Dashboard] View Patients");
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
 
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/doctor/ui/patients",
-                        "my-patients-view.fxml",
-                        "/org/example/daibetes/styles/my-patient.css"
-                )
+        // Use the source of the event as the sourceNode
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/doctor/ui/patients",
+                "my-patients-view.fxml",
+                "dAIbetes — My Patients",
+                "/org/example/daibetes/styles/my-patient.css"
         );
     }
 
-    @FXML private void onViewConsultations(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
+    @FXML
+    private void onViewConsultations(ActionEvent event) {
+        System.out.println("[Dashboard] View Consultations");
 
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/doctor/ui/calendar",
-                        "doctor-calendar.fxml",
-                        "/org/example/daibetes/styles/doctor-calendar.css"
-                )
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/doctor/ui/calendar",
+                "doctor-calendar.fxml",
+                "dAIbetes — Doctor Calendar",
+                "/org/example/daibetes/styles/doctor-calendar.css"
         );
     }
 
@@ -451,16 +449,12 @@ public class DoctorDashboardController implements Initializable {
     private void onLogout(ActionEvent event) {
         System.out.println("[Dashboard] Log out");
 
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/splash/controller",
-                        "splash-screen.fxml",
-                        "/org/example/daibetes/styles/splash.css"
-                )
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/splash/controller",
+                "splash-screen.fxml",
+                "dAIbetes — Welcome",
+                "/org/example/daibetes/styles/splash.css"
         );
     }
 
