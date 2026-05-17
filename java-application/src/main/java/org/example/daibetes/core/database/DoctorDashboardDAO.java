@@ -104,4 +104,53 @@ public class DoctorDashboardDAO {
 
         return activities;
     }
+
+    public int getTotalTestsByDoctor(int doctorId) {
+        String sql = "SELECT COUNT(*) AS total_tests FROM tbltests WHERE d_id = ?";
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total_tests");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getPatientsHandledByDoctor(int doctorId) {
+        String sql = "SELECT COUNT(DISTINCT p_id) AS total_patients FROM tbltests WHERE d_id = ?";
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total_patients");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getPendingAppointmentsCount(int doctorId) {
+        String sql = """
+            SELECT COUNT(*) AS pending_count
+            FROM tblconsultationrequest
+            WHERE d_id = ? AND responded_on IS NULL
+        """;
+        try (Connection conn = MySQLConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, doctorId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("pending_count");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

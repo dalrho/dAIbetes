@@ -24,11 +24,16 @@ import org.example.daibetes.shared.ui.SceneLoader;
 import org.example.daibetes.core.database.DoctorDashboardDAO;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import org.example.daibetes.app.AppContext;
 import org.example.daibetes.shared.models.Doctor;
 import org.example.daibetes.shared.models.User;
+import org.example.daibetes.shared.models.Appointment;
+
 /**
  * Controller for doctor-dashboard.fxml
  */
@@ -48,26 +53,17 @@ public class DoctorDashboardController implements Initializable {
     @FXML private Button viewPatientsBtn;
     @FXML private Button viewReportsBtn;
     @FXML private Button logoutBtn;
-    @FXML private Button inboxBtn;
     @FXML private ImageView profileImage;
     @FXML private Label doctorFirstNameLabel;
     @FXML private Label doctorLastNameLabel;
     private int loggedInDoctorId;
     private final DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
 
-    // ── Static data ───────────────────────────────────────────────
+    // ── Dynamic statistics and progress ───────────────────────────
+    private double recordsProgress   = 0.0;
+    private double diagnosesProgress = 0.0;
+    private double patientsProgress  = 0.0;
 
-    private static final double RECORDS_PROGRESS   = 0.85;
-    private static final double DIAGNOSES_PROGRESS = 0.65;
-    private static final double PATIENTS_PROGRESS  = 0.42;
-
-
-    private record ScheduleEntry(String title, String subtitle) {}
-
-    private static final List<ScheduleEntry> SCHEDULE_ENTRIES = List.of(
-            new ScheduleEntry("Monday – 2pm – Patient #3412", "Follow up check up"),
-            new ScheduleEntry("Monday – 2pm – Patient #3412", "Follow up check up")
-    );
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadLoggedInDoctorName();
@@ -107,6 +103,7 @@ public class DoctorDashboardController implements Initializable {
             doctorLastNameLabel.setText("");
         }
     }
+
     private void loadDashboardData() {
         if (loggedInDoctorId == 0) {
             totalScansLabel.setText("0");
@@ -116,10 +113,36 @@ public class DoctorDashboardController implements Initializable {
             return;
         }
 
-        int totalReports = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+        int totalScans = dashboardDAO.getTotalTestsByDoctor(loggedInDoctorId);
+        int completedDiagnoses = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+        int patientsHandled = dashboardDAO.getPatientsHandledByDoctor(loggedInDoctorId);
+        int pendingReview = dashboardDAO.getPendingAppointmentsCount(loggedInDoctorId);
 
-        totalScansLabel.setText(String.valueOf(totalReports));
-        toReviewLabel.setText("0");
+        totalScansLabel.setText(String.valueOf(totalScans));
+        toReviewLabel.setText(String.valueOf(pendingReview));
+
+        // Calculate progress values with targets (Scans Target: 20, Patients Target: 15)
+        recordsProgress = totalScans >= 20 ? 1.0 : (double) totalScans / 20.0;
+        diagnosesProgress = totalScans == 0 ? 0.0 : (double) completedDiagnoses / totalScans;
+        patientsProgress = patientsHandled >= 15 ? 1.0 : (double) patientsHandled / 15.0;
+
+        // Set descriptive, professional status labels
+        int recordsPercent = (int) (recordsProgress * 100);
+        int diagnosesPercent = (int) (diagnosesProgress * 100);
+        int patientsPercent = (int) (patientsProgress * 100);
+
+        recordsStatusLabel.setText(String.format(
+                "%d scans recorded (%d%% of monthly target of 20)",
+                totalScans, recordsPercent
+        ));
+        diagnosesStatusLabel.setText(String.format(
+                "%d diagnoses completed out of %d total scans (%d%% completion rate)",
+                completedDiagnoses, totalScans, diagnosesPercent
+        ));
+        patientsStatusLabel.setText(String.format(
+                "%d patients under active management (%d%% of capacity of 15)",
+                patientsHandled, patientsPercent
+        ));
 
         populateRecentActivities();
     }
@@ -154,7 +177,13 @@ public class DoctorDashboardController implements Initializable {
 
         // Outer → inner:  red (records), blue (diagnoses), orange (patients)
         double[] radii      = { 88,  88 - gap,  88 - gap * 2 };
-        double[] progresses = { RECORDS_PROGRESS, DIAGNOSES_PROGRESS, PATIENTS_PROGRESS };
+        double[] progresses = { recordsProgress, diagnosesProgress, patientsProgress };
+
+        // Gray base line under the arcs to ground the gauge professionally
+        javafx.scene.shape.Line baseLine = new javafx.scene.shape.Line(cx - radii[0] - stroke/2.0, cy, cx + radii[0] + stroke/2.0, cy);
+        baseLine.setStroke(Color.web("#EBEBEB"));
+        baseLine.setStrokeWidth(2.0);
+        gaugePane.getChildren().add(baseLine);
 
         Color[] fillColors  = {
                 Color.web("#E74C3C"),
@@ -181,8 +210,8 @@ public class DoctorDashboardController implements Initializable {
         }
 
         // Tip dots on outer two rings
-        addTipDot(cx, cy, radii[0], RECORDS_PROGRESS * 180, Color.web("#C0392B"), 10);
-        addTipDot(cx, cy, radii[1], DIAGNOSES_PROGRESS * 180, Color.web("#EAC040"), 9);
+        addTipDot(cx, cy, radii[0], recordsProgress * 180, Color.web("#C0392B"), 10);
+        addTipDot(cx, cy, radii[1], diagnosesProgress * 180, Color.web("#EAC040"), 9);
     }
 
     /**
@@ -247,25 +276,67 @@ public class DoctorDashboardController implements Initializable {
 
     private void populateSchedule() {
         scheduleContainer.getChildren().clear();
-        for (ScheduleEntry entry : SCHEDULE_ENTRIES) {
+
+        if (loggedInDoctorId == 0) {
+            Label emptyLabel = new Label("No upcoming appointments.");
+            emptyLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #777777;");
+            scheduleContainer.getChildren().add(emptyLabel);
+            return;
+        }
+
+        List<Appointment> allApps = new org.example.daibetes.core.database.CalendarDAO().getAppointmentsByDoctor(loggedInDoctorId);
+        LocalDate today = LocalDate.now();
+
+        // Get upcoming non-rejected appointments sorted chronologically
+        List<Appointment> upcoming = allApps.stream()
+                .filter(a -> !a.isRejected() && (a.getDate().isAfter(today) || a.getDate().isEqual(today)))
+                .sorted((a1, a2) -> {
+                    int cmp = a1.getDate().compareTo(a2.getDate());
+                    if (cmp != 0) return cmp;
+                    return a1.getTime().compareTo(a2.getTime());
+                })
+                .limit(5)
+                .collect(Collectors.toList());
+
+        if (upcoming.isEmpty()) {
+            Label emptyLabel = new Label("No upcoming appointments scheduled.");
+            emptyLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #777777;");
+            scheduleContainer.getChildren().add(emptyLabel);
+            return;
+        }
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("E, MMM d");
+
+        for (Appointment app : upcoming) {
             VBox item = new VBox(3);
 
             HBox titleRow = new HBox(8);
             titleRow.setAlignment(Pos.CENTER_LEFT);
 
-            Circle dot = new Circle(7, Color.web("#F39C12"));
+            Color dotColor = app.isAccepted() ? Color.web("#2ECC71") : Color.web("#F39C12");
+            Circle dot = new Circle(7, dotColor);
 
-            Label titleLbl = new Label(entry.title());
+            String dayStr = app.getDate().format(dateFormatter);
+            String titleText = String.format("%s at %s — %s", dayStr, app.getTime(), app.getPatientName());
+
+            Label titleLbl = new Label(titleText);
             titleLbl.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111111;");
             titleLbl.setWrapText(true);
 
             titleRow.getChildren().addAll(dot, titleLbl);
 
-            Label subLbl = new Label(entry.subtitle());
+            String statusText = app.isAccepted() ? "Confirmed Consultation" : "Awaiting Doctor's Approval";
+            Label subLbl = new Label(statusText);
             subLbl.setStyle("-fx-font-size: 12px; -fx-text-fill: #777777;");
             VBox.setMargin(subLbl, new Insets(0, 0, 0, 22));
 
             item.getChildren().addAll(titleRow, subLbl);
+
+            // Hover styling
+            item.setStyle("-fx-padding: 4; -fx-background-radius: 4;");
+            item.setOnMouseEntered(e -> item.setStyle("-fx-padding: 4; -fx-background-radius: 4; -fx-background-color: #F0F0F0;"));
+            item.setOnMouseExited(e -> item.setStyle("-fx-padding: 4; -fx-background-radius: 4; -fx-background-color: transparent;"));
+
             scheduleContainer.getChildren().add(item);
         }
     }
@@ -283,10 +354,7 @@ public class DoctorDashboardController implements Initializable {
 
     // ── Button handlers ───────────────────────────────────────────
     // ── Button handlers ───────────────────────────────────────────
-    @FXML
-    private void handleInbox() {
-        Stage stage = (Stage) inboxBtn.getScene().getWindow();
-    }
+
 
     @FXML
     private void onNewDiagnosisBtn() {
@@ -358,14 +426,7 @@ public class DoctorDashboardController implements Initializable {
         );
     }
 
-    @FXML
-    private void onInbox(ActionEvent event) {
 
-        Button button = (Button) event.getSource();
-
-        Stage stage = (Stage) button.getScene().getWindow();
-
-    }
 
 //    public void initData(Doctor doctor) {
 //    }
