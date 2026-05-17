@@ -155,22 +155,14 @@ public class MyPatientsController {
         context.setSelectedRecordsPatientName(patient.getPatientName());
         context.setSelectedRecordsDoctorId(loggedInDoctorId);
 
-        Stage stage = (Stage) patientGrid.getScene().getWindow();
-
-        Scene scene = SceneLoader.load(
+        // Use the grid as the source node for navigation
+        SceneLoader.switchScene(
+                patientGrid,
                 "org/example/daibetes/modules/doctor/ui/review",
                 "records-screen.fxml",
+                "Patient Records - " + patient.getPatientName(),
                 null
         );
-
-        if (scene == null) {
-            showAlert("Navigation Error", "Could not load patient records.");
-            return;
-        }
-
-        stage.setScene(scene);
-        stage.setTitle("Patient Records - " + patient.getPatientName());
-        stage.show();
     }
 
     @FXML

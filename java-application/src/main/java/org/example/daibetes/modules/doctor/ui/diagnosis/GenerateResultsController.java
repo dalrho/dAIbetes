@@ -418,8 +418,7 @@ public class GenerateResultsController {
                     "The diagnostic report for " + patientName + " has been finalized and saved."
             );
 
-            goBackToRecords();
-
+            goBackToDoctorDashboard();
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Save Error", "Something went wrong while saving the report.");
@@ -427,22 +426,13 @@ public class GenerateResultsController {
     }
 
     private void goBackToRecords() {
-        Stage stage = (Stage) reportImageView.getScene().getWindow();
-
-        Scene scene = SceneLoader.load(
+        SceneLoader.switchScene(
+                reportImageView,
                 "org/example/daibetes/modules/doctor/ui/review",
                 "records-screen.fxml",
-                null
+                null,
+                "Scan Records"
         );
-
-        if (scene == null) {
-            showAlert("Navigation Error", "Could not return to the records screen.");
-            return;
-        }
-
-        stage.setScene(scene);
-        stage.setTitle("Scan Records");
-        stage.show();
     }
 
     private File imageViewToTempFile(ImageView imageView) {
@@ -482,20 +472,23 @@ public class GenerateResultsController {
 
     @FXML
     private void handleBack() {
-        try {
-            Stage stage = (Stage) notesArea.getScene().getWindow();
+        SceneLoader.switchScene(
+                notesArea,
+                "org/example/daibetes/modules/detection/ui",
+                "image-processing.fxml",
+                null,
+                "Image Processing"
+        );
 
-            var resource = getClass().getResource(
-                    "/org/example/daibetes/modules/detection/ui/image-processing.fxml"
-            );
-
-            FXMLLoader loader = new FXMLLoader(resource);
-            Scene scene = new Scene(loader.load());
-
-            stage.setScene(scene);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) notesArea.getScene().getWindow();
+    }
+    private void goBackToDoctorDashboard() {
+        SceneLoader.switchScene(
+                notesArea,
+                "org/example/daibetes/modules/doctor/dashboard",
+                "doctor-dashboard.fxml",
+                "Doctor Dashboard",
+                "org/example/daibetes/styles/doctor-dashboard.css"
+        );
     }
 }

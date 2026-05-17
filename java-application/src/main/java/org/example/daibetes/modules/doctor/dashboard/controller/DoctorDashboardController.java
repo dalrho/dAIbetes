@@ -33,6 +33,9 @@ import org.example.daibetes.app.AppContext;
 import org.example.daibetes.shared.models.Doctor;
 import org.example.daibetes.shared.models.User;
 import org.example.daibetes.shared.models.Appointment;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 /**
  * Controller for doctor-dashboard.fxml
@@ -109,44 +112,55 @@ public class DoctorDashboardController implements Initializable {
             totalScansLabel.setText("0");
             toReviewLabel.setText("0");
             recentActivitiesContainer.getChildren().clear();
-            recentActivitiesContainer.getChildren().add(new Label("No logged-in doctor found."));
             return;
         }
 
-        int totalScans = dashboardDAO.getTotalTestsByDoctor(loggedInDoctorId);
-        int completedDiagnoses = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+        // 1. Fetch the number of reports actually finalized by this doctor
+        int reportsMade = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+
+        // 2. Fetch total raw scans assigned (even if not yet reported) for the completion rate
+        int totalAssignedScans = dashboardDAO.getTotalTestsByDoctor(loggedInDoctorId);
+
         int patientsHandled = dashboardDAO.getPatientsHandledByDoctor(loggedInDoctorId);
         int pendingReview = dashboardDAO.getPendingAppointmentsCount(loggedInDoctorId);
 
-        totalScansLabel.setText(String.valueOf(totalScans));
+        // 3. UI Update: Total Scans Label now strictly shows "Reports Made"
+        totalScansLabel.setText(String.valueOf(reportsMade));
         toReviewLabel.setText(String.valueOf(pendingReview));
 
-        // Calculate progress values with targets (Scans Target: 20, Patients Target: 15)
-        recordsProgress = totalScans >= 20 ? 1.0 : (double) totalScans / 20.0;
-        diagnosesProgress = totalScans == 0 ? 0.0 : (double) completedDiagnoses / totalScans;
+        // 4. Calculate progress for the Gauge
+        // Records progress is based on reports made vs target of 20
+        recordsProgress = reportsMade >= 20 ? 1.0 : (double) reportsMade / 20.0;
+
+        // Diagnoses progress is reports made vs total scans assigned
+        diagnosesProgress = totalAssignedScans == 0 ? 0.0 : (double) reportsMade / totalAssignedScans;
+
         patientsProgress = patientsHandled >= 15 ? 1.0 : (double) patientsHandled / 15.0;
 
-        // Set descriptive, professional status labels
+        // 5. Update System Summary Labels
         int recordsPercent = (int) (recordsProgress * 100);
         int diagnosesPercent = (int) (diagnosesProgress * 100);
-        int patientsPercent = (int) (patientsProgress * 100);
 
+        // Row 1: Reports finalized
         recordsStatusLabel.setText(String.format(
-                "%d scans recorded (%d%% of monthly target of 20)",
-                totalScans, recordsPercent
+                "%d reports finalized (%d%% of monthly target of 20)",
+                reportsMade, recordsPercent
         ));
+
+        // Row 2: Completion rate (Reports / Total Scans)
         diagnosesStatusLabel.setText(String.format(
-                "%d diagnoses completed out of %d total scans (%d%% completion rate)",
-                completedDiagnoses, totalScans, diagnosesPercent
+                "%d diagnoses completed out of %d total assigned scans (%d%% completion rate)",
+                reportsMade, totalAssignedScans, diagnosesPercent
         ));
+
+        // Row 3: Patients
         patientsStatusLabel.setText(String.format(
                 "%d patients under active management (%d%% of capacity of 15)",
-                patientsHandled, patientsPercent
+                patientsHandled, (int)(patientsProgress * 100)
         ));
 
         populateRecentActivities();
     }
-
     // ── Gauge ─────────────────────────────────────────────────────
     /**
      * Draws three concentric rainbow arcs.
@@ -267,11 +281,47 @@ public class DoctorDashboardController implements Initializable {
         }
 
         for (String activity : activities) {
-            Label lbl = new Label(activity);
+            // Convert the date inside the string before displaying
+            String formattedActivity = prettifyActivityDate(activity);
+
+            Label lbl = new Label(formattedActivity);
             lbl.setWrapText(true);
             lbl.setStyle("-fx-font-size: 13px; -fx-text-fill: #444444;");
             recentActivitiesContainer.getChildren().add(lbl);
         }
+    }
+
+    private String prettifyActivityDate(String activity) {
+        // Matches yyyy-MM-dd HH:mm:ss (e.g., 2026-05-17 16:28:30)
+        Pattern datePattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}:\\d{2}:\\d{2})");
+        Matcher matcher = datePattern.matcher(activity);
+
+        StringBuilder sb = new StringBuilder();
+        int lastEnd = 0;
+
+        // Formatter for the database input (2026-05-17 16:28:30)
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Formatter for the readable output (May 17, 2026 at 04:28 PM)
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' hh:mm a");
+
+        while (matcher.find()) {
+            sb.append(activity, lastEnd, matcher.start());
+
+            try {
+                String rawDateTime = matcher.group();
+                // Using LocalDateTime because your activity includes time (16:28:30)
+                LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, inputFormatter);
+                sb.append(dateTime.format(outputFormatter));
+            } catch (Exception e) {
+                // Fallback to original text if parsing fails
+                sb.append(matcher.group());
+            }
+            lastEnd = matcher.end();
+        }
+        sb.append(activity.substring(lastEnd));
+
+        return sb.toString();
     }
 
     private void populateSchedule() {
@@ -374,33 +424,30 @@ public class DoctorDashboardController implements Initializable {
         );
     }
 
-    @FXML private void onViewPatients(ActionEvent event) {
+    @FXML
+    private void onViewPatients(ActionEvent event) {
         System.out.println("[Dashboard] View Patients");
-        // TODO: navigate
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
 
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/doctor/ui/patients",
-                        "my-patients-view.fxml",
-                        "/org/example/daibetes/styles/my-patient.css"
-                )
+        // Use the source of the event as the sourceNode
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/doctor/ui/patients",
+                "my-patients-view.fxml",
+                "dAIbetes — My Patients",
+                "/org/example/daibetes/styles/my-patient.css"
         );
     }
 
-    @FXML private void onViewConsultations(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
+    @FXML
+    private void onViewConsultations(ActionEvent event) {
+        System.out.println("[Dashboard] View Consultations");
 
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/doctor/ui/calendar",
-                        "doctor-calendar.fxml",
-                        "/org/example/daibetes/styles/doctor-calendar.css"
-                )
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/doctor/ui/calendar",
+                "doctor-calendar.fxml",
+                "dAIbetes — Doctor Calendar",
+                "/org/example/daibetes/styles/doctor-calendar.css"
         );
     }
 
@@ -413,16 +460,12 @@ public class DoctorDashboardController implements Initializable {
     private void onLogout(ActionEvent event) {
         System.out.println("[Dashboard] Log out");
 
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-
-        stage.setScene(
-                SceneLoader.load(
-                        "org/example/daibetes/modules/splash/controller",
-                        "splash-screen.fxml",
-                        "/org/example/daibetes/styles/splash.css"
-                )
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/splash/controller",
+                "splash-screen.fxml",
+                "dAIbetes — Welcome",
+                "/org/example/daibetes/styles/splash.css"
         );
     }
 

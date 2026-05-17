@@ -3,6 +3,7 @@ package org.example.daibetes.core.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,25 +11,24 @@ public class DoctorDashboardDAO {
 
     public int getTotalReportsByDoctor(int doctorId) {
         String sql = """
-            SELECT COUNT(*) AS total_reports
-            FROM tblreport r
-            INNER JOIN tbltests t
-                ON r.test_id = t.test_id
-            WHERE t.d_id = ?
-        """;
+        SELECT COUNT(*)
+        FROM tblreport r
+        INNER JOIN tbltests t ON r.test_id = t.test_id
+        WHERE t.d_id = ?
+    """;
 
         try (Connection conn = MySQLConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, doctorId);
+            pstmt.setInt(1, doctorId);
 
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt("total_reports");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
