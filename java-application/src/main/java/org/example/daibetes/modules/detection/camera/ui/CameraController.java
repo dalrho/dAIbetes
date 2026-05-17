@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
+import org.example.daibetes.shared.utils.AppExecutor;
 
 import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,7 +31,7 @@ public class CameraController {
             webcam.open();
             running.set(true);
 
-            Thread thread = new Thread(() -> {
+            AppExecutor.get().submit(() -> {
                 while (running.get()) {
                     BufferedImage img = webcam.getImage();
                     if (img != null) {
@@ -40,8 +41,6 @@ public class CameraController {
                     try { Thread.sleep(30); } catch (InterruptedException e) { break; }
                 }
             });
-            thread.setDaemon(true);
-            thread.start();
         }
     }
 
