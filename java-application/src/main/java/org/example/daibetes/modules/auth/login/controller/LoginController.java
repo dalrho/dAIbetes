@@ -72,7 +72,7 @@ public class LoginController {
                 "org/example/daibetes/modules/auth/register", // Folder
                 "register-screen.fxml",                     // FXML file
                 "Register - dAIbetes",                      // Window Title
-                "/org/example/daibetes/styles/splash.css"   // CSS
+                "/org/example/daibetes/styles/splash2.css"   // CSS
         );
     }
 

@@ -285,7 +285,7 @@ public class PopDiagnosisController implements Initializable {
                 SceneLoader.load(
                         "org/example/daibetes/modules/doctor/ui/newdiagnosis",
                         "new-diagnosis-popup.fxml",
-                        null
+                        "/org/example/daibetes/styles/new-diagnosis.css"
                 )
         );
 

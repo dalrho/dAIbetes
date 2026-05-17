@@ -11,13 +11,13 @@ public class RegisterController {
     @FXML
     public void selectPatient(ActionEvent event) {
         // Logic remains the same, helper method updated to handle full screen
-        openScene(event, "org/example/daibetes/modules/auth/register", "patient-register.fxml", "/org/example/daibetes/styles/splash.css");
+        openScene(event, "org/example/daibetes/modules/auth/register", "patient-register.fxml", "/org/example/daibetes/styles/splash2.css");
     }
 
     @FXML
     public void selectDoctor(ActionEvent event) {
         // Logic remains the same, helper method updated to handle full screen
-        openScene(event, "org/example/daibetes/modules/auth/register", "doctor-register.fxml", "/org/example/daibetes/styles/splash.css");
+        openScene(event, "org/example/daibetes/modules/auth/register", "doctor-register.fxml", "/org/example/daibetes/styles/splash2.css");
     }
 
     @FXML
@@ -28,7 +28,7 @@ public class RegisterController {
                 "org/example/daibetes/modules/auth/login",
                 "login-screen.fxml",
                 "Login - dAIbetes",
-                "/org/example/daibetes/styles/splash.css"
+                "/org/example/daibetes/styles/splash2.css"
         );
     }
 
