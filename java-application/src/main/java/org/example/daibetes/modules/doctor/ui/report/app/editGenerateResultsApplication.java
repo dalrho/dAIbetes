@@ -14,6 +14,7 @@ public class editGenerateResultsApplication extends Application {
         );
 
         stage.setTitle("dAIbetes — Generate Report");
+        stage.setMaximized(true);
         stage.show();
     }
 }

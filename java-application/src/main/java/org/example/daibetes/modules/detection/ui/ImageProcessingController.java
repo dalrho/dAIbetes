@@ -136,7 +136,7 @@ public class ImageProcessingController {
             FXMLLoader loader = new FXMLLoader(resource);
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
-            stage.centerOnScreen();
+            stage.setMaximized(true);
 
         } catch (Exception e) {
             System.err.println("Navigation Error: " + e.getMessage());

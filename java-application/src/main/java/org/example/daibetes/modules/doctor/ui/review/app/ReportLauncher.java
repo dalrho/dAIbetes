@@ -22,6 +22,7 @@ public class ReportLauncher extends Application {
 
         stage.setTitle("Scan Records Dashboard");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 
