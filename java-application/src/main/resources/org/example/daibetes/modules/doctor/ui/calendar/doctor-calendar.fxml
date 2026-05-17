@@ -111,7 +111,14 @@
             <VBox fx:id="appointmentPopup" visible="false" styleClass="popup-card" alignment="CENTER" spacing="25"
                   maxWidth="450.0" maxHeight="-Infinity" style="-fx-padding: 35;">
 
-                <Label styleClass="popup-title" text="APPOINTMENT DETAILS" />
+                <AnchorPane prefWidth="380.0">
+                    <children>
+                        <Label styleClass="popup-title" text="APPOINTMENT DETAILS" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0" />
+                        <Button onAction="#closeOverlay" text="✕" 
+                                style="-fx-background-color: transparent; -fx-text-fill: #888888; -fx-font-size: 22px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 10 0 0;" 
+                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0" />
+                    </children>
+                </AnchorPane>
 
                 <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="-Infinity">
                     <children>
