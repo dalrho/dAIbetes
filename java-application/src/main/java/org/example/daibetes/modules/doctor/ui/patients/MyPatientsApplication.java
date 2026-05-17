@@ -14,6 +14,7 @@ public class MyPatientsApplication extends Application {
         );
 
         stage.setTitle("dAIbetes — Generate Report");
+        stage.setMaximized(true);
         stage.show();
     }
 }
