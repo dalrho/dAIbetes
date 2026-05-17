@@ -1,7 +1,5 @@
 package org.example.daibetes.modules.doctor.ui.popup.controller;
 
-import org.example.daibetes.shared.ui.SceneLoader;
-import org.example.daibetes.modules.patient.ui.upload.controller.ImageUploadController;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +13,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
+import org.example.daibetes.modules.patient.ui.upload.controller.ImageUploadController;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,19 +24,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-/**
- * PopDiagnosisController
- * Handles all interactions for the pop-up diagnosis screen
- *
- * Features:
- * - Upload up to 3 images from file system
- * - Capture images using device camera
- * - Image validation and storage
- * - User feedback through alerts and notifications
- */
-public class PopDiagnosisController implements Initializable {
 
-    @FXML private Button uploadImageBtn;
+public class Pop2 implements Initializable {
+    @FXML
+    private Button uploadImageBtn;
     @FXML private Button closeBtn;
     @FXML private Button openCameraBtn;
     @FXML private Button backBtn;
@@ -124,7 +115,7 @@ public class PopDiagnosisController implements Initializable {
             openUploadScreen(validImages);
         }
     }
-//        ORIGINAL CODE
+    //        ORIGINAL CODE
 //    private void openUploadScreen(List<File> images) {
 //
 //        try {
@@ -167,41 +158,41 @@ public class PopDiagnosisController implements Initializable {
 //            showError("Error", e.getMessage());
 //        }
 //    }
-private void openUploadScreen(List<File> images) {
+    private void openUploadScreen(List<File> images) {
 
-    try {
+        try {
 
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml")
-        );
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/org/example/daibetes/modules/patient/ui/upload/image-upload-view.fxml")
+            );
 
-        Parent root = loader.load();
+            Parent root = loader.load();
 
-        ImageUploadController controller = loader.getController();
-        controller.setImages(images);
+            ImageUploadController controller = loader.getController();
+            controller.setImages(images);
 
-        Stage stage = (Stage) uploadImageBtn.getScene().getWindow();
+            Stage stage = (Stage) uploadImageBtn.getScene().getWindow();
 
-        Scene scene = new Scene(root);
+            Scene scene = new Scene(root);
 
 // APPLY CSS HERE (this is the missing part)
-        scene.getStylesheets().add(
-                getClass().getResource("/org/example/daibetes/styles/new-diagnosis.css").toExternalForm()
-        );
+            scene.getStylesheets().add(
+                    getClass().getResource("/org/example/daibetes/styles/new-diagnosis.css").toExternalForm()
+            );
 
-        stage.setScene(scene);
-        stage.setTitle("Uploaded Images");
-        stage.show();
+            stage.setScene(scene);
+            stage.setTitle("Uploaded Images");
+            stage.show();
 
-        Stage current = (Stage) uploadImageBtn.getScene().getWindow();
-        if (current != null) {
-            current.close();
+            Stage current = (Stage) uploadImageBtn.getScene().getWindow();
+            if (current != null) {
+                current.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Error", e.getMessage());
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-        showError("Error", e.getMessage());
     }
-}
 
     // =========================
     // IMAGE VALIDATION
@@ -323,8 +314,8 @@ private void openUploadScreen(List<File> images) {
 
         stage.setScene(
                 SceneLoader.load(
-                        "org/example/daibetes/modules/doctor/ui/newdiagnosis",
-                        "new-diagnosis-popup.fxml",
+                        "org/example/daibetes/modules/doctor/ui/review",
+                        "records-screen.fxml",
                         "/org/example/daibetes/styles/new-diagnosis.css"
                 )
         );

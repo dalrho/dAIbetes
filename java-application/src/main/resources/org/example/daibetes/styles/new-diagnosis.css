@@ -2,7 +2,6 @@
     -fx-background-image: url("../images/bg1.gif");
     -fx-background-size: cover;
     -fx-background-position: center;
-    -fx-opacity: 0.6;
 }
 
 .popup-card {
