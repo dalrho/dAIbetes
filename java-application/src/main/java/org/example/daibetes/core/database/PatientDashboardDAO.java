@@ -26,13 +26,14 @@ public class PatientDashboardDAO {
         """;
 
         String diagnosisSql = """
-            SELECT diag.diagnosis_id, diag.updated_at, diag.created_at,
+            SELECT r.report_id, r.saved_on AS created_at, r.saved_on AS updated_at,
                    CONCAT(u.firstname, ' ', u.lastname) AS doctor_name
-            FROM tbldiagnosis diag
-            JOIN tbldoctor d ON diag.d_id = d.d_id
+            FROM tblreport r
+            JOIN tbltests t ON r.test_id = t.test_id
+            JOIN tbldoctor d ON t.d_id = d.d_id
             JOIN tbluser u ON d.user_id = u.user_id
-            WHERE diag.p_id = ?
-            ORDER BY diag.updated_at DESC LIMIT 5
+            WHERE t.p_id = ?
+            ORDER BY r.saved_on DESC LIMIT 5
         """;
 
         try (Connection conn = MySQLConnection.getConnection()) {
@@ -207,8 +208,8 @@ public class PatientDashboardDAO {
     public boolean hasPendingRequest(int patientId, int doctorId) {
         String sql = """
             SELECT COUNT(*) FROM tbltests t
-            LEFT JOIN tbldiagnosis d ON t.test_id = d.detection_id
-            WHERE t.p_id = ? AND t.d_id = ? AND d.diagnosis_id IS NULL
+            LEFT JOIN tblreport r ON t.test_id = r.test_id
+            WHERE t.p_id = ? AND t.d_id = ? AND r.report_id IS NULL
         """;
 
         try (Connection conn = MySQLConnection.getConnection();
@@ -252,16 +253,19 @@ public class PatientDashboardDAO {
     public List<String[]> getDiagnosesByPatient(int patientId) {
         List<String[]> results = new ArrayList<>();
         String sql = """
-            SELECT diag.diagnosis_id,
+            SELECT r.report_id AS diagnosis_id,
                    CONCAT(u.firstname, ' ', u.lastname) AS doctor_name,
-                   diag.diagnosis_text,
-                   diag.recommendation,
-                   DATE_FORMAT(diag.diagnosis_date, '%b %d, %Y') AS diagnosis_date
-            FROM tbldiagnosis diag
-            JOIN tbldoctor doc ON diag.d_id = doc.d_id
+                   e.final_dr_grade AS diagnosis_text,
+                   rec.final_notes AS recommendation,
+                   DATE_FORMAT(r.saved_on, '%b %d, %Y') AS diagnosis_date
+            FROM tblreport r
+            JOIN tbltests t ON r.test_id = t.test_id
+            JOIN tbldoctor doc ON t.d_id = doc.d_id
             JOIN tbluser   u   ON doc.user_id = u.user_id
-            WHERE diag.p_id = ?
-            ORDER BY diag.diagnosis_date DESC
+            JOIN tblfindings e ON r.evaluation_id = e.evaluation_id
+            JOIN tblrecommendations rec ON r.recommendations_id = rec.recommendation_id
+            WHERE t.p_id = ?
+            ORDER BY r.saved_on DESC
         """;
 
         try (Connection conn = MySQLConnection.getConnection();

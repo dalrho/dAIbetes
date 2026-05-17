@@ -14,11 +14,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
-import org.example.daibetes.core.database.CalendarDAO;
+import org.example.daibetes.core.database.ICalendarDAO;
 import org.example.daibetes.shared.models.Appointment;
 import org.example.daibetes.shared.models.Doctor;
 import org.example.daibetes.shared.models.User;
 import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.shared.utils.ServiceRegistry;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -55,7 +56,7 @@ public class DoctorCalendarController implements Initializable {
     private YearMonth currentMonth;
     private Appointment selectedAppointment;
     private int doctorId;
-    private final CalendarDAO dao = new CalendarDAO();
+    private final ICalendarDAO dao = ServiceRegistry.getInstance().get(ICalendarDAO.class);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

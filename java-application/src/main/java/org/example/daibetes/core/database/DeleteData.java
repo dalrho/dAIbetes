@@ -4,18 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class DeleteData{
+public class DeleteData {
 
-
-
-    // Delete diagnosis only if no report references it
-    public boolean deleteDiagnosis(int diagnosisId) {
-        String sql = "DELETE FROM tbldiagnosis WHERE diagnosis_id = ?";
+    // Delete report only if no foreign key constraints are violated
+    public boolean deleteDiagnosis(int reportId) {
+        String sql = "DELETE FROM tblreport WHERE report_id = ?";
 
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, diagnosisId);
+            ps.setInt(1, reportId);
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
@@ -24,14 +22,14 @@ public class DeleteData{
         }
     }
 
-    // Delete detection only if no diagnosis/report references it
-    public boolean deleteDetection(int detectionId) {
-        String sql = "DELETE FROM tbldetection WHERE detection_id = ?";
+    // Delete test only if no foreign key constraints are violated
+    public boolean deleteDetection(int testId) {
+        String sql = "DELETE FROM tbltests WHERE test_id = ?";
 
         try (Connection conn = MySQLConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, detectionId);
+            ps.setInt(1, testId);
             return ps.executeUpdate() > 0;
 
         } catch (SQLException e) {

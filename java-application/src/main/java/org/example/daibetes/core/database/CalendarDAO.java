@@ -6,6 +6,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DAO for the Patient Calendar screen.
@@ -14,7 +15,7 @@ import java.util.List;
  *   - Fetching a patient's appointments from tblConsultationRequest
  *   - Inserting a new appointment request into tblConsultationRequest
  */
-public class CalendarDAO {
+public class CalendarDAO implements ICalendarDAO {
 
     // =========================================================================
     // DOCTORS — for the ComboBox
@@ -25,6 +26,7 @@ public class CalendarDAO {
      * Also returns their d_id so we can map selection back to an ID.
      * Format: String[0] = d_id, String[1] = display name
      */
+    @Override
     public List<String[]> getAllDoctors() {
         List<String[]> results = new ArrayList<>();
 
@@ -71,6 +73,7 @@ public class CalendarDAO {
      * time is stored in AppContext as a separate field since tblConsultationRequest
      * has no time column — it is stored via the notes approach below.
      */
+    @Override
     public List<Appointment> getAppointmentsByPatient(int patientId) {
         List<Appointment> results = new ArrayList<>();
 
@@ -131,9 +134,11 @@ public class CalendarDAO {
         return results;
     }
 
+
     /**
      * Fetches all consultation requests for a doctor as Appointment objects.
      */
+    @Override
     public List<Appointment> getAppointmentsByDoctor(int doctorId) {
         List<Appointment> results = new ArrayList<>();
 
@@ -197,6 +202,7 @@ public class CalendarDAO {
     /**
      * Updates appointment status in the database.
      */
+    @Override
     public boolean updateAppointmentStatus(int requestId, boolean accepted) {
         String sql = """
             UPDATE tblconsultationrequest
@@ -232,6 +238,7 @@ public class CalendarDAO {
      *
      * @return generated request_id, or -1 on failure
      */
+    @Override
     public int insertAppointmentRequest(int patientId, int doctorId,
                                         String requestedOn) {
         // Step 1: create a test row with no image yet (raw_img_id = NULL)
@@ -281,6 +288,7 @@ public class CalendarDAO {
      * Removes an appointment request from the database.
      * Typically used by patients to clear rejected appointments from view.
      */
+    @Override
     public boolean deleteAppointmentRequest(int requestId) {
         String sql = "DELETE FROM tblconsultationrequest WHERE request_id = ?";
 
@@ -293,6 +301,31 @@ public class CalendarDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    @Override
+    public Integer save(Appointment entity) {
+        return 0;
+    }
+
+    @Override
+    public Optional<Appointment> findById(Integer integer) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Appointment> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public boolean update(Appointment entity) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteById(Integer integer) {
         return false;
     }
 }
