@@ -121,7 +121,7 @@ public class PatientRecordsController {
     private void handleViewDetails(ReportData data) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/example/daibetes/modules/doctor/ui/review/review_results.fxml")
+                    getClass().getResource("/org/example/daibetes/modules/records/controller/review_results.fxml")
             );
 
             Parent root = loader.load();

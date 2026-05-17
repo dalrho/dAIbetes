@@ -61,6 +61,8 @@ module org.example.daibetes {
 
     opens org.example.daibetes.modules.doctor.ui.review.controller to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.review.controller;
+
+
     opens org.example.daibetes.modules.doctor.ui.review.app to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.review.app;
     exports org.example.daibetes.modules.doctor.ui.review.model;

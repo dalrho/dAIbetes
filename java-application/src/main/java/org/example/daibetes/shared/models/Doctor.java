@@ -8,6 +8,7 @@ public class Doctor extends User {
     private String licenseNumber;
     private File doctorId;
     private String hospital;
+    private String doctorName;
 
     public Doctor(String firstname, String lastname, String email, String password,
                   String contactNumber, String gender, String birthdate,
@@ -17,6 +18,7 @@ public class Doctor extends User {
         this.licenseNumber = licenseNumber;
         this.hospital = hospital;
         this.doctorId = doctorId;
+        this.doctorName = firstname + " " + lastname;
     }
 
     public int getDId() {
@@ -38,4 +40,5 @@ public class Doctor extends User {
     public String getHospital() {
         return hospital;
     }
+    public String getDoctorName() {return doctorName;}
 }
