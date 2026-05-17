@@ -41,7 +41,7 @@ public class SplashController {
                 "org/example/daibetes/modules/auth/login",        // Folder path
                 "login-screen.fxml",                              // FXML filename
                 "Login - dAIbetes",                               // Window Title
-                "/org/example/daibetes/styles/splash.css"         // CSS path
+                "/org/example/daibetes/styles/splash2.css"         // CSS path
         );
     }
 }

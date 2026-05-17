@@ -23,8 +23,16 @@ public class splashApplication extends Application {
         stage.setScene(scene);
 
         // Ensure the initial stage is maximized
-        stage.setFullScreenExitHint("");
-        stage.setFullScreen(true);
+//        stage.setFullScreenExitHint("");
+//        stage.setFullScreen(true);
+//        stage.show();
+        // ADD THESE
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+        stage.setWidth(screenBounds.getWidth());
+        stage.setHeight(screenBounds.getHeight());
+
+        stage.setMaximized(true);
         stage.show();
     }
 
