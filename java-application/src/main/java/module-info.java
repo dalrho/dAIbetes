@@ -110,6 +110,10 @@ module org.example.daibetes {
     exports org.example.daibetes.modules.splash.app;
     exports org.example.daibetes.shared.ui;
     opens org.example.daibetes.shared.ui to javafx.fxml;
+
+
     exports org.example.daibetes.shared.utils;
     opens org.example.daibetes.shared.utils to javafx.fxml;
+    exports org.example.daibetes.shared.service;
+    opens org.example.daibetes.shared.service to javafx.fxml;
 }
