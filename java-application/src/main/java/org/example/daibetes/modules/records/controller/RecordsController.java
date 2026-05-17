@@ -285,7 +285,7 @@
             Stage stage = (Stage) recordsTable.getScene().getWindow();
 
             Scene scene = SceneLoader.load(
-                    "org/example/daibetes/modules/records/controller",
+                    "org/example/daibetes/modules/doctor/ui/review",
                     "doctorViewDiagnosis.fxml",
                     null
             );

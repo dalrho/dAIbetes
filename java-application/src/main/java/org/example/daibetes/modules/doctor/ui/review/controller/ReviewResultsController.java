@@ -1,5 +1,6 @@
 package org.example.daibetes.modules.doctor.ui.review.controller;
 
+import org.example.daibetes.app.AppContext;
 import org.example.daibetes.modules.doctor.ui.review.model.ReportData;
 
 import com.itextpdf.kernel.colors.ColorConstants;
@@ -21,12 +22,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox; // Added import
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.service.PDFService;
 
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
 
 public class ReviewResultsController {
 
@@ -35,11 +41,22 @@ public class ReviewResultsController {
     @FXML private Label valMA, valHem, valExu, valCWS, valME, valVB, valDRGrade, valDME;
     @FXML private FlowPane recommendationsContainer;
 
+    // ADDED FOR NAME AND AI DISPLAY
+    @FXML private Label patientNameLabel;
+    @FXML private Label aiCriticalityLabel;
+    @FXML private Label aiExplanationLabel;
+    @FXML private VBox aiResultBox;
+
     private ReportData currentReportData;
 
     public void setReportData(ReportData data) {
         System.out.println("DEBUG: Setting report data for: " + data.getPatientName());
         this.currentReportData = data;
+
+        // UPDATED: Set Patient Name
+        if (patientNameLabel != null) {
+            patientNameLabel.setText(data.getPatientName() != null ? data.getPatientName() : "Unknown Patient");
+        }
 
         if (data.getScanImage() != null) {
             reportImageView.setImage(data.getScanImage());
@@ -67,28 +84,63 @@ public class ReviewResultsController {
                 recommendationsContainer.getChildren().add(tag);
             }
         }
+
+        // OPTIONAL: If your ReportData eventually carries AI info, you set it here:
+        // if (aiExplanationLabel != null) aiExplanationLabel.setText("AI analysis from history...");
     }
 
     @FXML
     private void handleExportPDF() {
-        System.out.println("DEBUG: Export PDF Clicked");
-
+        // 1. Guard Clause: Ensure report data exists
         if (currentReportData == null) {
-            System.err.println("ERROR: No report data found to export.");
-            new Alert(Alert.AlertType.WARNING, "No report data is loaded yet.").show();
+            showAlert("Export Error", "No report data is loaded to export.");
             return;
         }
 
+        // 2. RESOLVE PATIENT NAME (Same logic as your UI display)
+        String resolvedPatientName = currentReportData.getPatientName();
+        if (resolvedPatientName == null || resolvedPatientName.isBlank()) {
+            resolvedPatientName = AppContext.getInstance().getSelectedRecordsPatientName();
+        }
+        if (resolvedPatientName == null || resolvedPatientName.isBlank()) {
+            resolvedPatientName = AppContext.getInstance().getSelectedPatientName();
+        }
+        if (resolvedPatientName == null || resolvedPatientName.isBlank()) {
+            resolvedPatientName = "Unknown Patient";
+        }
+
+        // Update the object so the PDF service sees the correct name
+        currentReportData.setPatientName(resolvedPatientName);
+
+        // 3. File Chooser Setup
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Diagnostic Report");
-        fileChooser.setInitialFileName("Diagnostic_Report_" + currentReportData.getPatientName().replace(" ", "_") + ".pdf");
+
+        // Use the resolved name for the filename
+        String fileNameSafe = resolvedPatientName.replace(" ", "_");
+        fileChooser.setInitialFileName("Diagnostic_Report_" + fileNameSafe + ".pdf");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
 
         File file = fileChooser.showSaveDialog(lblNotes.getScene().getWindow());
 
         if (file != null) {
             try {
-                generatePDF(file.getAbsolutePath());
+                // 4. Resolve Doctor Name
+                String doctorName = "Attending Physician";
+                if (AppContext.getInstance().getCurrentUser() instanceof Doctor d) {
+                    // Ensure this matches your Doctor model (getName or getDoctorName)
+                    doctorName = "Dr. " + d.getDoctorName();
+                }
+
+                // 5. CALL THE SERVICE
+                PDFService.generateDiagnosticReport(
+                        file.getAbsolutePath(),
+                        currentReportData,
+                        reportImageView.getImage(),
+                        AppContext.getInstance().getSelectedReportId(),
+                        doctorName
+                );
+
                 new Alert(Alert.AlertType.INFORMATION, "Report successfully exported to PDF.").show();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -116,7 +168,7 @@ public class ReviewResultsController {
                 .setBackgroundColor(ColorConstants.LIGHT_GRAY).setPadding(10));
         document.add(assessment);
 
-        // Pathological Findings (INCLUDING ALL CONTENT FROM IMAGE 2)
+        // Pathological Findings
         document.add(new Paragraph("\nCLINICAL PATHOLOGICAL FINDINGS").setBold().setFontSize(14));
         Table table = new Table(UnitValue.createPercentArray(new float[]{50, 50})).useAllAvailableWidth().setMarginTop(10);
 
@@ -131,7 +183,6 @@ public class ReviewResultsController {
         addTableRow(table, "9. Vitreous Hemorrhage", currentReportData.getVitreousHemorrhage());
         addTableRow(table, "10. Retinal Detachment", currentReportData.getRetinalDetachment());
 
-        // Grades
         addTableRow(table, "Final DR Grade", currentReportData.getDrGrade());
         addTableRow(table, "Macular Edema (DME) Grade", currentReportData.getDmeGrade());
 
