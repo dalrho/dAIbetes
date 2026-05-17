@@ -112,44 +112,55 @@ public class DoctorDashboardController implements Initializable {
             totalScansLabel.setText("0");
             toReviewLabel.setText("0");
             recentActivitiesContainer.getChildren().clear();
-            recentActivitiesContainer.getChildren().add(new Label("No logged-in doctor found."));
             return;
         }
 
-        int totalScans = dashboardDAO.getTotalTestsByDoctor(loggedInDoctorId);
-        int completedDiagnoses = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+        // 1. Fetch the number of reports actually finalized by this doctor
+        int reportsMade = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+
+        // 2. Fetch total raw scans assigned (even if not yet reported) for the completion rate
+        int totalAssignedScans = dashboardDAO.getTotalTestsByDoctor(loggedInDoctorId);
+
         int patientsHandled = dashboardDAO.getPatientsHandledByDoctor(loggedInDoctorId);
         int pendingReview = dashboardDAO.getPendingAppointmentsCount(loggedInDoctorId);
 
-        totalScansLabel.setText(String.valueOf(totalScans));
+        // 3. UI Update: Total Scans Label now strictly shows "Reports Made"
+        totalScansLabel.setText(String.valueOf(reportsMade));
         toReviewLabel.setText(String.valueOf(pendingReview));
 
-        // Calculate progress values with targets (Scans Target: 20, Patients Target: 15)
-        recordsProgress = totalScans >= 20 ? 1.0 : (double) totalScans / 20.0;
-        diagnosesProgress = totalScans == 0 ? 0.0 : (double) completedDiagnoses / totalScans;
+        // 4. Calculate progress for the Gauge
+        // Records progress is based on reports made vs target of 20
+        recordsProgress = reportsMade >= 20 ? 1.0 : (double) reportsMade / 20.0;
+
+        // Diagnoses progress is reports made vs total scans assigned
+        diagnosesProgress = totalAssignedScans == 0 ? 0.0 : (double) reportsMade / totalAssignedScans;
+
         patientsProgress = patientsHandled >= 15 ? 1.0 : (double) patientsHandled / 15.0;
 
-        // Set descriptive, professional status labels
+        // 5. Update System Summary Labels
         int recordsPercent = (int) (recordsProgress * 100);
         int diagnosesPercent = (int) (diagnosesProgress * 100);
-        int patientsPercent = (int) (patientsProgress * 100);
 
+        // Row 1: Reports finalized
         recordsStatusLabel.setText(String.format(
-                "%d scans recorded (%d%% of monthly target of 20)",
-                totalScans, recordsPercent
+                "%d reports finalized (%d%% of monthly target of 20)",
+                reportsMade, recordsPercent
         ));
+
+        // Row 2: Completion rate (Reports / Total Scans)
         diagnosesStatusLabel.setText(String.format(
-                "%d diagnoses completed out of %d total scans (%d%% completion rate)",
-                completedDiagnoses, totalScans, diagnosesPercent
+                "%d diagnoses completed out of %d total assigned scans (%d%% completion rate)",
+                reportsMade, totalAssignedScans, diagnosesPercent
         ));
+
+        // Row 3: Patients
         patientsStatusLabel.setText(String.format(
                 "%d patients under active management (%d%% of capacity of 15)",
-                patientsHandled, patientsPercent
+                patientsHandled, (int)(patientsProgress * 100)
         ));
 
         populateRecentActivities();
     }
-
     // ── Gauge ─────────────────────────────────────────────────────
     /**
      * Draws three concentric rainbow arcs.
