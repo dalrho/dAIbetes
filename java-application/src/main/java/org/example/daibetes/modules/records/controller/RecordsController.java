@@ -1,26 +1,28 @@
-    package org.example.daibetes.modules.records.controller;
-    import javafx.collections.FXCollections;
-    import javafx.collections.ObservableList;
-    import javafx.event.ActionEvent;
-    import javafx.fxml.FXML;
-    import javafx.scene.Node;
-    import javafx.scene.Scene;
-    import javafx.scene.control.*;
-    import javafx.scene.control.cell.PropertyValueFactory;
-    import javafx.stage.Stage;
-    import org.example.daibetes.app.AppContext;
-    import org.example.daibetes.core.database.DoctorDashboardDAO;
-    import org.example.daibetes.core.database.MyPatientsDAO;
-    import org.example.daibetes.shared.ui.PopupManager;
-    import org.example.daibetes.shared.ui.SceneLoader;
-    import org.example.daibetes.modules.records.model.Record;
-    import java.time.LocalDate;
-    import java.util.List;
-    import javafx.scene.control.TableCell;
-    import java.time.LocalDateTime;
-    import java.time.format.DateTimeFormatter;
+package org.example.daibetes.modules.records.controller;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import org.example.daibetes.app.AppContext;
+import org.example.daibetes.core.database.DoctorDashboardDAO;
+import org.example.daibetes.core.database.MyPatientsDAO;
+import org.example.daibetes.core.database.DeleteData;
+import org.example.daibetes.shared.ui.PopupManager;
+import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.modules.records.model.Record;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import javafx.scene.control.TableCell;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-    import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
+import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
 
     public class RecordsController {
 
@@ -210,45 +212,31 @@
         }
 
 
-        //fix this
+        // Deleted a selected scan record cleanly from database and list view
         @FXML
         private void handleDeleteRecord(ActionEvent event) {
-            int patientId = AppContext.getInstance().getSelectedRecordsPatientId();
-            int doctorId = AppContext.getInstance().getSelectedRecordsDoctorId();
-            String patientName = AppContext.getInstance().getSelectedRecordsPatientName();
-
-            if (patientId == 0 || doctorId == 0 || patientName == null || patientName.isBlank()) {
-                showAlert("Missing Data", "No selected patient or doctor found.");
+            Record selectedRecord = recordsTable.getSelectionModel().getSelectedItem();
+            if (selectedRecord == null) {
+                showAlert("No Selection", "Please select a scan record from the table to delete.");
                 return;
             }
 
-            /*
-             * Store selected patient and doctor so the next screens can use them.
-             */
-            AppContext.getInstance().setSelectedRecordsPatientId(patientId);
-            AppContext.getInstance().setSelectedRecordsDoctorId(doctorId);
-            AppContext.getInstance().setSelectedRecordsPatientName(patientName);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Deletion");
+            alert.setHeaderText("Delete Scan Record");
+            alert.setContentText("Are you sure you want to delete the selected scan record? This will permanently delete the report and its diagnostics.");
 
-            /*
-             * Optional: if other controllers use selectedPatientName instead,
-             * store it there too.
-             */
-            AppContext.getInstance().setSelectedPatientName(patientName);
-
-            /*
-             * Clear old report selection because this is a NEW diagnosis.
-             */
-            AppContext.getInstance().setSelectedReportId(0);
-            AppContext.getInstance().setShowDiagnosisBackButton(true);
-
-            SceneLoader.switchScene(
-                    (Node) event.getSource(), // or any UI node in THIS controller
-                    "org/example/daibetes/modules/doctor/ui/popup",
-                    "pop2.fxml",
-                    "Add Diagnosis",
-                    "/org/example/daibetes/styles/new-diagnosis.css"
-            );
-            updateStatus("Opening new diagnosis for " + patientName);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                DeleteData deleteData = new DeleteData();
+                boolean success = deleteData.deleteReportCascade(selectedRecord.getReportId());
+                if (success) {
+                    handleRefresh();
+                    showAlert("Success", "Scan record successfully deleted.");
+                } else {
+                    showAlert("Error", "Failed to delete the scan record.");
+                }
+            }
         }
 
         @FXML
