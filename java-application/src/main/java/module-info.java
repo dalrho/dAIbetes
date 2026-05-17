@@ -24,8 +24,8 @@ module org.example.daibetes {
 
 
     // --- Core & App ---
-    opens org.example.daibetes to javafx.fxml;
-    exports org.example.daibetes;
+    opens org.example.daibetes.main to javafx.fxml;
+    exports org.example.daibetes.main;
 
 
     // --- Auth Module ---
