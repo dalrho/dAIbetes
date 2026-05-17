@@ -67,13 +67,15 @@
             <VBox spacing="12" VBox.vgrow="ALWAYS">
                 <Label text="Recent Scans" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1A2332;"/>
 
-                <TableView fx:id="patientRecordsTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 8; -fx-overflow-x: hidden;">
+                <!-- Find the TableView section and update the columns as follows -->
+                <TableView fx:id="patientRecordsTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 8;">
                     <columns>
-                        <TableColumn fx:id="colDate" text="Date of Scan" prefWidth="180"/>
+                        <TableColumn fx:id="colDate" text="Date of Scan" prefWidth="150"/>
+                        <TableColumn fx:id="colDoctor" text="Consulting Doctor" prefWidth="180"/>
                         <TableColumn fx:id="colType" text="Scan Type" prefWidth="150"/>
-                        <TableColumn fx:id="colDiagnosis" text="Primary Diagnosis" prefWidth="250"/>
-                        <TableColumn fx:id="colCriticality" text="Criticality" prefWidth="150"/>
-                        <TableColumn fx:id="colActions" text="Options" prefWidth="180"/>
+                        <TableColumn fx:id="colDiagnosis" text="Primary Diagnosis" prefWidth="200"/>
+                        <TableColumn fx:id="colCriticality" text="Criticality" prefWidth="120"/>
+                        <TableColumn fx:id="colActions" text="Options" prefWidth="150"/>
                     </columns>
                     <placeholder>
                         <VBox alignment="CENTER" spacing="10">
