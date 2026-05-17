@@ -33,6 +33,7 @@
             <Pane HBox.hgrow="ALWAYS"/>
 
             <Button text="Back"
+                    fx:id="backBtn"
                     onAction="#onBack"
                     style="-fx-background-color: red;
                            -fx-text-fill: white;
