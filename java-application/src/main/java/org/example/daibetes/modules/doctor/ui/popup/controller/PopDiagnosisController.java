@@ -290,6 +290,12 @@ public class PopDiagnosisController implements Initializable {
         );
 
         stage.setTitle("Select Patient");
+        javafx.geometry.Rectangle2D screenBounds =
+                javafx.stage.Screen.getPrimary().getVisualBounds();
+
+        stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
+        stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
+
         stage.show();
     }
 }

@@ -22,7 +22,6 @@ module org.example.daibetes {
     requires javafx.swing;
     requires com.fasterxml.jackson.databind;
 
-
     // --- Core & App ---
     opens org.example.daibetes to javafx.fxml;
     exports org.example.daibetes;

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -12,7 +13,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
-import org.example.daibetes.shared.ui.PopupManager;
+
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,6 +26,7 @@ public class ImageUploadController {
 
     @FXML private ImageView img1, img2, img3;
     @FXML private VBox box1, box2, box3;
+    @FXML private Button backBtn;
 
     // We no longer keep a local list here, we use AppContext
     private List<File> images;
@@ -133,6 +136,11 @@ public class ImageUploadController {
             Stage stage = (Stage) img1.getScene().getWindow();
             stage.setScene(scene);
 
+            // FOR FIXED CENTER SCREEN
+            stage.setResizable(false);
+            stage.sizeToScene();
+            stage.centerOnScreen();
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Something went wrong while processing the image.");
@@ -141,11 +149,17 @@ public class ImageUploadController {
 
     @FXML
     private void onBack() {
-        try {
-            PopupManager.open("org/example/daibetes/modules/doctor/ui/popup", "popdiagnosis-screen.fxml", null, "New Diagnosis");
-            Stage stage = (Stage) img1.getScene().getWindow();
-            stage.close();
-        } catch (Exception e) { e.printStackTrace(); }
+        Stage stage = (Stage) backBtn.getScene().getWindow();
+        stage.setScene(
+                SceneLoader.load(
+                        "org/example/daibetes/modules/doctor/ui/popup",
+                        "popdiagnosis-screen.fxml",
+                        null
+                )
+        );
+
+        stage.setTitle("Select Patient");
+        stage.show();
     }
 
     private void showAlert(String title, String msg) {

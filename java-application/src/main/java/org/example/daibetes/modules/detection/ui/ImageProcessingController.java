@@ -136,6 +136,7 @@ public class ImageProcessingController {
             FXMLLoader loader = new FXMLLoader(resource);
             Scene scene = new Scene(loader.load());
             stage.setScene(scene);
+            stage.setMaximized(true);
             stage.centerOnScreen();
 
         } catch (Exception e) {
