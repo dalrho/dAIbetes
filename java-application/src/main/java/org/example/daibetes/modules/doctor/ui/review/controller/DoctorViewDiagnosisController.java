@@ -188,7 +188,7 @@ public class DoctorViewDiagnosisController {
 
     @FXML
     private void handleBack(ActionEvent event) {
-        Scene scene = sceneLoader.load("org/example/daibetes/modules/records/controller", "records-screen.fxml", null);
+        Scene scene = sceneLoader.load("org/example/daibetes/modules/doctor/ui/review", "records-screen.fxml", null);
         if (scene != null) {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
