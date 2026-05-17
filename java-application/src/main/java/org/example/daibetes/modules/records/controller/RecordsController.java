@@ -237,6 +237,7 @@
              * Clear old report selection because this is a NEW diagnosis.
              */
             AppContext.getInstance().setSelectedReportId(0);
+            AppContext.getInstance().setShowDiagnosisBackButton(false);
 
             PopupManager.open(
                     "org/example/daibetes/modules/doctor/ui/popup",
