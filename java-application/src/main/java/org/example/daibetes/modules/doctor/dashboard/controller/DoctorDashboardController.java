@@ -33,6 +33,9 @@ import org.example.daibetes.app.AppContext;
 import org.example.daibetes.shared.models.Doctor;
 import org.example.daibetes.shared.models.User;
 import org.example.daibetes.shared.models.Appointment;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 /**
  * Controller for doctor-dashboard.fxml
@@ -267,11 +270,47 @@ public class DoctorDashboardController implements Initializable {
         }
 
         for (String activity : activities) {
-            Label lbl = new Label(activity);
+            // Convert the date inside the string before displaying
+            String formattedActivity = prettifyActivityDate(activity);
+
+            Label lbl = new Label(formattedActivity);
             lbl.setWrapText(true);
             lbl.setStyle("-fx-font-size: 13px; -fx-text-fill: #444444;");
             recentActivitiesContainer.getChildren().add(lbl);
         }
+    }
+
+    private String prettifyActivityDate(String activity) {
+        // Matches yyyy-MM-dd HH:mm:ss (e.g., 2026-05-17 16:28:30)
+        Pattern datePattern = Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}:\\d{2}:\\d{2})");
+        Matcher matcher = datePattern.matcher(activity);
+
+        StringBuilder sb = new StringBuilder();
+        int lastEnd = 0;
+
+        // Formatter for the database input (2026-05-17 16:28:30)
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // Formatter for the readable output (May 17, 2026 at 04:28 PM)
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' hh:mm a");
+
+        while (matcher.find()) {
+            sb.append(activity, lastEnd, matcher.start());
+
+            try {
+                String rawDateTime = matcher.group();
+                // Using LocalDateTime because your activity includes time (16:28:30)
+                LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, inputFormatter);
+                sb.append(dateTime.format(outputFormatter));
+            } catch (Exception e) {
+                // Fallback to original text if parsing fails
+                sb.append(matcher.group());
+            }
+            lastEnd = matcher.end();
+        }
+        sb.append(activity.substring(lastEnd));
+
+        return sb.toString();
     }
 
     private void populateSchedule() {
@@ -376,7 +415,6 @@ public class DoctorDashboardController implements Initializable {
 
     @FXML private void onViewPatients(ActionEvent event) {
         System.out.println("[Dashboard] View Patients");
-        // TODO: navigate
         Stage stage = (Stage) ((Node) event.getSource())
                 .getScene()
                 .getWindow();
