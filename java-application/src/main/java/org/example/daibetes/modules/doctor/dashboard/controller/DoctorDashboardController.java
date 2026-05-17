@@ -21,11 +21,14 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import org.example.daibetes.shared.ui.PopupManager;
 import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.core.database.DoctorDashboardDAO;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import org.example.daibetes.app.AppContext;
+import org.example.daibetes.shared.models.Doctor;
+import org.example.daibetes.shared.models.User;
 /**
  * Controller for doctor-dashboard.fxml
  */
@@ -47,19 +50,17 @@ public class DoctorDashboardController implements Initializable {
     @FXML private Button logoutBtn;
     @FXML private Button inboxBtn;
     @FXML private ImageView profileImage;
+    @FXML private Label doctorFirstNameLabel;
+    @FXML private Label doctorLastNameLabel;
+    private int loggedInDoctorId;
+    private final DoctorDashboardDAO dashboardDAO = new DoctorDashboardDAO();
 
     // ── Static data ───────────────────────────────────────────────
-    private static final int    TOTAL_SCANS        = 14;
-    private static final int    TO_REVIEW          = 8;
+
     private static final double RECORDS_PROGRESS   = 0.85;
     private static final double DIAGNOSES_PROGRESS = 0.65;
     private static final double PATIENTS_PROGRESS  = 0.42;
 
-    private static final List<String> RECENT_ACTIVITIES = List.of(
-            "You viewed Patient #3412, Recardo Dalisay's January 2026 Report",
-            "You viewed Patient #3412, Recardo Dalisay's January 2026 Report",
-            "You viewed Patient #3412, Recardo Dalisay's January 2026 Report"
-    );
 
     private record ScheduleEntry(String title, String subtitle) {}
 
@@ -69,17 +70,14 @@ public class DoctorDashboardController implements Initializable {
     );
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        totalScansLabel.setText(String.valueOf(TOTAL_SCANS));
-        toReviewLabel.setText(String.valueOf(TO_REVIEW));
+        loadLoggedInDoctorName();
+        loadDashboardData();
 
         gaugePane.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.getWidth() > 0 && newVal.getHeight() > 0) {
                 drawGauge();
             }
         });
-
-        // ── IMAGE LOADING FIX ───────────────────────────────
 
         URL imgUrl = getClass().getResource("/org/example/daibetes/images/serato.jpg");
 
@@ -90,10 +88,40 @@ public class DoctorDashboardController implements Initializable {
             profileImage.setImage(img);
         }
 
-        // DO NOT call sceneLoader here for image again
+        populateSchedule();
+    }
+
+
+    private void loadLoggedInDoctorName() {
+        User currentUser = AppContext.getInstance().getCurrentUser();
+
+        if (currentUser instanceof Doctor doctor) {
+            loggedInDoctorId = doctor.getDId();
+
+            doctorFirstNameLabel.setText("Doc. " + doctor.getFirstname());
+            doctorLastNameLabel.setText(doctor.getLastname());
+        } else {
+            loggedInDoctorId = 0;
+
+            doctorFirstNameLabel.setText("Doc.");
+            doctorLastNameLabel.setText("");
+        }
+    }
+    private void loadDashboardData() {
+        if (loggedInDoctorId == 0) {
+            totalScansLabel.setText("0");
+            toReviewLabel.setText("0");
+            recentActivitiesContainer.getChildren().clear();
+            recentActivitiesContainer.getChildren().add(new Label("No logged-in doctor found."));
+            return;
+        }
+
+        int totalReports = dashboardDAO.getTotalReportsByDoctor(loggedInDoctorId);
+
+        totalScansLabel.setText(String.valueOf(totalReports));
+        toReviewLabel.setText("0");
 
         populateRecentActivities();
-        populateSchedule();
     }
 
     // ── Gauge ─────────────────────────────────────────────────────
@@ -194,7 +222,22 @@ public class DoctorDashboardController implements Initializable {
 
     private void populateRecentActivities() {
         recentActivitiesContainer.getChildren().clear();
-        for (String activity : RECENT_ACTIVITIES) {
+
+        if (loggedInDoctorId == 0) {
+            recentActivitiesContainer.getChildren().add(new Label("No recent activities."));
+            return;
+        }
+
+        List<String> activities = dashboardDAO.getRecentActivitiesByDoctor(loggedInDoctorId);
+
+        if (activities.isEmpty()) {
+            Label emptyLabel = new Label("No recent activities yet.");
+            emptyLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #777777;");
+            recentActivitiesContainer.getChildren().add(emptyLabel);
+            return;
+        }
+
+        for (String activity : activities) {
             Label lbl = new Label(activity);
             lbl.setWrapText(true);
             lbl.setStyle("-fx-font-size: 13px; -fx-text-fill: #444444;");
@@ -233,8 +276,8 @@ public class DoctorDashboardController implements Initializable {
     public void setToReview(int count)    { toReviewLabel.setText(String.valueOf(count)); }
 
     public void refreshDashboard() {
+        loadDashboardData();
         drawGauge();
-        populateRecentActivities();
         populateSchedule();
     }
 

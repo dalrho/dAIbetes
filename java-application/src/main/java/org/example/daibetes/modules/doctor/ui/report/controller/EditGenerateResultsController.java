@@ -1,9 +1,7 @@
 package org.example.daibetes.modules.doctor.ui.report.controller;
-
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -11,17 +9,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
-import org.example.daibetes.core.database.ImageDAO;
-import org.example.daibetes.core.database.ReportDAO;
-import org.example.daibetes.core.database.TestDAO;
 import org.example.daibetes.modules.ai.dto.AIResponseDTO;
 import org.example.daibetes.modules.ai.service.AIInferenceService;
+import org.example.daibetes.shared.ui.SceneLoader;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import static org.example.daibetes.shared.utils.ValidationUtils.showAlert;
+import org.example.daibetes.core.database.ReportDataDAO;
+import org.example.daibetes.modules.doctor.ui.review.model.ReportData ;
+
+import java.io.File;
 
 public class EditGenerateResultsController {
 
@@ -65,19 +65,84 @@ public class EditGenerateResultsController {
     private Image passedImage;
     @FXML
     public void initialize() {
-        // 1. Pull the image that was just saved in the previous step
-         passedImage = AppContext.getInstance().getSelectedImage();
+        criticalityCombo.getItems().setAll(
+                "Absent",
+                "Low",
+                "Moderate",
+                "High",
+                "Critical"
+        );
 
-        if (passedImage != null) {
-            // 2. Set it to the ImageView on the report screen
-            reportImageView.setImage(passedImage);
-        } else {
-            System.err.println("Warning: No image was passed to the Report Generator.");
+        int reportId = AppContext.getInstance().getSelectedReportId();
+
+        if (reportId == 0) {
+            showAlert("Missing Report", "No report was selected.");
+            return;
         }
 
-        // 3. Populate your ComboBox
-        if (criticalityCombo != null) {
-            criticalityCombo.getItems().addAll("Absent", "Low", "Moderate", "High", "Critical");
+        loadExistingReport(reportId);
+    }
+
+    private void loadExistingReport(int reportId) {
+        ReportDataDAO dao = new ReportDataDAO();
+        ReportData data = dao.getReportDataByReportId(reportId);
+
+        if (data == null) {
+            showAlert("Load Failed", "Could not load report data.");
+            return;
+        }
+
+        if (data.getScanImage() != null) {
+            reportImageView.setImage(data.getScanImage());
+        }
+
+        if (data.getCriticality() != null &&
+                !criticalityCombo.getItems().contains(data.getCriticality())) {
+            criticalityCombo.getItems().add(data.getCriticality());
+        }
+
+        criticalityCombo.setValue(data.getCriticality());
+        doctorCriticalityArea.setText(data.getCriticalityReasoning());
+
+        selectToggleByText(tgMA, data.getMicroaneurysms());
+        selectToggleByText(tgHem, data.getHemorrhages());
+        selectToggleByText(tgExu, data.getHardExudates());
+        selectToggleByText(tgCWS, data.getCottonWoolSpots());
+        selectToggleByText(tgME, data.getMacularEdema());
+        selectToggleByText(tgVB, data.getVenousBeading());
+        selectToggleByText(tgIRMA, data.getIrma());
+        selectToggleByText(tgNV, data.getNeovascularization());
+        selectToggleByText(tgVH, data.getVitreousHemorrhage());
+        selectToggleByText(tgRD, data.getRetinalDetachment());
+
+        selectToggleByText(tgDR, data.getDrGrade());
+        selectToggleByText(tgDME, data.getDmeGrade());
+
+        if (data.getRecommendations() != null) {
+            annualFollowupCheck.setSelected(data.getRecommendations().contains("Annual Follow-up"));
+            sixMonthCheck.setSelected(data.getRecommendations().contains("6-month Follow-up"));
+            referCheck.setSelected(data.getRecommendations().contains("Refer to Specialist"));
+            urgentCheck.setSelected(data.getRecommendations().contains("Urgent Evaluation"));
+            laserCheck.setSelected(data.getRecommendations().contains("Laser Treatment"));
+            antiVegfCheck.setSelected(data.getRecommendations().contains("Anti-VEGF Therapy"));
+        }
+
+        notesArea.setText(data.getClinicalNotes());
+    }
+
+
+    private void selectToggleByText(ToggleGroup group, String value) {
+        if (group == null || value == null) {
+            return;
+        }
+
+        for (Toggle toggle : group.getToggles()) {
+            if (toggle instanceof RadioButton radioButton) {
+                if (radioButton.getText().equalsIgnoreCase(value.trim())) {
+                    group.selectToggle(radioButton);
+                    return;
+                }
+            }
         }
     }
 
@@ -182,6 +247,13 @@ public class EditGenerateResultsController {
 
     @FXML
     private void handleSaveReport() {
+        int reportId = AppContext.getInstance().getSelectedReportId();
+
+        if (reportId == 0) {
+            showAlert("Missing Report", "No report was selected for editing.");
+            return;
+        }
+
         String microaneurysms = getSelected(tgMA);
         String hemorrhages = getSelected(tgHem);
         String exudates = getSelected(tgExu);
@@ -197,6 +269,7 @@ public class EditGenerateResultsController {
         String dmeGrade = getSelected(tgDME);
 
         String criticality = criticalityCombo.getValue();
+
         String doctorReasoning = doctorCriticalityArea.getText() == null
                 ? ""
                 : doctorCriticalityArea.getText().trim();
@@ -204,11 +277,6 @@ public class EditGenerateResultsController {
         String notes = notesArea.getText() == null
                 ? ""
                 : notesArea.getText().trim();
-
-        // =========================
-        // STRICT VALIDATION FIRST
-        // Do not save anything unless everything is complete.
-        // =========================
 
         if (reportImageView.getImage() == null) {
             showAlert("Missing Image", "Please make sure a report image is loaded before saving.");
@@ -295,13 +363,15 @@ public class EditGenerateResultsController {
             return;
         }
 
-        // =========================
-        // SAVE ONLY AFTER ALL VALIDATION PASSES
-        // =========================
-
         try {
-            ImageDAO imageDAO = new ImageDAO();
-            ReportDAO reportDAO = new ReportDAO();
+            ReportDataDAO reportDataDAO = new ReportDataDAO();
+
+            ReportDataDAO.ReportRefs refs = reportDataDAO.getReportRefsByReportId(reportId);
+
+            if (refs == null) {
+                showAlert("Save Failed", "Could not find the existing report references.");
+                return;
+            }
 
             File reportImageFile = imageViewToTempFile(reportImageView);
 
@@ -310,24 +380,31 @@ public class EditGenerateResultsController {
                 return;
             }
 
-            int imageId = imageDAO.createImage(reportImageFile, 1);
+            byte[] imageBytes = java.nio.file.Files.readAllBytes(reportImageFile.toPath());
 
-            if (imageId == -1) {
-                showAlert("Image Save Failed", "Report image was not saved.");
+            boolean imageUpdated = reportDataDAO.updateImage(
+                    refs.getRawImageId(),
+                    imageBytes
+            );
+
+            if (!imageUpdated) {
+                showAlert("Save Failed", "Image was not updated.");
                 return;
             }
 
-            int criticalityId = reportDAO.createCriticality(
+            boolean criticalityUpdated = reportDataDAO.updateCriticality(
+                    refs.getCriticalityId(),
                     criticality,
                     doctorReasoning
             );
 
-            if (criticalityId == -1) {
-                showAlert("Save Failed", "Criticality was not saved.");
+            if (!criticalityUpdated) {
+                showAlert("Save Failed", "Criticality was not updated.");
                 return;
             }
 
-            int findingsId = reportDAO.createPathologicalFindings(
+            boolean pathologicalUpdated = reportDataDAO.updatePathologicalFindings(
+                    refs.getFindingsId(),
                     microaneurysms,
                     hemorrhages,
                     exudates,
@@ -340,22 +417,24 @@ public class EditGenerateResultsController {
                     retinalDetachment
             );
 
-            if (findingsId == -1) {
-                showAlert("Save Failed", "Pathological findings were not saved.");
+            if (!pathologicalUpdated) {
+                showAlert("Save Failed", "Pathological findings were not updated.");
                 return;
             }
 
-            int evaluationId = reportDAO.createEvaluation(
+            boolean evaluationUpdated = reportDataDAO.updateEvaluation(
+                    refs.getEvaluationId(),
                     drGrade,
                     dmeGrade
             );
 
-            if (evaluationId == -1) {
-                showAlert("Save Failed", "Evaluation was not saved.");
+            if (!evaluationUpdated) {
+                showAlert("Save Failed", "Evaluation was not updated.");
                 return;
             }
 
-            int recommendationsId = reportDAO.createRecommendations(
+            boolean recommendationsUpdated = reportDataDAO.updateRecommendations(
+                    refs.getRecommendationsId(),
                     annualFollowupCheck.isSelected(),
                     sixMonthCheck.isSelected(),
                     referCheck.isSelected(),
@@ -365,45 +444,40 @@ public class EditGenerateResultsController {
                     notes
             );
 
-            if (recommendationsId == -1) {
-                showAlert("Save Failed", "Recommendations were not saved.");
+            if (!recommendationsUpdated) {
+                showAlert("Save Failed", "Recommendations were not updated.");
                 return;
             }
 
-            int patientId = 1; // temporary
-            int doctorId = 1;  // temporary
+            boolean timestampUpdated = reportDataDAO.updateReportSavedOn(reportId);
 
-            TestDAO testDAO = new TestDAO();
-            int testId = testDAO.createTest(patientId, doctorId, imageId);
-
-            if (testId == -1) {
-                showAlert("Save Failed", "Test record was not saved.");
+            if (!timestampUpdated) {
+                showAlert("Warning", "Report was updated, but saved_on was not updated.");
                 return;
             }
 
-            AppContext.getInstance().setCurrentTestId(testId);
+            showAlert("Success", "Report updated successfully.");
 
-            int reportId = reportDAO.createReport(
-                    testId,
-                    criticalityId,
-                    findingsId,
-                    recommendationsId,
-                    evaluationId
+            Stage stage = (Stage) reportImageView.getScene().getWindow();
+
+            Scene scene = SceneLoader.load(
+                    "org/example/daibetes/modules/records/controller",
+                    "doctorViewDiagnosis.fxml",
+                    null
             );
 
-            if (reportId == -1) {
-                showAlert("Save Failed", "Final report was not saved.");
+            if (scene == null) {
+                showAlert("Navigation Error", "Could not return to the detailed report screen.");
                 return;
             }
 
-            showAlert(
-                    "Report Generated",
-                    "The diagnostic report has been finalized and saved."
-            );
+            stage.setScene(scene);
+            stage.setTitle("Detailed Report");
+            stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Save Error", "Something went wrong while saving the report.");
+            showAlert("Save Error", "Something went wrong while updating the report.");
         }
     }
     private File imageViewToTempFile(ImageView imageView) {
@@ -445,34 +519,20 @@ public class EditGenerateResultsController {
 
     @FXML
     private void handleBack() {
-        try {
-            // 1. Get the current stage
-            // Use any FXML element you have (like notesArea or reportImageView) to get the scene
-            Stage stage = (Stage) notesArea.getScene().getWindow();
+        Scene scene = SceneLoader.load(
+                "org/example/daibetes/modules/records/controller",
+                "doctorViewDiagnosis.fxml",
+                null
+        );
 
-            // 2. Locate the previous FXML
-            // Based on your previous structure, it should be in /imageProcessing/
-            var resource = getClass().getResource("/org/example/daibetes/modules/records/controller/doctorViewDiagnosis.fxml");
-
-            if (resource == null) {
-                System.err.println("/org/example/daibetes/modules/records/controller/doctorViewDiagnosis.fxml");
-                // If the folder is named differently (e.g. all lowercase), update the string above
-                return;
-            }
-
-            // 3. Load and set the scene
-            FXMLLoader loader = new FXMLLoader(resource);
-            Scene scene = new Scene(loader.load());
-            stage.setScene(scene);
-
-            System.out.println("Returning to Image Processing screen.");
-
-        } catch (Exception e) {
-            System.err.println("Navigation Error (Back): " + e.getMessage());
-            e.printStackTrace();
+        if (scene == null) {
+            showAlert("Navigation Error", "Could not return to the detailed report screen.");
+            return;
         }
+
+        Stage stage = (Stage) notesArea.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Detailed Report");
+        stage.show();
     }
-
-
-
 }
