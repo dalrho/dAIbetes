@@ -109,22 +109,13 @@ public class LoginController {
     }
 
     @FXML
-    private void showForgotPasswordPopup() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/daibetes/modules/auth/login/forgot-password-popup.fxml"));
-            Parent root = loader.load();
-
-            Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL); // Blocks interaction with login screen
-            popupStage.initStyle(StageStyle.UTILITY); // Removes minimize/maximize buttons
-            popupStage.setTitle("Reset Password");
-
-            Scene scene = new Scene(root);
-            popupStage.setScene(scene);
-            popupStage.showAndWait();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void goToForgotPassword(MouseEvent event) {
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
+                "org/example/daibetes/modules/auth/login", // Folder
+                "forgot-password-screen.fxml",             // Rename file to "screen"
+                "Reset Password - dAIbetes",               // Title
+                "/org/example/daibetes/styles/splash2.css" // Match Login/Register CSS
+        );
     }
 }

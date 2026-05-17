@@ -104,6 +104,8 @@ public class NewDiagnosisPopupController {
          */
         context.setSelectedReportId(0);
 
+        context.setShowDiagnosisBackButton(true);
+
         Stage stage = (Stage) patientNameBox.getScene().getWindow();
 
         Scene scene = SceneLoader.load(

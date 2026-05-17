@@ -50,6 +50,11 @@ public class PopDiagnosisController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupButtonHover(uploadImageBtn);
 
+        boolean showBackButton =
+                AppContext.getInstance().isShowDiagnosisBackButton();
+
+        backBtn.setVisible(showBackButton);
+        backBtn.setManaged(showBackButton);
     }
 
 

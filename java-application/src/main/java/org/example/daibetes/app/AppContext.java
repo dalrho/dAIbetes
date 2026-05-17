@@ -40,6 +40,8 @@ public class AppContext {
     private int selectedRecordsDoctorId;
     private int selectedReportId;
     private AppContext() {}
+    private boolean showDiagnosisBackButton = true;
+
 
     public static AppContext getInstance() {
         if (instance == null) {
@@ -230,5 +232,14 @@ public class AppContext {
 
     public void setSelectedReportId(int selectedReportId) {
         this.selectedReportId = selectedReportId;
+    }
+
+
+    public boolean isShowDiagnosisBackButton() {
+        return showDiagnosisBackButton;
+    }
+
+    public void setShowDiagnosisBackButton(boolean showDiagnosisBackButton) {
+        this.showDiagnosisBackButton = showDiagnosisBackButton;
     }
 }
