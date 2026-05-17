@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import org.example.daibetes.shared.ui.PopupManager;
 import org.example.daibetes.shared.ui.SceneLoader;
 import org.example.daibetes.core.database.DoctorDashboardDAO;
+import org.example.daibetes.core.database.ICalendarDAO;
+import org.example.daibetes.shared.utils.ServiceRegistry;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -334,7 +336,8 @@ public class DoctorDashboardController implements Initializable {
             return;
         }
 
-        List<Appointment> allApps = new org.example.daibetes.core.database.CalendarDAO().getAppointmentsByDoctor(loggedInDoctorId);
+        ICalendarDAO calendarDAO = ServiceRegistry.getInstance().get(ICalendarDAO.class);
+        List<Appointment> allApps = calendarDAO.getAppointmentsByDoctor(loggedInDoctorId);
         LocalDate today = LocalDate.now();
 
         // Get upcoming non-rejected appointments sorted chronologically
