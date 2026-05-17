@@ -18,10 +18,8 @@ public class PatientDashboardViewModel {
 
     private final StringProperty statusMessage = new SimpleStringProperty("");
     private final BooleanProperty isLoading = new SimpleBooleanProperty(false);
-
     private final StringProperty patientName = new SimpleStringProperty("");
 
-    // Observable data collections
     private final ObservableList<Notification> notifications = FXCollections.observableArrayList();
     private final ObservableList<String[]> acceptedSchedule = FXCollections.observableArrayList();
 
@@ -44,12 +42,9 @@ public class PatientDashboardViewModel {
     public void refreshDashboardData() {
         if (currentPatient == null) return;
 
-        // Process dynamic database notifications accompanied by custom runtime appends
-        List<Notification> activeFeed = new ArrayList<>(dao.getNotificationsByPatient(currentPatient.getPId()));
+        List<Notification> activeFeed = new ArrayList<>(dao.getRecentActivities(currentPatient.getPId()));
 
-        // Loop through all search records to safely append dynamic programmatic reminders for tracking items
         if (selectedDoctor != null && dao.hasPendingRequest(currentPatient.getPId(), selectedDoctor.getDId())) {
-            // Include transient programmatic status alert matching requirements
             activeFeed.add(0, new Notification(
                     -1,
                     currentPatient.getPId(),
@@ -61,10 +56,8 @@ public class PatientDashboardViewModel {
         }
         notifications.setAll(activeFeed);
 
-        // Fetch accepted schedules
-        acceptedSchedule.setAll(dao.getAcceptedSchedules(currentPatient.getPId()));
+        acceptedSchedule.setAll(dao.getConfirmedSchedules(currentPatient.getPId()));
 
-        // Date calculations countdown block
         String[] nearest = dao.getNearestUpcomingAppointment(currentPatient.getPId());
         if (nearest != null) {
             daysUntilFollowUp.set(nearest[2]);
@@ -125,7 +118,6 @@ public class PatientDashboardViewModel {
         }
     }
 
-    // Structural Accessors
     public StringProperty patientNameProperty() { return patientName; }
     public ObservableList<Notification> getNotifications() { return notifications; }
     public ObservableList<String[]> getAcceptedSchedule() { return acceptedSchedule; }
