@@ -126,6 +126,13 @@ public class NewDiagnosisPopupController {
 
     @FXML
     private void handleClose() {
-        ((Stage) patientNameBox.getScene().getWindow()).close();
+//        ((Stage) patientNameBox.getScene().getWindow()).close();
+        SceneLoader.switchScene(
+                patientNameBox,
+                "org/example/daibetes/modules/doctor/dashboard",
+                "doctor-dashboard.fxml",
+                "Doctor Dashboard",
+                "/org/example/daibetes/styles/doctor-dashboard.css"
+        );
     }
 }

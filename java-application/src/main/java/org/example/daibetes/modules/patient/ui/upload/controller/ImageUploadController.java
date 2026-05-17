@@ -127,19 +127,14 @@ public class ImageUploadController {
             AppContext.getInstance().setSelectedImage(runtimeSelectedImage);
             AppContext.getInstance().setSelectedImageFile(selectedFile);
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/example/daibetes/modules/detection/ui/image-processing.fxml")
+            // Switch scene using SceneLoader
+            SceneLoader.switchScene(
+                    img1,
+                    "org/example/daibetes/modules/detection/ui",
+                    "image-processing.fxml",
+                    "Image Processing",
+                    null
             );
-
-            Scene scene = new Scene(loader.load());
-
-            Stage stage = (Stage) img1.getScene().getWindow();
-            stage.setScene(scene);
-
-            // FOR FIXED CENTER SCREEN
-            stage.setResizable(false);
-            stage.sizeToScene();
-            stage.centerOnScreen();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,7 +149,7 @@ public class ImageUploadController {
                 SceneLoader.load(
                         "org/example/daibetes/modules/doctor/ui/popup",
                         "popdiagnosis-screen.fxml",
-                        null
+                        "/org/example/daibetes/styles/new-diagnosis.css"
                 )
         );
 

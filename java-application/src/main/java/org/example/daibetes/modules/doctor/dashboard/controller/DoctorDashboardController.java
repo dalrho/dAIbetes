@@ -407,7 +407,7 @@ public class DoctorDashboardController implements Initializable {
 
 
     @FXML
-    private void onNewDiagnosisBtn() {
+    private void onNewDiagnosisBtn(ActionEvent event) {
 
 //        PopupManager.open(
 //                "org/example/daibetes/modules/doctor/ui/popup",
@@ -416,11 +416,18 @@ public class DoctorDashboardController implements Initializable {
 //                "New Diagnosis"
 //        );
 
-        PopupManager.open(
+//        PopupManager.open(
+//                "org/example/daibetes/modules/doctor/ui/newdiagnosis",
+//                "new-diagnosis-popup.fxml",
+//                "/org/example/daibetes/styles/new-diagnosis.css",
+//                "New Diagnosis"
+//        );
+        SceneLoader.switchScene(
+                (Node) event.getSource(),
                 "org/example/daibetes/modules/doctor/ui/newdiagnosis",
                 "new-diagnosis-popup.fxml",
-                "/org/example/daibetes/styles/new-diagnosis.css",
-                "New Diagnosis"
+                "New Diagnosis",
+                "/org/example/daibetes/styles/new-diagnosis.css"
         );
     }
 
