@@ -30,6 +30,9 @@ public class ReportData {
     private String drGrade;
     private String dmeGrade;
     private List<String> recommendations;
+    private int reportId;
+
+    private String doctorName;
 
     // Constructor
     public ReportData() {}
@@ -93,4 +96,12 @@ public class ReportData {
 
     public List<String> getRecommendations() { return recommendations; }
     public void setRecommendations(List<String> recommendations) { this.recommendations = recommendations; }
+
+    public int getReportId() {return reportId;}
+    public void setReportId(int reportId) { this.reportId = reportId; }
+
+    public void setDoctorName(String docName) { this.doctorName = docName; }
+
+    public String getDoctorName() { return doctorName; }
+
 } // Removed rogue extra closing brace here
