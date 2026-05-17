@@ -123,7 +123,7 @@ public class PatientDashboardController implements Initializable {
         scheduleContainer.getChildren().clear();
 
         if (viewModel.getAcceptedSchedule().isEmpty()) {
-            Label fallback = new Label("• No upcoming accepted medical consultations found.");
+            Label fallback = new Label("• No upcoming confirmed appointments found.");
             fallback.setStyle("-fx-font-size: 13px; -fx-text-fill: #888888;");
             scheduleContainer.getChildren().add(fallback);
             return;
@@ -134,9 +134,12 @@ public class PatientDashboardController implements Initializable {
             bulletLayout.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
             Circle bulletPoint = new Circle(4);
-            bulletPoint.setStyle("-fx-fill: #27AE60;");
+            bulletPoint.setStyle("-fx-fill: #27AE60;"); // Status verification green marker
 
-            Label contentDescription = new Label("Confirmed appointment with Dr. " + row[1] + " scheduled on " + row[2]);
+            // Task rule syntax execution output: "[date and time of appointment] with Dr. [Name of Doctor]"
+            String syntaxPattern = row[1] + " with Dr. " + row[0];
+
+            Label contentDescription = new Label(syntaxPattern);
             contentDescription.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;");
             contentDescription.setWrapText(true);
 
