@@ -1,74 +1,111 @@
-.main-container { -fx-background-color: #F9F9F9; }
+/* Container Background - Pure White */
+.main-container {
+    -fx-background-color: #FFFFFF;
+}
 
+/* Header */
 .header-title {
-    -fx-font-size: 28px; /* Scaled down */
-    -fx-font-weight: bold;
-    -fx-text-fill: #1A1A1A;
+    -fx-text-fill: #1E293B;
 }
 
+/* Search Field Styling */
 .search-field {
-    -fx-background-radius: 20;
-    -fx-border-radius: 20;
-    -fx-border-color: #E0E0E0;
     -fx-background-color: white;
-    -fx-padding: 0 15;
-    -fx-font-size: 13px;
+    -fx-background-radius: 12px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 12px;
+    -fx-padding: 0 20px;
+    -fx-font-size: 15px;
+}
+.search-field:focused {
+    -fx-border-color: #3B82F6;
+    -fx-border-width: 2px;
 }
 
+/* Top Sorting Pills (Bigger & Formal) */
 .filter-pill {
     -fx-background-color: white;
-    -fx-border-color: #1A1A1A;
-    -fx-border-radius: 20;
-    -fx-background-radius: 20;
-    -fx-padding: 6 12; /* More compact */
+    -fx-text-fill: #475569;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-padding: 12px 35px;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-font-size: 11px;
     -fx-cursor: hand;
-    -fx-min-width: 80;
+}
+
+.filter-pill:hover {
+    -fx-background-color: #F8FAFC;
 }
 
 .filter-pill:selected {
-    -fx-background-color: #1A1A1A;
+    -fx-background-color: #3B82F6;
     -fx-text-fill: white;
+    -fx-border-color: #3B82F6;
 }
 
-/* COMPACT PATIENT CARDS */
+/* Patient Card (The Big Pills) */
 .patient-card {
-    -fx-background-color: #111111;
-    -fx-background-radius: 15;
-    -fx-padding: 15; /* Reduced padding */
-    -fx-min-width: 240;
-    -fx-pref-height: 100; /* Fixed height helps fit 3 rows */
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 4);
+    -fx-background-color: white;
+    -fx-background-radius: 18px;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 18px;
+    -fx-padding: 30px;
+
+    /* Fixed width for professional grid alignment */
+    -fx-pref-width: 420px;
+    -fx-min-height: 180px;
+
+    /* Depth shadow */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 15, 0, 0, 5);
+
+    /* Blue medical accent bar on left */
+    -fx-border-width: 1px 1px 1px 6px;
+    -fx-border-color: #E2E8F0 #E2E8F0 #E2E8F0 #3B82F6;
 }
 
 .patient-card:hover {
-    -fx-background-color: #222222;
+    -fx-background-color: #F8FAFC;
     -fx-scale-x: 1.02;
     -fx-scale-y: 1.02;
-}
-
-.card-name {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 15px; /* Scaled down */
-}
-
-.patient-card .label {
-    -fx-text-fill: #BBBBBB;
-    -fx-font-size: 11px;
-}
-
-.pagination-text { -fx-font-size: 12px; }
-
-.nav-btn, .back-btn {
-    -fx-background-color: white;
-    -fx-border-color: #1A1A1A;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-padding: 6 15;
-    -fx-font-weight: bold;
-    -fx-font-size: 12px;
     -fx-cursor: hand;
+}
+
+/* Card Typography */
+.patient-name {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0F172A;
+}
+
+.patient-info {
+    -fx-font-size: 15px;
+    -fx-text-fill: #475569;
+}
+
+/* ScrollPane Transparency */
+.grid-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+.grid-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Buttons and Pagination */
+.nav-btn {
+    -fx-background-color: white;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8px;
+    -fx-font-weight: bold;
+}
+.back-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #64748B;
+    -fx-font-weight: bold;
+}
+.pagination-text {
+    -fx-text-fill: #64748B;
+    -fx-font-weight: 600;
 }
