@@ -175,55 +175,62 @@
                                                -fx-cursor: hand;"/>
                             </HBox>
 
-                            <HBox spacing="24" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
-                                <!-- Gauge canvas -->
-                                <Pane fx:id="gaugePane"
-                                      prefWidth="220" prefHeight="190"
-                                      minWidth="220" minHeight="190"/>
 
-                                <!-- Legend / Detailed Stats -->
-                                <VBox spacing="14" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
-                                    <!-- Records -->
-                                    <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
-                                        <HBox spacing="8" alignment="CENTER_LEFT">
-                                            <Circle radius="5" style="-fx-fill: #E74C3C;"/>
-                                            <Label text="Records &amp; Patient Scans"
-                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
-                                        </HBox>
-                                        <Label fx:id="recordsStatusLabel"
-                                               text="0 scans recorded (0% of target)"
-                                               wrapText="true"
-                                               style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
-                                    </VBox>
 
-                                    <!-- Diagnoses -->
-                                    <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
-                                        <HBox spacing="8" alignment="CENTER_LEFT">
-                                            <Circle radius="5" style="-fx-fill: #3498DB;"/>
-                                            <Label text="Diagnostic Reports Completed"
-                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
-                                        </HBox>
-                                        <Label fx:id="diagnosesStatusLabel"
-                                               text="0 diagnoses completed out of 0 total scans (0% completion)"
-                                               wrapText="true"
-                                               style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
-                                    </VBox>
+                                    <!-- CHANGE: Ensure this HBox is CENTER_LEFT and has consistent spacing -->
+                                    <HBox spacing="30" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                                        <!-- Gauge canvas wrapper to ensure vertical centering -->
+                                        <StackPane alignment="CENTER">
+                                            <Pane fx:id="gaugePane"
+                                                  prefWidth="220" prefHeight="190"
+                                                  minWidth="220" minHeight="190"/>
+                                        </StackPane>
 
-                                    <!-- Patients -->
-                                    <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
-                                        <HBox spacing="8" alignment="CENTER_LEFT">
-                                            <Circle radius="5" style="-fx-fill: #F39C12;"/>
-                                            <Label text="Active Patients Handled"
-                                                   style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
-                                        </HBox>
-                                        <Label fx:id="patientsStatusLabel"
-                                               text="0 patients under management (0% capacity)"
-                                               wrapText="true"
-                                               style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
-                                    </VBox>
+                                        <!-- Legend / Detailed Stats -->
+                                        <!-- CHANGE: alignment set to CENTER_LEFT -->
+                                        <VBox spacing="14" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                                            <!-- Records -->
+                                            <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
+                                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                                    <Circle radius="5" style="-fx-fill: #E74C3C;"/>
+                                                    <Label text="Records &amp; Patient Scans"
+                                                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                                                </HBox>
+                                                <Label fx:id="recordsStatusLabel"
+                                                       text="0 scans recorded (0% of target)"
+                                                       wrapText="true"
+                                                       style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
+                                            </VBox>
+
+                                            <!-- Diagnoses -->
+                                            <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
+                                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                                    <Circle radius="5" style="-fx-fill: #3498DB;"/>
+                                                    <Label text="Diagnostic Reports Completed"
+                                                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                                                </HBox>
+                                                <Label fx:id="diagnosesStatusLabel"
+                                                       text="0 diagnoses completed out of 0 total scans (0% completion)"
+                                                       wrapText="true"
+                                                       style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
+                                            </VBox>
+
+                                            <!-- Patients -->
+                                            <VBox spacing="4" style="-fx-background-color: #FAFAFA; -fx-padding: 10 14; -fx-background-radius: 8; -fx-border-color: #EBEBEB; -fx-border-width: 1; -fx-border-radius: 8;">
+                                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                                    <Circle radius="5" style="-fx-fill: #F39C12;"/>
+                                                    <Label text="Active Patients Handled"
+                                                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                                                </HBox>
+                                                <Label fx:id="patientsStatusLabel"
+                                                       text="0 patients under management (0% capacity)"
+                                                       wrapText="true"
+                                                       style="-fx-font-size: 12px; -fx-text-fill: #7F8C8D; -fx-padding: 0 0 0 14;"/>
+                                            </VBox>
+                                        </VBox>
+                                    </HBox>
                                 </VBox>
-                            </HBox>
-                        </VBox>
+
 
                         <!-- Right: Total Scans + To Review -->
                         <VBox spacing="16" GridPane.columnIndex="1">
