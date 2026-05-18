@@ -182,50 +182,42 @@ public class DoctorDashboardController implements Initializable {
     private void drawGauge() {
         gaugePane.getChildren().clear();
 
-        double W  = gaugePane.getWidth();   // 200
-        double H  = gaugePane.getHeight();  // 190
+        double W  = gaugePane.getWidth();
+        double H  = gaugePane.getHeight();
 
-        double cx     = W / 2.0;   // 100 — horizontal centre
-        double cy     = H - 15;    // 175 — near the bottom for a tall arch
+        double cx     = W / 2.0;
+        // CHANGE: Move cy from (H - 15) to a centered position.
+        // H/2 + 45 puts the "base" of the rainbow just below the vertical center,
+        // making the peak of the arch sit perfectly in the middle of the pane.
+        double cy     = (H / 2.0) + 45;
 
-        double stroke = 22;        // ring thickness
-        double gap    = 28;        // radial gap between rings
+        double stroke = 22;
+        double gap    = 28;
 
-        // Outer → inner:  red (records), blue (diagnoses), orange (patients)
+        // Outer → inner
         double[] radii      = { 88,  88 - gap,  88 - gap * 2 };
         double[] progresses = { recordsProgress, diagnosesProgress, patientsProgress };
 
-        // Gray base line under the arcs to ground the gauge professionally
+        // Gray base line (moves automatically with new cy)
         javafx.scene.shape.Line baseLine = new javafx.scene.shape.Line(cx - radii[0] - stroke/2.0, cy, cx + radii[0] + stroke/2.0, cy);
         baseLine.setStroke(Color.web("#EBEBEB"));
         baseLine.setStrokeWidth(2.0);
         gaugePane.getChildren().add(baseLine);
 
-        Color[] fillColors  = {
-                Color.web("#E74C3C"),
-                Color.web("#3498DB"),
-                Color.web("#F39C12")
-        };
-        Color[] trackColors = {
-                Color.web("#F5BCBC"),
-                Color.web("#AED6F1"),
-                Color.web("#FAD7A0")
-        };
+        Color[] fillColors  = { Color.web("#E74C3C"), Color.web("#3498DB"), Color.web("#F39C12") };
+        Color[] trackColors = { Color.web("#F5BCBC"), Color.web("#AED6F1"), Color.web("#FAD7A0") };
 
         for (int i = 0; i < 3; i++) {
             double r    = radii[i];
             double prog = progresses[i];
 
-            // Background track — full 180°
             Arc track = makeArc(cx, cy, r, 0, 180, stroke, trackColors[i]);
             gaugePane.getChildren().add(track);
 
-            // Progress fill
             Arc filled = makeArc(cx, cy, r, 0, prog * 180, stroke, fillColors[i]);
             gaugePane.getChildren().add(filled);
         }
 
-        // Tip dots on outer two rings
         addTipDot(cx, cy, radii[0], recordsProgress * 180, Color.web("#C0392B"), 10);
         addTipDot(cx, cy, radii[1], diagnosesProgress * 180, Color.web("#EAC040"), 9);
     }
