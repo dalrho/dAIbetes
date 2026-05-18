@@ -24,15 +24,13 @@ module org.example.daibetes {
 
 
     // --- Core & App ---
-    opens org.example.daibetes to javafx.fxml;
-    exports org.example.daibetes;
+    opens org.example.daibetes.main to javafx.fxml;
+    exports org.example.daibetes.main;
 
 
     // --- Auth Module ---
     opens org.example.daibetes.modules.auth.login.controller to javafx.fxml;
     exports org.example.daibetes.modules.auth.login.controller;
-    opens org.example.daibetes.modules.auth.login.app to javafx.fxml;
-    exports org.example.daibetes.modules.auth.login.app;
 
     opens org.example.daibetes.modules.auth.register.controller to javafx.fxml;
     exports org.example.daibetes.modules.auth.register.controller;
@@ -44,39 +42,28 @@ module org.example.daibetes {
     // --- Doctor Modules ---
     opens org.example.daibetes.modules.doctor.dashboard.controller to javafx.fxml;
     exports org.example.daibetes.modules.doctor.dashboard.controller;
-    opens org.example.daibetes.modules.doctor.dashboard.app to javafx.fxml;
-    exports org.example.daibetes.modules.doctor.dashboard.app;
 
     opens org.example.daibetes.modules.doctor.ui.calendar to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.calendar;
     opens org.example.daibetes.modules.doctor.ui.patients to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.patients;
-    opens org.example.daibetes.modules.doctor.ui.newdiagnosis to javafx.fxml;
-    exports org.example.daibetes.modules.doctor.ui.newdiagnosis;
     
     opens org.example.daibetes.modules.doctor.ui.popup.controller to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.popup.controller;
-    opens org.example.daibetes.modules.doctor.ui.popup.app to javafx.fxml;
-    exports org.example.daibetes.modules.doctor.ui.popup.app;
 
     opens org.example.daibetes.modules.doctor.ui.review.controller to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.review.controller;
 
 
-    opens org.example.daibetes.modules.doctor.ui.review.app to javafx.fxml;
-    exports org.example.daibetes.modules.doctor.ui.review.app;
+
     exports org.example.daibetes.modules.doctor.ui.review.model;
 
     opens org.example.daibetes.modules.doctor.ui.report.controller to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.report.controller;
-    opens org.example.daibetes.modules.doctor.ui.report.app to javafx.fxml;
-    exports org.example.daibetes.modules.doctor.ui.report.app;
 
     // --- Patient Modules ---
     opens org.example.daibetes.modules.patient.dashboard.controller to javafx.fxml;
     exports org.example.daibetes.modules.patient.dashboard.controller;
-    opens org.example.daibetes.modules.patient.dashboard.app to javafx.fxml;
-    exports org.example.daibetes.modules.patient.dashboard.app;
     exports org.example.daibetes.modules.patient.dashboard.model;
 
     opens org.example.daibetes.modules.patient.ui.calendar to javafx.fxml;
@@ -84,8 +71,6 @@ module org.example.daibetes {
     
     opens org.example.daibetes.modules.patient.ui.upload.controller to javafx.fxml;
     exports org.example.daibetes.modules.patient.ui.upload.controller;
-    opens org.example.daibetes.modules.patient.ui.upload.app to javafx.fxml;
-    exports org.example.daibetes.modules.patient.ui.upload.app;
 
     // --- Records Module ---
     opens org.example.daibetes.modules.records.controller to javafx.fxml;
@@ -102,6 +87,8 @@ module org.example.daibetes {
     // --- Doctor UI Diagnosis ---
     opens org.example.daibetes.modules.doctor.ui.diagnosis to javafx.fxml;
     exports org.example.daibetes.modules.doctor.ui.diagnosis;
+    opens org.example.daibetes.modules.doctor.ui.newdiagnosis to javafx.fxml;
+    exports org.example.daibetes.modules.doctor.ui.newdiagnosis;
 
     // --- Splash ---
     opens org.example.daibetes.modules.splash.controller to javafx.fxml;
@@ -110,6 +97,10 @@ module org.example.daibetes {
     exports org.example.daibetes.modules.splash.app;
     exports org.example.daibetes.shared.ui;
     opens org.example.daibetes.shared.ui to javafx.fxml;
+
+    // --- Utils and Services ---
     exports org.example.daibetes.shared.utils;
     opens org.example.daibetes.shared.utils to javafx.fxml;
+    exports org.example.daibetes.shared.service;
+    opens org.example.daibetes.shared.service to javafx.fxml;
 }

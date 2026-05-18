@@ -190,6 +190,13 @@ public class DoctorRegisterController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        if (card != null && card.getScene() != null && card.getScene().getWindow() != null) {
+            javafx.stage.Window parent = card.getScene().getWindow();
+            alert.setOnShown(e -> {
+                alert.setX(parent.getX() + (parent.getWidth() - alert.getWidth()) / 2.0);
+                alert.setY(parent.getY() + (parent.getHeight() - alert.getHeight()) / 2.0);
+            });
+        }
         alert.showAndWait();
     }
 }

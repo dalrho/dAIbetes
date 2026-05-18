@@ -246,7 +246,7 @@
                                          -fx-padding: 36 20;">
                                 <Label fx:id="toReviewLabel" text="8"
                                        style="-fx-font-size: 64px; -fx-font-weight: bold; -fx-text-fill: #7B1A1A;"/>
-                                <Label text="To review"
+                                <Label text="Pending Approvals"
                                        style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #111111;"/>
                             </VBox>
 

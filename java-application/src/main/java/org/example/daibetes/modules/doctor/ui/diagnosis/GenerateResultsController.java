@@ -11,14 +11,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.daibetes.app.AppContext;
-import org.example.daibetes.core.database.ImageDAO;
-import org.example.daibetes.core.database.ReportDAO;
-import org.example.daibetes.core.database.TestDAO;
 import org.example.daibetes.modules.ai.dto.AIResponseDTO;
 import org.example.daibetes.modules.ai.service.AIInferenceService;
 import org.example.daibetes.shared.models.Doctor;
 import org.example.daibetes.shared.models.User;
 import org.example.daibetes.shared.ui.SceneLoader;
+import org.example.daibetes.shared.service.IReportGenerationService;
+import org.example.daibetes.shared.utils.ServiceRegistry;
+import org.example.daibetes.shared.utils.AppExecutor;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -164,7 +164,7 @@ public class GenerateResultsController {
             }
         };
 
-        new Thread(task).start();
+        AppExecutor.get().submit(task);
     }
 
     private String getSelected(ToggleGroup group) {
@@ -313,9 +313,6 @@ public class GenerateResultsController {
         }
 
         try {
-            ImageDAO imageDAO = new ImageDAO();
-            ReportDAO reportDAO = new ReportDAO();
-
             File reportImageFile = imageViewToTempFile(reportImageView);
 
             if (reportImageFile == null || !reportImageFile.exists()) {
@@ -323,24 +320,14 @@ public class GenerateResultsController {
                 return;
             }
 
-            int imageId = imageDAO.createImage(reportImageFile, 1);
+            IReportGenerationService reportService = ServiceRegistry.getInstance().get(IReportGenerationService.class);
 
-            if (imageId == -1) {
-                showAlert("Image Save Failed", "Report image was not saved.");
-                return;
-            }
-
-            int criticalityId = reportDAO.createCriticality(
+            int reportId = reportService.generateAndPersistReport(
+                    patientId,
+                    doctorId,
+                    reportImageFile,
                     criticality,
-                    doctorReasoning
-            );
-
-            if (criticalityId == -1) {
-                showAlert("Save Failed", "Criticality was not saved.");
-                return;
-            }
-
-            int findingsId = reportDAO.createPathologicalFindings(
+                    doctorReasoning,
                     microaneurysms,
                     hemorrhages,
                     exudates,
@@ -350,25 +337,9 @@ public class GenerateResultsController {
                     irma,
                     neovascularization,
                     vitreousHemorrhage,
-                    retinalDetachment
-            );
-
-            if (findingsId == -1) {
-                showAlert("Save Failed", "Pathological findings were not saved.");
-                return;
-            }
-
-            int evaluationId = reportDAO.createEvaluation(
+                    retinalDetachment,
                     drGrade,
-                    dmeGrade
-            );
-
-            if (evaluationId == -1) {
-                showAlert("Save Failed", "Evaluation was not saved.");
-                return;
-            }
-
-            int recommendationsId = reportDAO.createRecommendations(
+                    dmeGrade,
                     annualFollowupCheck.isSelected(),
                     sixMonthCheck.isSelected(),
                     referCheck.isSelected(),
@@ -378,40 +349,10 @@ public class GenerateResultsController {
                     notes
             );
 
-            if (recommendationsId == -1) {
-                showAlert("Save Failed", "Recommendations were not saved.");
-                return;
-            }
-
-            TestDAO testDAO = new TestDAO();
-
-            int testId = testDAO.createTest(
-                    patientId,
-                    doctorId,
-                    imageId
-            );
-
-            if (testId == -1) {
-                showAlert("Save Failed", "Test record was not saved.");
-                return;
-            }
-
-            AppContext.getInstance().setCurrentTestId(testId);
-
-            int reportId = reportDAO.createReport(
-                    testId,
-                    criticalityId,
-                    findingsId,
-                    recommendationsId,
-                    evaluationId
-            );
-
             if (reportId == -1) {
                 showAlert("Save Failed", "Final report was not saved.");
                 return;
             }
-
-            AppContext.getInstance().setSelectedReportId(reportId);
 
             showAlert(
                     "Report Generated",
