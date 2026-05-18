@@ -391,13 +391,7 @@ public class DoctorDashboardController implements Initializable {
     public void setTotalScans(int count)  { totalScansLabel.setText(String.valueOf(count)); }
     public void setToReview(int count)    { toReviewLabel.setText(String.valueOf(count)); }
 
-    public void refreshDashboard() {
-        loadDashboardData();
-        drawGauge();
-        populateSchedule();
-    }
 
-    // ── Button handlers ───────────────────────────────────────────
     // ── Button handlers ───────────────────────────────────────────
 
 
@@ -453,10 +447,6 @@ public class DoctorDashboardController implements Initializable {
         );
     }
 
-    @FXML private void onUpdateData() {
-        System.out.println("[Dashboard] Update Data");
-        refreshDashboard();
-    }
 
     @FXML
     private void onLogout(ActionEvent event) {
