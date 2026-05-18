@@ -311,7 +311,7 @@ mvn clean javafx:run
 
 ## 🩺 Doctor Module
 
-- AI Inference Service communicating with FastAPI + Gemini backend
+- AI Inference Service communicating with FastAPI + Gemini LLM
 - Advanced retinal preprocessing using OpenCV
 - Dynamic image enhancement using Decorator Pattern
 - PDF report generation and patient monitoring
@@ -330,15 +330,15 @@ mvn clean javafx:run
 
 # 🏗️ Tech Stack
 
-| Layer | Technology |
-|------|------------|
+| Layer | Technology           |
+|------|----------------------|
 | Frontend | JavaFX (FXML + MVVM) |
-| Backend | Java 17+ |
-| AI Service | Python + FastAPI |
-| AI Engine | Gemini AI |
-| Image Processing | OpenCV |
-| Database | MySQL 8+ |
-| Build Tool | Maven |
+| Backend | Java 17+             |
+| AI Service | FastAPI              |
+| AI Engine | Pytorch + ResNet50   |
+| Image Processing | TorchVision          |
+| Database | MySQL 8+             |
+| Build Tool | Maven                |
 
 ---
 
@@ -365,7 +365,7 @@ mvn clean javafx:run
 # 👥 Development Team
 
 - Angela Jahziel Encabo — Lead Developer
-- Harold Shichiya I. Amistad — Backend Developer
+- Harold Shichiya I. Amistad — AI Engineer & Backend Developer
 - Gerald Ares — Frontend Developer
 - Ycia Debby Magnanao — Backend & Database
 - Jhen Aloyon — Backend & Database
