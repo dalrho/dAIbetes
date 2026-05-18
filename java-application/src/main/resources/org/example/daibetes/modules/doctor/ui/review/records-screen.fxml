@@ -43,7 +43,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color: FFFFFF; -fx-padding: 16; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-color: #E8EEF5; -fx-border-width: 1;">
 
                 <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;" text="Search Records" />
+                    <Label style="-fx-font-size: 12; -fx-text-fill: #6B7280; -fx-font-weight: bold;" text="Search Criticality" />
 
                     <TextField fx:id="searchField"
                                promptText="Search by Criticality..."
