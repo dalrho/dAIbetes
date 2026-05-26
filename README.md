@@ -1,5 +1,5 @@
 # 👁️ dAIbetes
-### AI-Powered Retinal Diagnostic Support System for Early Detection of Diabetic Retinopathy & Glaucoma
+### AI-Powered Retinal Diagnostic Support System for Early Detection of Diabetic Retinopathy 
 
 ---
 <p align="center">
